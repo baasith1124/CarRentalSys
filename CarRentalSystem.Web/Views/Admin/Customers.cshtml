@@ -1,0 +1,373 @@
+@model List<CarRentalSystem.Application.Contracts.Customer.CustomerDto>
+
+@{
+    ViewData["Title"] = "Customer Management";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-dashboard-3d">
+    <!-- Enhanced 3D Header -->
+    <div class="dashboard-header-3d">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="dashboard-title-3d">
+                    <div class="title-icon-3d">
+                        <i class="bi bi-people"></i>
+                        <div class="icon-glow-3d"></div>
+                    </div>
+                    Customer Management
+                </h1>
+                <p class="dashboard-subtitle-3d">Manage and monitor customer accounts</p>
+            </div>
+            <div class="dashboard-actions-3d">
+                <button class="btn-3d-interactive btn-primary-3d" onclick="refreshCustomers()">
+                    <i class="bi bi-arrow-clockwise"></i>
+                    <span>Refresh</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer Stats Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="stats-card-3d customers-3d">
+                <div class="stats-icon-3d">
+                    <i class="bi bi-people"></i>
+                    <div class="icon-glow-3d"></div>
+                </div>
+                <div class="stats-content-3d">
+                    <h3>@Model.Count</h3>
+                    <p>Total Customers</p>
+                    <small>Registered users</small>
+                </div>
+                <div class="card-glow-3d"></div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="stats-card-3d verified-3d">
+                <div class="stats-icon-3d">
+                    <i class="bi bi-shield-check"></i>
+                    <div class="icon-glow-3d"></div>
+                </div>
+                <div class="stats-content-3d">
+                    <h3>@Model.Count(c => c.IsKycVerified)</h3>
+                    <p>KYC Verified</p>
+                    <small>Identity verified</small>
+                </div>
+                <div class="card-glow-3d"></div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="stats-card-3d pending-3d">
+                <div class="stats-icon-3d">
+                    <i class="bi bi-clock-history"></i>
+                    <div class="icon-glow-3d"></div>
+                </div>
+                <div class="stats-content-3d">
+                    <h3>@Model.Count(c => !c.IsKycVerified)</h3>
+                    <p>Pending Verification</p>
+                    <small>Awaiting KYC</small>
+                </div>
+                <div class="card-glow-3d"></div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="stats-card-3d active-3d">
+                <div class="stats-icon-3d">
+                    <i class="bi bi-person-check"></i>
+                    <div class="icon-glow-3d"></div>
+                </div>
+                <div class="stats-content-3d">
+                    <h3>@Model.Count(c => !string.IsNullOrEmpty(c.ProfileImagePath))</h3>
+                    <p>With Profile Images</p>
+                    <small>Profile complete</small>
+                </div>
+                <div class="card-glow-3d"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter -->
+    <div class="row g-4 mb-4">
+        <div class="col-12">
+            <div class="card-3d-interactive">
+                <div class="card-body-3d">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="searchInput" class="form-label">Search Customers</label>
+                                <input type="text" id="searchInput" class="form-control" placeholder="Search by name, email, or NIC...">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="statusFilter" class="form-label">KYC Status</label>
+                                <select id="statusFilter" class="form-select">
+                                    <option value="">All Customers</option>
+                                    <option value="verified">KYC Verified</option>
+                                    <option value="pending">Pending Verification</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="sortBy" class="form-label">Sort By</label>
+                                <select id="sortBy" class="form-select">
+                                    <option value="name">Name (A-Z)</option>
+                                    <option value="email">Email</option>
+                                    <option value="kyc">KYC Status</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="form-label">&nbsp;</label>
+                                <button type="button" class="btn btn-outline-primary w-100" onclick="applyFilters()">
+                                    <i class="bi bi-funnel"></i> Filter
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customers Table -->
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="card-3d-interactive">
+                <div class="card-header-3d d-flex justify-content-between align-items-center">
+                    <h5 class="card-title-3d mb-0">
+                        <div class="title-icon-3d">
+                            <i class="bi bi-table"></i>
+                            <div class="icon-glow-3d"></div>
+                        </div>
+                        Customer List
+                    </h5>
+                    <div class="header-actions">
+                        <span class="badge bg-primary" id="customerCount">@Model.Count customers</span>
+                    </div>
+                </div>
+                <div class="card-body-3d">
+                    @if (Model.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="customersTable">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Customer</th>
+                                        <th>Contact Info</th>
+                                        <th>KYC Status</th>
+                                        <th>Profile</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var customer in Model)
+                                    {
+                                        <tr class="customer-row" data-customer-id="@customer.Id">
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="customer-avatar me-3">
+                                                        @if (!string.IsNullOrEmpty(customer.ProfileImagePath))
+                                                        {
+                                                            <img src="@customer.ProfileImagePath" alt="@customer.FullName" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                            <div class="avatar-placeholder" style="display:none; width: 40px; height: 40px; background: #6c757d; border-radius: 50%; align-items: center; justify-content: center; color: white;">
+                                                                <i class="bi bi-person"></i>
+                                                            </div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="avatar-placeholder" style="width: 40px; height: 40px; background: #6c757d; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">
+                                                                <i class="bi bi-person"></i>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-0">@customer.FullName</h6>
+                                                        <small class="text-muted">ID: @customer.Id.ToString().Substring(0, 8)</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <strong>Email:</strong> @customer.Email<br>
+                                                    @if (!string.IsNullOrEmpty(customer.NIC))
+                                                    {
+                                                        <strong>NIC:</strong> @customer.NIC<br>
+                                                    }
+                                                    @if (!string.IsNullOrEmpty(customer.Address))
+                                                    {
+                                                        <strong>Address:</strong> @customer.Address
+                                                    }
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @if (customer.IsKycVerified)
+                                                {
+                                                    <span class="badge bg-success">
+                                                        <i class="bi bi-shield-check"></i> Verified
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-warning">
+                                                        <i class="bi bi-clock-history"></i> Pending
+                                                    </span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(customer.ProfileImagePath))
+                                                {
+                                                    <span class="badge bg-info">
+                                                        <i class="bi bi-image"></i> Complete
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-secondary">
+                                                        <i class="bi bi-image"></i> Incomplete
+                                                    </span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="viewCustomerDetails('@customer.Id')" title="View Details">
+                                                        <i class="bi bi-eye"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-outline-info btn-sm" onclick="viewCustomerBookings('@customer.Id')" title="View Bookings">
+                                                        <i class="bi bi-calendar-check"></i>
+                                                    </button>
+                                                    @if (!customer.IsKycVerified)
+                                                    {
+                                                        <button type="button" class="btn btn-outline-warning btn-sm" onclick="viewKYCStatus('@customer.Id')" title="Check KYC">
+                                                            <i class="bi bi-file-earmark-check"></i>
+                                                        </button>
+                                                    }
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <div class="empty-state">
+                                <i class="bi bi-people display-1 text-muted"></i>
+                                <h4 class="mt-3">No Customers Found</h4>
+                                <p class="text-muted">No customers have registered yet.</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Customer Details Modal -->
+<div class="modal fade" id="customerDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-person"></i> Customer Details
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="customerDetailsContent">
+                <!-- Customer details will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Customer Bookings Modal -->
+<div class="modal fade" id="customerBookingsModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-calendar-check"></i> Customer Bookings
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="customerBookingsContent">
+                <!-- Customer bookings will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Search and filter functionality
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const sortBy = document.getElementById('sortBy').value;
+            
+            const rows = document.querySelectorAll('.customer-row');
+            let visibleCount = 0;
+            
+            rows.forEach(row => {
+                const name = row.querySelector('h6').textContent.toLowerCase();
+                const email = row.querySelector('strong').textContent.toLowerCase();
+                const nic = row.querySelector('small')?.textContent.toLowerCase() || '';
+                const kycStatus = row.querySelector('.badge').textContent.toLowerCase();
+                
+                let showRow = true;
+                
+                // Search filter
+                if (searchTerm && !name.includes(searchTerm) && !email.includes(searchTerm) && !nic.includes(searchTerm)) {
+                    showRow = false;
+                }
+                
+                // Status filter
+                if (statusFilter === 'verified' && !kycStatus.includes('verified')) {
+                    showRow = false;
+                } else if (statusFilter === 'pending' && !kycStatus.includes('pending')) {
+                    showRow = false;
+                }
+                
+                row.style.display = showRow ? '' : 'none';
+                if (showRow) visibleCount++;
+            });
+            
+            document.getElementById('customerCount').textContent = `${visibleCount} customers`;
+        }
+        
+        // View customer details
+        function viewCustomerDetails(customerId) {
+            // For now, show a simple alert. In a real implementation, you'd load customer details via AJAX
+            alert(`View details for customer: ${customerId}`);
+        }
+        
+        // View customer bookings
+        function viewCustomerBookings(customerId) {
+            // For now, show a simple alert. In a real implementation, you'd load customer bookings via AJAX
+            alert(`View bookings for customer: ${customerId}`);
+        }
+        
+        // View KYC status
+        function viewKYCStatus(customerId) {
+            // Redirect to KYC management page
+            window.location.href = '/Admin/KYC';
+        }
+        
+        // Refresh customers
+        function refreshCustomers() {
+            location.reload();
+        }
+        
+        // Initialize search on input
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+        document.getElementById('statusFilter').addEventListener('change', applyFilters);
+        document.getElementById('sortBy').addEventListener('change', applyFilters);
+    </script>
+}

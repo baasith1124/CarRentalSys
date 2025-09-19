@@ -1,0 +1,55 @@
+﻿@model CarRentalSystem.Web.ViewModels.Account.RegisterCustomerViewModel
+
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold" id="registerModalLabel">Create Your Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form id="ajaxRegisterForm" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body px-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Full Name</label>
+                        <input asp-for="FullName" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email</label>
+                        <input asp-for="Email" type="email" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Password</label>
+                        <input asp-for="Password" type="password" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Confirm Password</label>
+                        <input asp-for="ConfirmPassword" type="password" class="form-control" />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 mt-2">Register</button>
+                    <div id="registerError" class="text-danger small mt-2"></div>
+
+                    <div class="text-center mt-3">
+                        <small class="text-muted">or</small>
+                    </div>
+
+                    <div class="d-grid mt-3">
+                        <a class="btn btn-outline-danger" asp-controller="Account" asp-action="ExternalLogin" asp-route-provider="Google">
+                            <i class="bi bi-google me-2"></i> Register with Google
+                        </a>
+                    </div>
+                </div>
+            </form>
+
+            <div class="modal-footer border-0 justify-content-center">
+                <small class="text-muted">Already have an account? <a asp-controller="Account" asp-action="Login">Login</a></small>
+            </div>
+        </div>
+    </div>
+</div>
+@* @section Scripts {
+    <script src="~/js/register.js" asp-append-version="true"></script>
+} *@
+

@@ -1,0 +1,358 @@
+@model List<CarRentalSystem.Application.Contracts.Booking.BookingDto>
+
+@{
+    ViewData["Title"] = "My Bookings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="my-bookings">
+    <div class="container py-4">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="display-6 fw-bold text-primary">
+                    <i class="bi bi-calendar-check"></i>
+                    My Bookings
+                </h1>
+                <p class="text-muted">Manage your car rental reservations</p>
+            </div>
+            <div>
+                <a asp-controller="Cars" asp-action="Search" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> New Booking
+                </a>
+            </div>
+        </div>
+
+        <!-- Success/Error Messages -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle me-2"></i>
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["Info"] != null)
+        {
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <i class="bi bi-info-circle me-2"></i>
+                @TempData["Info"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <!-- Filter Tabs -->
+        <ul class="nav nav-tabs mb-4" id="bookingTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab">
+                    <i class="bi bi-list"></i> All (@Model.Count)
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="active-tab" data-bs-toggle="tab" data-bs-target="#active" type="button" role="tab">
+                    <i class="bi bi-car-front"></i> Active (@Model.Count(b => b.BookingStatus == "Confirmed" || b.BookingStatus == "In Progress"))
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="completed-tab" data-bs-toggle="tab" data-bs-target="#completed" type="button" role="tab">
+                    <i class="bi bi-check-circle"></i> Completed (@Model.Count(b => b.BookingStatus == "Completed"))
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="cancelled-tab" data-bs-toggle="tab" data-bs-target="#cancelled" type="button" role="tab">
+                    <i class="bi bi-x-circle"></i> Cancelled (@Model.Count(b => b.BookingStatus == "Cancelled"))
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="bookingTabsContent">
+            <!-- All Bookings -->
+            <div class="tab-pane fade show active" id="all" role="tabpanel">
+                <div class="bookings-grid">
+                    @if (Model.Any())
+                    {
+                        @foreach (var booking in Model)
+                        {
+                            <div class="booking-card">
+                                <div class="booking-header">
+                                    <div class="booking-info">
+                                        <h5 class="booking-car">@booking.CarName</h5>
+                                        <div class="booking-dates">
+                                            <i class="bi bi-calendar-event"></i>
+                                            @booking.PickupDate.ToString("MMM dd, yyyy") - @booking.ReturnDate.ToString("MMM dd, yyyy")
+                                        </div>
+                                        <div class="booking-location">
+                                            <i class="bi bi-geo-alt"></i>
+                                            @booking.PickupLocation
+                                        </div>
+                                    </div>
+                                    <div class="booking-status">
+                                        <span class="badge status-@(booking.BookingStatus.ToLower().Replace(" ", "-"))">
+                                            @booking.BookingStatus
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="booking-details">
+                                    <div class="detail-row">
+                                        <span class="label">Duration:</span>
+                                        <span class="value">@((booking.ReturnDate - booking.PickupDate).Days) days</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="label">Booking ID:</span>
+                                        <span class="value">#@booking.BookingId.ToString().Substring(0, 8).ToUpper()</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="label">Payment Status:</span>
+                                        <span class="value">
+                                            @if (booking.PaymentStatus == "Paid")
+                                            {
+                                                <span class="badge bg-success">Paid</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-warning">Pending</span>
+                                            }
+                                        </span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="label">Total Cost:</span>
+                                        <span class="value amount">$@booking.TotalCost.ToString("N2")</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="label">Support:</span>
+                                        <span class="value">
+                                            <small class="text-muted">Click "View Details" for more information</small>
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="booking-actions">
+                                    <a asp-action="BookingDetails" asp-route-bookingId="@booking.BookingId" class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-eye"></i> View Details
+                                    </a>
+                                    @if (booking.BookingStatus == "Confirmed" && booking.PickupDate > DateTime.Now)
+                                    {
+                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="cancelBooking('@booking.BookingId')">
+                                            <i class="bi bi-x-circle"></i> Cancel
+                                        </button>
+                                    }
+                                    @if (booking.PaymentStatus == "Paid")
+                                    {
+                                        <button type="button" class="btn btn-outline-success btn-sm" onclick="downloadInvoice('@booking.BookingId')">
+                                            <i class="bi bi-download"></i> Invoice
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="empty-state">
+                            <i class="bi bi-calendar-x"></i>
+                            <h5>No Bookings Found</h5>
+                            <p>You haven't made any bookings yet. Start your first car rental journey!</p>
+                            <a asp-controller="Cars" asp-action="Search" class="btn btn-primary">
+                                <i class="bi bi-search"></i> Find Cars
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Active Bookings -->
+            <div class="tab-pane fade" id="active" role="tabpanel">
+                <div class="bookings-grid">
+                    @{
+                        var activeBookings = Model.Where(b => b.BookingStatus == "Confirmed" || b.BookingStatus == "In Progress").ToList();
+                    }
+                    @if (activeBookings.Any())
+                    {
+                        @foreach (var booking in activeBookings)
+                        {
+                            <div class="booking-card active-booking">
+                                <div class="booking-header">
+                                    <div class="booking-info">
+                                        <h5 class="booking-car">@booking.CarName</h5>
+                                        <div class="booking-dates">
+                                            <i class="bi bi-calendar-event"></i>
+                                            @booking.PickupDate.ToString("MMM dd, yyyy") - @booking.ReturnDate.ToString("MMM dd, yyyy")
+                                        </div>
+                                        <div class="booking-location">
+                                            <i class="bi bi-geo-alt"></i>
+                                            @booking.PickupLocation
+                                        </div>
+                                    </div>
+                                    <div class="booking-status">
+                                        <span class="badge bg-success">Active</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="booking-details">
+                                    <div class="detail-row">
+                                        <span class="label">Duration:</span>
+                                        <span class="value">@((booking.ReturnDate - booking.PickupDate).Days) days</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="label">Booking ID:</span>
+                                        <span class="value">#@booking.BookingId.ToString().Substring(0, 8).ToUpper()</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="label">Total Cost:</span>
+                                        <span class="value amount">$@booking.TotalCost.ToString("N2")</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="label">Support:</span>
+                                        <span class="value">
+                                            <small class="text-muted">Click "View Details" for more information</small>
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="booking-actions">
+                                    <a asp-action="BookingDetails" asp-route-bookingId="@booking.BookingId" class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-eye"></i> View Details
+                                    </a>
+                                    @if (booking.PickupDate > DateTime.Now)
+                                    {
+                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="cancelBooking('@booking.BookingId')">
+                                            <i class="bi bi-x-circle"></i> Cancel
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="empty-state">
+                            <i class="bi bi-car-front"></i>
+                            <h5>No Active Bookings</h5>
+                            <p>You don't have any active car rentals at the moment.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Completed Bookings -->
+            <div class="tab-pane fade" id="completed" role="tabpanel">
+                <div class="bookings-grid">
+                    @{
+                        var completedBookings = Model.Where(b => b.BookingStatus == "Completed").ToList();
+                    }
+                    @if (completedBookings.Any())
+                    {
+                        @foreach (var booking in completedBookings)
+                        {
+                            <div class="booking-card completed-booking">
+                                <div class="booking-header">
+                                    <div class="booking-info">
+                                        <h5 class="booking-car">@booking.CarName</h5>
+                                        <div class="booking-dates">
+                                            <i class="bi bi-calendar-event"></i>
+                                            @booking.PickupDate.ToString("MMM dd, yyyy") - @booking.ReturnDate.ToString("MMM dd, yyyy")
+                                        </div>
+                                    </div>
+                                    <div class="booking-status">
+                                        <span class="badge bg-success">Completed</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="booking-details">
+                                    <div class="detail-row">
+                                        <span class="label">Total Cost:</span>
+                                        <span class="value amount">$@booking.TotalCost.ToString("N2")</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="booking-actions">
+                                    <a asp-action="BookingDetails" asp-route-bookingId="@booking.BookingId" class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-eye"></i> View Details
+                                    </a>
+                                    <button type="button" class="btn btn-outline-success btn-sm" onclick="downloadInvoice('@booking.BookingId')">
+                                        <i class="bi bi-download"></i> Invoice
+                                    </button>
+                                    <button type="button" class="btn btn-outline-warning btn-sm" onclick="rateBooking('@booking.BookingId')">
+                                        <i class="bi bi-star"></i> Rate
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="empty-state">
+                            <i class="bi bi-check-circle"></i>
+                            <h5>No Completed Bookings</h5>
+                            <p>Your completed bookings will appear here.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Cancelled Bookings -->
+            <div class="tab-pane fade" id="cancelled" role="tabpanel">
+                <div class="bookings-grid">
+                    @{
+                        var cancelledBookings = Model.Where(b => b.BookingStatus == "Cancelled").ToList();
+                    }
+                    @if (cancelledBookings.Any())
+                    {
+                        @foreach (var booking in cancelledBookings)
+                        {
+                            <div class="booking-card cancelled-booking">
+                                <div class="booking-header">
+                                    <div class="booking-info">
+                                        <h5 class="booking-car">@booking.CarName</h5>
+                                        <div class="booking-dates">
+                                            <i class="bi bi-calendar-event"></i>
+                                            @booking.PickupDate.ToString("MMM dd, yyyy") - @booking.ReturnDate.ToString("MMM dd, yyyy")
+                                        </div>
+                                    </div>
+                                    <div class="booking-status">
+                                        <span class="badge bg-danger">Cancelled</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="booking-details">
+                                    <div class="detail-row">
+                                        <span class="label">Total Cost:</span>
+                                        <span class="value amount">$@booking.TotalCost.ToString("N2")</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="booking-actions">
+                                    <a asp-action="BookingDetails" asp-route-bookingId="@booking.BookingId" class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-eye"></i> View Details
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="empty-state">
+                            <i class="bi bi-x-circle"></i>
+                            <h5>No Cancelled Bookings</h5>
+                            <p>You haven't cancelled any bookings.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/dashboard-bookings.js" asp-append-version="true"></script>
+}

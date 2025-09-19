@@ -1,0 +1,38 @@
+/* Car Card Booking Partial Styles */
+
+.car-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.car-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.car-image-wrapper {
+    overflow: hidden;
+}
+
+.car-card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+.card-img-top {
+    transition: transform 0.3s ease;
+}
+
+.car-features {
+    font-size: 0.875rem;
+}
+
+.owner-info {
+    font-size: 0.75rem;
+}
+
+.estimated-cost {
+    background: #f8f9fa;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border-left: 3px solid #28a745;
+}

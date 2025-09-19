@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CarRental.lk</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/3d-interactive-landing.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body class="auth-body-3d">
+    <!-- 3D Background with Parallax Effects -->
+    <div class="auth-background-3d">
+        <div class="parallax-layer auth-parallax-bg"></div>
+        <div class="parallax-layer auth-white-dots-bg"></div>
+        <div class="auth-pattern-3d"></div>
+    </div>
+    
+    <div class="container-fluid h-100">
+        <div class="row h-100">
+            <!-- Left Side - Enhanced 3D Branding -->
+            <div class="col-lg-6 d-none d-lg-flex auth-branding-3d">
+                <div class="branding-content-3d">
+                    <div class="branding-logo-3d">
+                        <div class="logo-container-3d">
+                            <i class="bi bi-car-front-fill"></i>
+                            <div class="logo-glow-3d"></div>
+                        </div>
+                        <h1 class="branding-title-main">CarRental.lk</h1>
+                    </div>
+                    <h2 class="branding-title-3d">Your Journey Starts Here</h2>
+                    <p class="branding-description-3d">
+                        Experience the freedom of the road with our premium car rental service. 
+                        From city drives to scenic routes, we've got the perfect vehicle for every adventure.
+                    </p>
+                    <div class="branding-features-3d">
+                        <div class="feature-item-3d">
+                            <div class="feature-icon-3d">
+                                <i class="bi bi-shield-check"></i>
+                            </div>
+                            <span>Secure & Reliable</span>
+                        </div>
+                        <div class="feature-item-3d">
+                            <div class="feature-icon-3d">
+                                <i class="bi bi-clock"></i>
+                            </div>
+                            <span>24/7 Support</span>
+                        </div>
+                        <div class="feature-item-3d">
+                            <div class="feature-icon-3d">
+                                <i class="bi bi-geo-alt"></i>
+                            </div>
+                            <span>Multiple Locations</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side - 3D Auth Form -->
+            <div class="col-lg-6 auth-form-container-3d">
+                <div class="auth-wrapper-3d">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

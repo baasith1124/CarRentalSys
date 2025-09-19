@@ -1,0 +1,95 @@
+@{
+    ViewData["Title"] = "Payment Successful";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/payment-success.css" asp-append-version="true" />
+}
+
+<div class="payment-success">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card success-card">
+                    <div class="card-body text-center py-5">
+                        <!-- Success Icon -->
+                        <div class="success-icon mb-4">
+                            <i class="bi bi-check-circle-fill"></i>
+                        </div>
+
+                        <!-- Success Message -->
+                        <h1 class="display-6 fw-bold text-success mb-3">
+                            Payment Successful!
+                        </h1>
+                        
+                        <p class="text-muted mb-4">
+                            Your payment has been processed successfully. You will receive a confirmation email shortly.
+                        </p>
+
+                        <!-- Payment Details -->
+                        <div class="payment-details mb-4">
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <div class="detail-item">
+                                        <small class="text-muted">Payment ID</small>
+                                        <div class="fw-semibold">@ViewBag.PaymentId</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="detail-item">
+                                        <small class="text-muted">Status</small>
+                                        <div class="fw-semibold text-success">
+                                            <i class="bi bi-check-circle"></i> Completed
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Next Steps -->
+                        <div class="next-steps mb-4">
+                            <h6 class="fw-semibold mb-3">What's Next?</h6>
+                            <div class="steps-list">
+                                <div class="step-item">
+                                    <i class="bi bi-envelope text-primary"></i>
+                                    <span>Check your email for booking confirmation</span>
+                                </div>
+                                <div class="step-item">
+                                    <i class="bi bi-calendar-check text-success"></i>
+                                    <span>Arrive at the pickup location on time</span>
+                                </div>
+                                <div class="step-item">
+                                    <i class="bi bi-car-front text-info"></i>
+                                    <span>Enjoy your rental experience</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="action-buttons">
+                            <a asp-controller="Dashboard" asp-action="Bookings" class="btn btn-primary me-3">
+                                <i class="bi bi-calendar-check"></i>
+                                View My Bookings
+                            </a>
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="bi bi-house"></i>
+                                Back to Home
+                            </a>
+                        </div>
+
+                        <!-- Support -->
+                        <div class="support-info mt-4 pt-4 border-top">
+                            <small class="text-muted">
+                                <i class="bi bi-headset"></i>
+                                Need help? Contact our support team at 
+                                <a href="mailto:support@carrental.com" class="text-decoration-none">support@carrental.com</a>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

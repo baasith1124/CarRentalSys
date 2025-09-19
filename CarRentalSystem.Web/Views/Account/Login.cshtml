@@ -1,0 +1,114 @@
+@model CarRentalSystem.Web.ViewModels.Account.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+<!-- 3D Interactive Login Container -->
+<div class="auth-container-3d">
+    <!-- Animated Background Elements -->
+    <div class="auth-particles-container">
+        <div class="auth-particle"></div>
+        <div class="auth-particle"></div>
+        <div class="auth-particle"></div>
+        <div class="auth-particle"></div>
+        <div class="auth-particle"></div>
+    </div>
+    
+    <!-- Floating Car Icons -->
+    <div class="floating-cars-container">
+        <i class="floating-car bi bi-car-front-fill"></i>
+        <i class="floating-car bi bi-truck"></i>
+        <i class="floating-car bi bi-car-front"></i>
+    </div>
+
+    <div class="auth-card-3d">
+        <div class="auth-header-3d">
+            <div class="auth-logo-3d">
+                <div class="logo-glow-effect">
+                    <i class="bi bi-car-front-fill"></i>
+                </div>
+                <h2 class="auth-title-3d">Welcome Back</h2>
+            </div>
+            <p class="auth-subtitle-3d">Sign in to your account to continue your journey</p>
+        </div>
+
+        <form asp-action="Login" method="post" class="auth-form-3d">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger auth-alert-3d" role="alert"></div>
+            
+            <div class="form-group-3d">
+                <label asp-for="Email" class="form-label-3d">
+                    <i class="bi bi-envelope"></i> Email Address
+                </label>
+                <div class="input-container-3d">
+                    <input asp-for="Email" class="form-control-3d" placeholder="Enter your email" />
+                    <div class="input-glow"></div>
+                </div>
+                <span asp-validation-for="Email" class="text-danger-3d"></span>
+            </div>
+
+            <div class="form-group-3d">
+                <label asp-for="Password" class="form-label-3d">
+                    <i class="bi bi-lock"></i> Password
+                </label>
+                <div class="input-container-3d password-input-3d">
+                    <input asp-for="Password" class="form-control-3d" placeholder="Enter your password" />
+                    <button type="button" class="password-toggle-3d" onclick="togglePassword()">
+                        <i class="bi bi-eye" id="passwordToggleIcon"></i>
+                    </button>
+                    <div class="input-glow"></div>
+                </div>
+                <span asp-validation-for="Password" class="text-danger-3d"></span>
+            </div>
+
+            <div class="form-group-3d form-check-3d">
+                <input asp-for="RememberMe" class="form-check-input-3d" />
+                <label asp-for="RememberMe" class="form-check-label-3d">
+                    Remember me
+                </label>
+            </div>
+
+            <button type="submit" class="btn-3d-interactive btn-primary-3d auth-btn-3d">
+                <i class="bi bi-box-arrow-in-right"></i>
+                <span>Sign In</span>
+                <div class="btn-glow-effect"></div>
+            </button>
+
+            <div class="auth-divider-3d">
+                <span>or</span>
+            </div>
+
+            <a asp-action="ExternalLogin" asp-route-provider="Google" class="btn-3d-interactive btn-secondary-3d google-btn-3d">
+                <i class="bi bi-google"></i>
+                <span>Continue with Google</span>
+            </a>
+        </form>
+
+        <div class="auth-footer-3d">
+            <p>Don't have an account? 
+                <a asp-action="Register" class="auth-link-3d">Sign up here</a>
+            </p>
+            <p>
+                <a href="#" class="auth-link-3d">Forgot your password?</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function togglePassword() {
+            const passwordInput = document.querySelector('input[name="Password"]');
+            const toggleIcon = document.getElementById('passwordToggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.className = 'bi bi-eye-slash';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.className = 'bi bi-eye';
+            }
+        }
+    </script>
+}

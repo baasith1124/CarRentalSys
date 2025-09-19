@@ -1,0 +1,598 @@
+﻿@model CarRentalSystem.Web.ViewModels.Bookings.BookingSummaryViewModel
+
+@{
+    ViewData["Title"] = "Booking Summary";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/3d-interactive-landing.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/modern-theme.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/booking-summary.css" asp-append-version="true" />
+}
+
+<!-- 3D Interactive Booking Scene Container -->
+<div class="booking-scene-container">
+    <!-- Parallax Background Layers -->
+    <div class="parallax-layer booking-parallax-bg"></div>
+    <div class="parallax-layer booking-dots-bg"></div>
+    
+    <!-- Animated Dots Container -->
+    <div class="booking-animated-dots-container">
+        <!-- Dynamic dots will be created by JavaScript -->
+    </div>
+    
+    <!-- Interactive Particles -->
+    <div class="booking-particles-3d"></div>
+    
+    <!-- Floating 3D Elements Container -->
+    <div class="booking-floating-3d-container">
+        <!-- Dynamic floating elements will be created by JavaScript -->
+    </div>
+
+    <div class="booking-summary-container">
+        <!-- Enhanced Header Section -->
+        <div class="booking-hero-section">
+            <div class="container-fluid">
+                <div class="booking-hero-content-3d">
+                    <h1 class="booking-hero-title-3d">
+                        <i class="bi bi-clipboard-check-fill booking-hero-icon"></i>
+                        Booking Summary
+                    </h1>
+                    <p class="booking-hero-subtitle-3d">
+                        Review your booking details before proceeding to payment
+                    </p>
+                    <div class="booking-progress-indicator">
+                        <div class="progress-step completed">
+                            <span class="step-number">1</span>
+                            <span class="step-label">Search</span>
+                        </div>
+                        <div class="progress-step completed">
+                            <span class="step-number">2</span>
+                            <span class="step-label">Details</span>
+                        </div>
+                        <div class="progress-step active">
+                            <span class="step-number">3</span>
+                            <span class="step-label">Summary</span>
+                        </div>
+                        <div class="progress-step">
+                            <span class="step-number">4</span>
+                            <span class="step-label">Payment</span>
+                        </div>
+                    </div>
+                    <div class="booking-security-badge">
+                        <i class="bi bi-shield-check"></i>
+                        <div class="badge-content">
+                            <div class="badge-title">Secure Booking</div>
+                            <div class="badge-subtitle">SSL Protected</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <div class="container-fluid py-5 px-4">
+        <div class="row g-4">
+            <!-- Enhanced Car Details Card -->
+            <div class="col-lg-8">
+                <div class="booking-card-3d">
+                    <div class="card-header-3d">
+                        <h5 class="card-title-3d">
+                            <i class="bi bi-car-front-fill"></i>
+                            <span>Vehicle Details</span>
+                        </h5>
+                    </div>
+                    <div class="card-body-3d">
+                        <div class="row g-0">
+                            <!-- Car Image -->
+                            <div class="col-md-4">
+                                <div class="car-image-container-3d">
+                                    <img src="@(!string.IsNullOrEmpty(Model.ImagePath) ? $"/images/cars/{Model.ImagePath}" : "/images/default-car.jpg")"
+                                         class="car-image-3d"
+                                         alt="@Model.CarName @Model.CarModel"
+                                         onerror="this.src='/images/default-car.jpg'" />
+                                    <div class="car-image-glow"></div>
+                                </div>
+                            </div>
+
+                            <!-- Car Info -->
+                            <div class="col-md-8">
+                                <div class="car-info-3d">
+                                    <h4 class="car-name-3d">@Model.CarName @Model.CarModel</h4>
+                                    <div class="car-details-grid-3d">
+                                        <div class="detail-item-3d">
+                                            <i class="bi bi-geo-alt detail-icon-3d"></i>
+                                            <div class="detail-content-3d">
+                                                <span class="detail-label-3d">Pickup</span>
+                                                <span class="detail-value-3d">@Model.PickupLocation</span>
+                                            </div>
+                                        </div>
+                                        <div class="detail-item-3d">
+                                            <i class="bi bi-geo-alt-fill detail-icon-3d"></i>
+                                            <div class="detail-content-3d">
+                                                <span class="detail-label-3d">Drop-off</span>
+                                                <span class="detail-value-3d">@Model.DropLocation</span>
+                                            </div>
+                                        </div>
+                                        <div class="detail-item-3d">
+                                            <i class="bi bi-calendar-event detail-icon-3d"></i>
+                                            <div class="detail-content-3d">
+                                                <span class="detail-label-3d">Pickup Date</span>
+                                                <span class="detail-value-3d">@Model.PickupDate.ToString("MMM dd, yyyy HH:mm")</span>
+                                            </div>
+                                        </div>
+                                        <div class="detail-item-3d">
+                                            <i class="bi bi-calendar-check detail-icon-3d"></i>
+                                            <div class="detail-content-3d">
+                                                <span class="detail-label-3d">Return Date</span>
+                                                <span class="detail-value-3d">@Model.DropDate.ToString("MMM dd, yyyy HH:mm")</span>
+                                            </div>
+                                        </div>
+                                        <div class="detail-item-3d">
+                                            <i class="bi bi-clock detail-icon-3d"></i>
+                                            <div class="detail-content-3d">
+                                                <span class="detail-label-3d">Duration</span>
+                                                <span class="detail-value-3d">@Model.Days day(s)</span>
+                                            </div>
+                                        </div>
+                                        <div class="detail-item-3d">
+                                            <i class="bi bi-currency-dollar detail-icon-3d"></i>
+                                            <div class="detail-content-3d">
+                                                <span class="detail-label-3d">Daily Rate</span>
+                                                <span class="detail-value-3d">$@Model.DailyRate.ToString("N2")</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customer Details Card -->
+                <div class="booking-card-3d">
+                    <div class="card-header-3d">
+                        <h5 class="card-title-3d">
+                            <i class="bi bi-person-check"></i>
+                            <span>Customer Information</span>
+                        </h5>
+                    </div>
+                    <div class="card-body-3d">
+                        <div class="customer-form-3d">
+                            <div class="form-group-3d">
+                                <label class="form-label-3d">Full Name</label>
+                                <input type="text" class="form-control-3d" value="@Model.CustomerName" readonly />
+                            </div>
+                            <div class="form-group-3d">
+                                <label class="form-label-3d">Email Address</label>
+                                <input type="email" class="form-control-3d" value="@Model.CustomerEmail" readonly />
+                            </div>
+                            <div class="form-group-3d">
+                                <label class="form-label-3d">Phone Number</label>
+                                <input type="tel" class="form-control-3d" placeholder="+1 (555) 123-4567" 
+                                       value="@Model.CustomerPhone" />
+                            </div>
+                            <div class="form-group-3d">
+                                <label class="form-label-3d">Driver's License</label>
+                                <input type="text" class="form-control-3d" placeholder="License Number" required />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Driver (Optional) -->
+                <div class="booking-card-3d">
+                    <div class="card-header-3d">
+                        <h5 class="card-title-3d">
+                            <i class="bi bi-person-plus"></i>
+                            <span>Additional Driver (Optional)</span>
+                        </h5>
+                    </div>
+                    <div class="card-body-3d">
+                        <div class="additional-driver-3d">
+                            <div class="form-check-3d">
+                                <input class="form-check-input-3d" type="checkbox" id="addAdditionalDriver" 
+                                       onchange="toggleAdditionalDriver()">
+                                <label class="form-check-label-3d" for="addAdditionalDriver">
+                                    Add an additional driver to this booking
+                                </label>
+                            </div>
+                            <div id="additionalDriverForm" class="additional-driver-form-3d d-none">
+                                <div class="form-group-3d">
+                                    <label class="form-label-3d">Driver Name</label>
+                                    <input type="text" class="form-control-3d" name="AdditionalDriverName" 
+                                           placeholder="Full Name" />
+                                </div>
+                                <div class="form-group-3d">
+                                    <label class="form-label-3d">Driver's License</label>
+                                    <input type="text" class="form-control-3d" name="AdditionalDriverLicense" 
+                                           placeholder="License Number" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+        <!-- Price Summary & Actions -->
+        <div class="col-lg-4">
+            <!-- KYC Status Card -->
+            <div class="booking-card-3d">
+                <div class="card-body-3d text-center">
+                    @if (Model.HasKYC)
+                    {
+                        <div class="kyc-status-verified-3d">
+                            <i class="bi bi-shield-check kyc-icon-3d"></i>
+                            <h5 class="kyc-title-3d">KYC Verified</h5>
+                            <p class="kyc-subtitle-3d">Your identity has been verified. You can proceed with the booking.</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="kyc-status-required-3d">
+                            <i class="bi bi-shield-exclamation kyc-icon-3d"></i>
+                            <h5 class="kyc-title-3d">KYC Required</h5>
+                            <p class="kyc-subtitle-3d">Please upload your KYC documents before proceeding.</p>
+                            <a asp-controller="KYC" asp-action="Upload" class="btn-3d-interactive btn-warning-3d">
+                                <i class="bi bi-upload"></i>
+                                Upload KYC Documents
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Price Breakdown Card -->
+            <div class="booking-card-3d">
+                <div class="card-header-3d">
+                    <h5 class="card-title-3d">
+                        <i class="bi bi-receipt"></i>
+                        <span>Price Breakdown</span>
+                    </h5>
+                </div>
+                <div class="card-body-3d">
+                    <div class="pricing-breakdown-3d">
+                        <div class="pricing-item-3d">
+                            <span class="pricing-label-3d">Daily Rate</span>
+                            <span class="pricing-value-3d">$@Model.DailyRate.ToString("N2")</span>
+                        </div>
+                        <div class="pricing-item-3d">
+                            <span class="pricing-label-3d">Duration</span>
+                            <span class="pricing-value-3d">@Model.Days day(s)</span>
+                        </div>
+                        <div class="pricing-item-3d">
+                            <span class="pricing-label-3d">Subtotal</span>
+                            <span class="pricing-value-3d">$@((Model.DailyRate * Model.Days).ToString("N2"))</span>
+                        </div>
+                        <div class="pricing-item-3d">
+                            <span class="pricing-label-3d">Service Fee</span>
+                            <span class="pricing-value-3d text-success-3d">FREE</span>
+                        </div>
+                        <div class="pricing-item-3d">
+                            <span class="pricing-label-3d">Insurance</span>
+                            <span class="pricing-value-3d text-success-3d">Included</span>
+                        </div>
+                        <div class="pricing-divider"></div>
+                        <div class="total-item-3d">
+                            <span class="pricing-label-3d">Total</span>
+                            <span class="pricing-value-3d text-primary-3d">$@Model.EstimatedCost.ToString("N2")</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons-3d">
+                @if (Model.HasKYC)
+                {
+                    <form method="post" asp-action="ConfirmBooking" asp-controller="Bookings" id="bookingForm">
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" name="CarId" value="@Model.CarId" />
+                        <input type="hidden" name="PickupDate" value="@Model.PickupDate.ToString("o")" />
+                        <input type="hidden" name="DropDate" value="@Model.DropDate.ToString("o")" />
+                        <input type="hidden" name="PickupLocation" value="@Model.PickupLocation" />
+                        <input type="hidden" name="DropLocation" value="@Model.DropLocation" />
+                        <input type="hidden" name="EstimatedCost" value="@Model.EstimatedCost" />
+
+                        <button type="submit" class="btn-3d-interactive btn-primary-3d booking-submit-btn">
+                            <i class="bi bi-credit-card"></i>
+                            Proceed to Payment
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <button type="button" class="btn-3d-interactive btn-secondary-3d" disabled>
+                        <i class="bi bi-lock"></i>
+                        Complete KYC First
+                    </button>
+                }
+                
+                <a href="javascript:history.back()" class="btn-3d-interactive btn-secondary-3d back-to-details-btn">
+                    <i class="bi bi-arrow-left"></i>
+                    Back to Car Details
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+@section Scripts {
+    <script src="~/js/3d-interactive-landing.js" asp-append-version="true"></script>
+    <script>
+        // Enhanced 3D Interactive Booking Summary
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize 3D scene elements
+            initializeBookingScene3D();
+            
+            // Initialize enhanced animations
+            initializeBookingAnimations();
+            
+            // Enhanced form validation
+            setupFormValidation();
+            
+            // Progress indicator animation
+            animateProgressSteps();
+            
+            // Parallax scrolling effect
+            setupParallaxScrolling();
+        });
+        
+        function initializeBookingScene3D() {
+            // Create animated dots
+            createAnimatedDots();
+            
+            // Create floating particles
+            createFloatingParticles();
+            
+            // Create floating 3D elements
+            createFloating3DElements();
+        }
+        
+        function createAnimatedDots() {
+            const container = document.querySelector('.booking-animated-dots-container');
+            if (!container) return;
+            
+            for (let i = 0; i < 20; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'booking-floating-dot';
+                dot.style.left = Math.random() * 100 + '%';
+                dot.style.top = Math.random() * 100 + '%';
+                dot.style.width = Math.random() * 8 + 4 + 'px';
+                dot.style.height = dot.style.width;
+                dot.style.animationDelay = Math.random() * 8 + 's';
+                dot.style.animationDuration = (Math.random() * 4 + 6) + 's';
+                container.appendChild(dot);
+            }
+        }
+        
+        function createFloatingParticles() {
+            const container = document.querySelector('.booking-particles-3d');
+            if (!container) return;
+            
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'booking-particle-3d';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                container.appendChild(particle);
+            }
+        }
+        
+        function createFloating3DElements() {
+            const container = document.querySelector('.booking-floating-3d-container');
+            if (!container) return;
+            
+            for (let i = 0; i < 8; i++) {
+                const element = document.createElement('div');
+                element.className = 'booking-floating-element-3d';
+                element.style.left = Math.random() * 100 + '%';
+                element.style.top = Math.random() * 100 + '%';
+                element.style.width = Math.random() * 60 + 40 + 'px';
+                element.style.height = Math.random() * 60 + 40 + 'px';
+                element.style.animationDelay = Math.random() * 10 + 's';
+                element.style.animationDuration = (Math.random() * 5 + 8) + 's';
+                container.appendChild(element);
+            }
+        }
+        
+        function setupParallaxScrolling() {
+            const parallaxLayers = document.querySelectorAll('.parallax-layer');
+            
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                const rate = scrolled * -0.5;
+                
+                parallaxLayers.forEach((layer, index) => {
+                    const speed = (index + 1) * 0.1;
+                    layer.style.transform = `translateY(${rate * speed}px)`;
+                });
+            });
+        }
+        
+        function initializeBookingAnimations() {
+            // Animate cards on scroll
+            const cards = document.querySelectorAll('.booking-card-3d');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationDelay = '0s';
+                        entry.target.classList.add('animate-in');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            cards.forEach(card => observer.observe(card));
+        }
+        
+        function animateProgressSteps() {
+            const steps = document.querySelectorAll('.progress-step');
+            steps.forEach((step, index) => {
+                setTimeout(() => {
+                    step.style.opacity = '1';
+                    step.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        }
+        
+        function setupFormValidation() {
+            const form = document.getElementById('bookingForm');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    if (!validateBookingForm()) {
+                        e.preventDefault();
+                        return false;
+                    }
+                    
+                    // Show loading state
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Processing...';
+                        submitBtn.disabled = true;
+                    }
+                });
+            }
+        }
+        
+        function validateBookingForm() {
+            const driverLicense = document.querySelector('input[placeholder="License Number"]');
+            
+            if (!driverLicense || !driverLicense.value.trim()) {
+                showValidationError('Please enter your driver\'s license number.', driverLicense);
+                return false;
+            }
+            
+            // Additional driver validation
+            const additionalDriverCheckbox = document.getElementById('addAdditionalDriver');
+            if (additionalDriverCheckbox && additionalDriverCheckbox.checked) {
+                const additionalDriverName = document.querySelector('input[name="AdditionalDriverName"]');
+                const additionalDriverLicense = document.querySelector('input[name="AdditionalDriverLicense"]');
+                
+                if (!additionalDriverName?.value.trim() || !additionalDriverLicense?.value.trim()) {
+                    showValidationError('Please complete all additional driver information.');
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+        
+        function showValidationError(message, element = null) {
+            // Create enhanced error notification
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'validation-error-3d';
+            errorDiv.innerHTML = `
+                <div class="error-content">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span>${message}</span>
+                    <button class="close-error" onclick="this.parentElement.parentElement.remove()">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(errorDiv);
+            
+            // Remove after 5 seconds
+            setTimeout(() => {
+                if (errorDiv.parentElement) {
+                    errorDiv.remove();
+                }
+            }, 5000);
+            
+            // Focus on problematic element
+            if (element) {
+                element.focus();
+                element.style.borderColor = '#FF6B6B';
+                setTimeout(() => {
+                    element.style.borderColor = '';
+                }, 3000);
+            }
+        }
+        
+        function toggleAdditionalDriver() {
+            const checkbox = document.getElementById('addAdditionalDriver');
+            const form = document.getElementById('additionalDriverForm');
+            
+            if (checkbox && form) {
+                if (checkbox.checked) {
+                    form.classList.remove('d-none');
+                    form.style.opacity = '0';
+                    form.style.transform = 'translateY(20px)';
+                    
+                    // Animate in
+                    setTimeout(() => {
+                        form.style.transition = 'all 0.3s ease';
+                        form.style.opacity = '1';
+                        form.style.transform = 'translateY(0)';
+                    }, 10);
+                } else {
+                    // Animate out
+                    form.style.transition = 'all 0.3s ease';
+                    form.style.opacity = '0';
+                    form.style.transform = 'translateY(-20px)';
+                    
+                    setTimeout(() => {
+                        form.classList.add('d-none');
+                        // Clear form fields
+                        form.querySelectorAll('input').forEach(input => input.value = '');
+                    }, 300);
+                }
+            }
+        }
+        
+        // Enhanced CSS for validation errors
+        const style = document.createElement('style');
+        style.textContent = `
+            .validation-error-3d {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, rgba(255, 107, 107, 0.95) 0%, rgba(220, 53, 69, 0.95) 100%);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+                backdrop-filter: blur(10px);
+                z-index: 9999;
+                animation: slideInError 0.3s ease;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+            
+            .error-content {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+            }
+            
+            .close-error {
+                background: none;
+                border: none;
+                color: white;
+                font-size: 1.2rem;
+                cursor: pointer;
+                opacity: 0.8;
+                transition: opacity 0.2s ease;
+            }
+            
+            .close-error:hover {
+                opacity: 1;
+            }
+            
+            @@keyframes slideInError {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+}

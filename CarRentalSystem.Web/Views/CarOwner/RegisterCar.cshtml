@@ -1,0 +1,286 @@
+@model CarRentalSystem.Web.ViewModels.CarOwner.RegisterCarViewModel
+
+@{
+    ViewData["Title"] = "Register New Car";
+    Layout = "~/Views/Shared/_CarOwnerLayout.cshtml";
+}
+
+<div class="register-car">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="page-title">
+                <i class="bi bi-plus-circle"></i>
+                Register New Car
+            </h2>
+            <p class="text-muted">Add your car to start earning from rentals</p>
+        </div>
+        <div>
+            <a asp-action="Cars" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Cars
+            </a>
+        </div>
+    </div>
+
+    <form asp-action="RegisterCar" method="post" enctype="multipart/form-data" class="car-registration-form">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+        
+        <div class="row g-4">
+            <!-- Basic Information -->
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-info-circle"></i> Basic Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="Name" class="form-label">
+                                    <i class="bi bi-car-front"></i> Car Name *
+                                </label>
+                                <input asp-for="Name" class="form-control" placeholder="e.g., Toyota Camry" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label asp-for="Model" class="form-label">
+                                    <i class="bi bi-tag"></i> Model *
+                                </label>
+                                <input asp-for="Model" class="form-control" placeholder="e.g., LE, XLE, Hybrid" />
+                                <span asp-validation-for="Model" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label asp-for="Year" class="form-label">
+                                    <i class="bi bi-calendar"></i> Year
+                                </label>
+                                <input asp-for="Year" class="form-control" placeholder="2020" min="1990" max="2025" />
+                                <span asp-validation-for="Year" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label asp-for="Transmission" class="form-label">
+                                    <i class="bi bi-gear"></i> Transmission
+                                </label>
+                                <select asp-for="Transmission" class="form-select">
+                                    <option value="">Select Transmission</option>
+                                    <option value="Automatic">Automatic</option>
+                                    <option value="Manual">Manual</option>
+                                    <option value="CVT">CVT</option>
+                                </select>
+                                <span asp-validation-for="Transmission" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label asp-for="FuelType" class="form-label">
+                                    <i class="bi bi-fuel-pump"></i> Fuel Type
+                                </label>
+                                <select asp-for="FuelType" class="form-select">
+                                    <option value="">Select Fuel Type</option>
+                                    <option value="Petrol">Petrol</option>
+                                    <option value="Diesel">Diesel</option>
+                                    <option value="Hybrid">Hybrid</option>
+                                    <option value="Electric">Electric</option>
+                                </select>
+                                <span asp-validation-for="FuelType" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-12">
+                                <label asp-for="Description" class="form-label">
+                                    <i class="bi bi-text-paragraph"></i> Description
+                                </label>
+                                <textarea asp-for="Description" class="form-control" rows="3" 
+                                    placeholder="Describe your car, its condition, and any special features..."></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-12">
+                                <label asp-for="Features" class="form-label">
+                                    <i class="bi bi-list-check"></i> Features
+                                </label>
+                                <textarea asp-for="Features" class="form-control" rows="2" 
+                                    placeholder="e.g., Air Conditioning, GPS, Bluetooth, Leather Seats..."></textarea>
+                                <span asp-validation-for="Features" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Availability & Pricing -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-calendar-check"></i> Availability & Pricing
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="AvailableFrom" class="form-label">
+                                    <i class="bi bi-calendar-plus"></i> Available From *
+                                </label>
+                                <input asp-for="AvailableFrom" class="form-control" type="datetime-local" />
+                                <span asp-validation-for="AvailableFrom" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label asp-for="AvailableTo" class="form-label">
+                                    <i class="bi bi-calendar-minus"></i> Available To *
+                                </label>
+                                <input asp-for="AvailableTo" class="form-control" type="datetime-local" />
+                                <span asp-validation-for="AvailableTo" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label asp-for="RatePerDay" class="form-label">
+                                    <i class="bi bi-currency-dollar"></i> Rate Per Day *
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input asp-for="RatePerDay" class="form-control" placeholder="50.00" min="1" max="10000" step="0.01" />
+                                </div>
+                                <span asp-validation-for="RatePerDay" class="text-danger"></span>
+                                <small class="form-text text-muted">Set a competitive daily rate for your car</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Images & Documents -->
+            <div class="col-lg-4">
+                <!-- Car Image -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-image"></i> Car Image
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="image-upload-area">
+                            <input asp-for="CarImage" type="file" class="form-control" accept="image/*" />
+                            <span asp-validation-for="CarImage" class="text-danger"></span>
+                            
+                            <div class="image-preview mt-3" id="carImagePreview" style="display: none;">
+                                <img src="" alt="Car Preview" class="img-fluid rounded" style="max-height: 200px;">
+                            </div>
+                            
+                            <div class="upload-hint mt-2">
+                                <small class="text-muted">
+                                    <i class="bi bi-info-circle"></i>
+                                    Upload a clear photo of your car (JPG, PNG, max 5MB)
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documents -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-file-earmark"></i> Documents
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="document-upload-area">
+                            <input asp-for="Documents" type="file" class="form-control" multiple accept=".pdf,.jpg,.jpeg,.png" />
+                            <span asp-validation-for="Documents" class="text-danger"></span>
+                            
+                            <div class="documents-preview mt-3" id="documentsPreview"></div>
+                            
+                            <div class="upload-hint mt-2">
+                                <small class="text-muted">
+                                    <i class="bi bi-info-circle"></i>
+                                    Upload registration, insurance, and other relevant documents
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="card mt-4">
+                    <div class="card-body text-center">
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <i class="bi bi-check-circle"></i>
+                            Register Car
+                        </button>
+                        <small class="text-muted d-block mt-2">
+                            Your car will be reviewed by our admin team before going live
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        // Initialize form functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default dates
+            const now = new Date();
+            const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+            const nextMonth = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+            
+            const fromInput = document.querySelector('input[name="AvailableFrom"]');
+            const toInput = document.querySelector('input[name="AvailableTo"]');
+            
+            if (fromInput && !fromInput.value) {
+                fromInput.value = tomorrow.toISOString().slice(0, 16);
+            }
+            
+            if (toInput && !toInput.value) {
+                toInput.value = nextMonth.toISOString().slice(0, 16);
+            }
+            
+            // Image preview
+            const carImageInput = document.querySelector('input[name="CarImage"]');
+            if (carImageInput) {
+                carImageInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const preview = document.getElementById('carImagePreview');
+                            const img = preview.querySelector('img');
+                            img.src = e.target.result;
+                            preview.style.display = 'block';
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+            
+            // Document preview
+            const documentsInput = document.querySelector('input[name="Documents"]');
+            if (documentsInput) {
+                documentsInput.addEventListener('change', function(e) {
+                    const files = e.target.files;
+                    const preview = document.getElementById('documentsPreview');
+                    preview.innerHTML = '';
+                    
+                    Array.from(files).forEach((file, index) => {
+                        const fileItem = document.createElement('div');
+                        fileItem.className = 'file-preview-item mb-2 p-2 border rounded';
+                        fileItem.innerHTML = `
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-file-earmark me-2"></i>
+                                <div class="flex-grow-1">
+                                    <small class="fw-semibold">${file.name}</small>
+                                    <br>
+                                    <small class="text-muted">${(file.size / 1024 / 1024).toFixed(2)} MB</small>
+                                </div>
+                            </div>
+                        `;
+                        preview.appendChild(fileItem);
+                    });
+                });
+            }
+        });
+    </script>
+}

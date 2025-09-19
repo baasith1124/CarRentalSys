@@ -1,0 +1,838 @@
+/* 3D Enhanced User Dashboard Styles */
+
+/* 3D Interactive Dashboard Scene Container */
+.dashboard-3d-container {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    transform-style: preserve-3d;
+    perspective: 2000px;
+    background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 50%, #2A2A2A 100%);
+    overflow: hidden;
+}
+
+/* Dashboard Parallax Background Layers */
+.dashboard-parallax-bg {
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(35, 35, 255, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(240, 147, 251, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(79, 172, 254, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 60% 20%, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
+    z-index: 1;
+}
+
+.dashboard-dots-bg {
+    background: 
+        radial-gradient(circle at 10% 20%, rgba(35, 35, 255, 0.1) 0%, transparent 30%),
+        radial-gradient(circle at 90% 80%, rgba(240, 147, 251, 0.1) 0%, transparent 30%);
+    z-index: 2;
+}
+
+/* Animated Dots Container */
+.dashboard-animated-dots-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    pointer-events: none;
+}
+
+.dashboard-floating-dot {
+    position: absolute;
+    background: linear-gradient(135deg, #2323FF 0%, #4A4AFF 100%);
+    border-radius: 50%;
+    opacity: 0.6;
+    animation: dashboardDotsFloat 8s ease-in-out infinite;
+}
+
+/* Interactive Particles */
+.dashboard-particles-3d {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 4;
+    pointer-events: none;
+}
+
+.dashboard-particle-3d {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #2323FF;
+    border-radius: 50%;
+    opacity: 0.7;
+    animation: dashboardParticleFloat 6s ease-in-out infinite;
+}
+
+/* Floating 3D Elements Container */
+.dashboard-floating-3d-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.dashboard-floating-element-3d {
+    position: absolute;
+    background: linear-gradient(135deg, rgba(35, 35, 255, 0.1) 0%, rgba(35, 35, 255, 0.05) 100%);
+    border: 1px solid rgba(35, 35, 255, 0.2);
+    border-radius: 8px;
+    animation: dashboardFloat3d 10s ease-in-out infinite;
+}
+
+/* Enhanced Welcome Header */
+.welcome-header {
+    position: relative;
+    z-index: 10;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(26, 26, 26, 0.8) 100%);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 2px solid rgba(35, 35, 255, 0.2);
+    margin-bottom: 2rem;
+    animation: welcomeHeaderEntry 1s ease-out;
+}
+
+.welcome-header h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #FFFFFF 0%, #2323FF 50%, #4A4AFF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    animation: welcomeGradientShift 3s ease-in-out infinite;
+}
+
+.welcome-header .pulse-icon {
+    display: inline-block;
+    margin-right: 1rem;
+    color: #2323FF;
+    animation: welcomeIconFloat 2s ease-in-out infinite;
+}
+
+.welcome-header p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
+    animation: welcomeSubtitleGlow 2s ease-in-out infinite;
+}
+
+/* Enhanced Stats Cards */
+.stats-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(35, 35, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transform-style: preserve-3d;
+    transition: all 0.3s ease;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.stats-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: statsCardShimmer 3s ease-in-out infinite;
+}
+
+.stats-card:hover {
+    transform: translateY(-10px) rotateX(5deg);
+    box-shadow: 
+        0 30px 60px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(35, 35, 255, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.stats-card.bookings {
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+.stats-card.active {
+    border-color: rgba(35, 35, 255, 0.3);
+}
+
+.stats-card.spent {
+    border-color: rgba(245, 158, 11, 0.3);
+}
+
+.stats-card.savings {
+    border-color: rgba(236, 72, 153, 0.3);
+}
+
+.stats-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 2;
+}
+
+.stats-card.bookings .stats-icon {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #FFFFFF;
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+}
+
+.stats-card.active .stats-icon {
+    background: linear-gradient(135deg, #2323FF 0%, #1a1aFF 100%);
+    color: #FFFFFF;
+    box-shadow: 0 8px 25px rgba(35, 35, 255, 0.3);
+}
+
+.stats-card.spent .stats-icon {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #FFFFFF;
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+}
+
+.stats-card.savings .stats-icon {
+    background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+    color: #FFFFFF;
+    box-shadow: 0 8px 25px rgba(236, 72, 153, 0.3);
+}
+
+.stats-icon i {
+    font-size: 1.8rem;
+    animation: statsIconPulse 2s ease-in-out infinite;
+}
+
+.stats-content {
+    position: relative;
+    z-index: 2;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #FFFFFF;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.stats-content p {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+}
+
+.stats-content small {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+}
+
+/* Enhanced Quick Actions */
+.quick-actions-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(35, 35, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transform-style: preserve-3d;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.quick-actions-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: quickActionsShimmer 3s ease-in-out infinite;
+}
+
+.quick-actions-card:hover {
+    transform: translateY(-5px) rotateX(2deg);
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(35, 35, 255, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.gradient-header {
+    background: linear-gradient(135deg, rgba(35, 35, 255, 0.2) 0%, rgba(35, 35, 255, 0.1) 100%);
+    border-bottom: 2px solid rgba(35, 35, 255, 0.2);
+    border-radius: 20px 20px 0 0;
+    padding: 1.5rem 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+.gradient-header .card-title {
+    color: #FFFFFF;
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.gradient-header .pulse-icon {
+    color: #2323FF;
+    font-size: 1.5rem;
+    animation: quickActionsIconPulse 2s ease-in-out infinite;
+}
+
+.quick-action-btn {
+    display: block;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.quick-action-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.quick-action-btn:hover::before {
+    left: 100%;
+}
+
+.quick-action-btn:hover {
+    transform: translateY(-5px);
+    border-color: rgba(35, 35, 255, 0.3);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+    color: inherit;
+}
+
+.quick-action-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    position: relative;
+    font-size: 1.5rem;
+    color: #FFFFFF;
+}
+
+.quick-action-btn .search-icon {
+    background: linear-gradient(135deg, #2323FF 0%, #1a1aFF 100%);
+    box-shadow: 0 8px 25px rgba(35, 35, 255, 0.3);
+}
+
+.quick-action-btn .bookings-icon {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+}
+
+.quick-action-btn .profile-icon {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+}
+
+.quick-action-btn .kyc-icon {
+    background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+    box-shadow: 0 8px 25px rgba(236, 72, 153, 0.3);
+}
+
+.notification-dot {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ef4444;
+    color: #FFFFFF;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    animation: notificationPulse 2s ease-in-out infinite;
+}
+
+.status-indicator {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid #FFFFFF;
+}
+
+.status-indicator.success {
+    background: #10b981;
+    animation: statusIndicatorPulse 2s ease-in-out infinite;
+}
+
+.status-indicator.warning {
+    background: #f59e0b;
+    animation: statusIndicatorPulse 2s ease-in-out infinite;
+}
+
+.quick-action-content h6 {
+    color: #FFFFFF;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.quick-action-content small {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+}
+
+/* Enhanced Recent Bookings */
+.bookings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.booking-item {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 1.5rem;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.booking-item:hover {
+    transform: translateY(-3px);
+    border-color: rgba(35, 35, 255, 0.3);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.booking-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.booking-car {
+    color: #FFFFFF;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.booking-status {
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    border-radius: 8px;
+}
+
+.booking-details {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+}
+
+.booking-amount {
+    text-align: right;
+}
+
+.amount {
+    color: #FFFFFF;
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.payment-status .badge {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 8px;
+}
+
+.booking-actions .btn {
+    margin-top: 0.75rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.booking-actions .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(35, 35, 255, 0.3);
+}
+
+/* Enhanced Profile Card */
+.profile-card-interactive {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(35, 35, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transform-style: preserve-3d;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-card-interactive::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: profileCardShimmer 3s ease-in-out infinite;
+}
+
+.profile-card-interactive:hover {
+    transform: translateY(-5px) rotateX(2deg);
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(35, 35, 255, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.profile-score .badge {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #FFFFFF;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.profile-avatar {
+    position: relative;
+    display: inline-block;
+}
+
+.interactive-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid rgba(35, 35, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.interactive-avatar:hover {
+    transform: scale(1.1);
+    border-color: #2323FF;
+    box-shadow: 0 8px 25px rgba(35, 35, 255, 0.3);
+}
+
+.profile-placeholder {
+    background: linear-gradient(135deg, #2323FF 0%, #1a1aFF 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+    font-size: 2rem;
+    position: relative;
+}
+
+.upload-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 50%;
+}
+
+.profile-placeholder:hover .upload-overlay {
+    opacity: 1;
+}
+
+.online-indicator {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 16px;
+    height: 16px;
+    background: #10b981;
+    border: 2px solid #FFFFFF;
+    border-radius: 50%;
+    animation: onlineIndicatorPulse 2s ease-in-out infinite;
+}
+
+.profile-name {
+    color: #FFFFFF;
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.profile-email {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+}
+
+.detail-badge {
+    background: rgba(35, 35, 255, 0.1);
+    border: 1px solid rgba(35, 35, 255, 0.2);
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.5rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.detail-badge i {
+    color: #2323FF;
+}
+
+.profile-actions .btn {
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.profile-actions .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(35, 35, 255, 0.3);
+}
+
+/* Enhanced KYC Status */
+.kyc-status {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.status-item:hover {
+    background: rgba(35, 35, 255, 0.08);
+    transform: translateX(5px);
+    border-color: rgba(35, 35, 255, 0.2);
+}
+
+.status-item.completed .status-icon {
+    color: #10b981;
+    animation: statusIconPulse 2s ease-in-out infinite;
+}
+
+.status-item.pending .status-icon {
+    color: #f59e0b;
+    animation: statusIconPulse 2s ease-in-out infinite;
+}
+
+.status-icon {
+    font-size: 1.5rem;
+    min-width: 24px;
+}
+
+.status-title {
+    color: #FFFFFF;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+}
+
+.status-date {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+}
+
+.kyc-actions .btn {
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    animation: kycButtonPulse 2s ease-in-out infinite;
+}
+
+.kyc-actions .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+}
+
+/* Animations */
+@keyframes dashboardDotsFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+@keyframes dashboardDotsScale {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+@keyframes dashboardDotFloat {
+    0%, 100% { transform: translateY(0) translateX(0); }
+    25% { transform: translateY(-15px) translateX(10px); }
+    50% { transform: translateY(-30px) translateX(-5px); }
+    75% { transform: translateY(-15px) translateX(-10px); }
+}
+
+@keyframes dashboardParticleFloat {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.7; }
+    50% { transform: translateY(-30px) scale(1.5); opacity: 1; }
+}
+
+@keyframes dashboardFloat3d {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+@keyframes welcomeHeaderEntry {
+    0% { opacity: 0; transform: translateY(50px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes welcomeGradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+@keyframes welcomeIconFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes welcomeSubtitleGlow {
+    0%, 100% { text-shadow: 0 0 5px rgba(35, 35, 255, 0.3); }
+    50% { text-shadow: 0 0 20px rgba(35, 35, 255, 0.6); }
+}
+
+@keyframes statsCardShimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+@keyframes statsIconPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+@keyframes quickActionsShimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+@keyframes quickActionsIconPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+@keyframes notificationPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+@keyframes statusIndicatorPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+@keyframes profileCardShimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+@keyframes onlineIndicatorPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+@keyframes kycButtonPulse {
+    0%, 100% { box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3); }
+    50% { box-shadow: 0 8px 25px rgba(245, 158, 11, 0.5); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .welcome-header h1 {
+        font-size: 2rem;
+    }
+    
+    .welcome-header p {
+        font-size: 1rem;
+    }
+    
+    .stats-card {
+        padding: 1.5rem;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+    }
+    
+    .quick-action-btn {
+        padding: 1rem;
+    }
+    
+    .booking-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .booking-amount {
+        text-align: left;
+        width: 100%;
+    }
+}

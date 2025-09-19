@@ -1,0 +1,422 @@
+@model List<CarRentalSystem.Application.Contracts.KYC.KYCUploadDto>
+
+@{
+    ViewData["Title"] = "KYC Review";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="kyc-management">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="page-title">
+                <i class="bi bi-file-earmark-check"></i>
+                KYC Document Review
+            </h2>
+            <p class="text-muted">Review and approve customer KYC documents</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-outline-primary" onclick="refreshPage()">
+                <i class="bi bi-arrow-clockwise"></i> Refresh
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats Summary -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="stats-summary total">
+                <div class="stats-icon">
+                    <i class="bi bi-file-earmark-text"></i>
+                </div>
+                <div class="stats-info">
+                    <h4>@Model.Count</h4>
+                    <p>Total KYC</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-summary pending">
+                <div class="stats-icon">
+                    <i class="bi bi-clock"></i>
+                </div>
+                <div class="stats-info">
+                    <h4>@Model.Count(k => k.Status == "Pending")</h4>
+                    <p>Pending Review</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-summary approved">
+                <div class="stats-icon">
+                    <i class="bi bi-check-circle"></i>
+                </div>
+                <div class="stats-info">
+                    <h4>@Model.Count(k => k.Status == "Approved")</h4>
+                    <p>Approved</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-summary rejected">
+                <div class="stats-icon">
+                    <i class="bi bi-x-circle"></i>
+                </div>
+                <div class="stats-info">
+                    <h4>@Model.Count(k => k.Status == "Rejected")</h4>
+                    <p>Rejected</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="searchInput" class="form-label">Search KYC</label>
+                        <input type="text" id="searchInput" class="form-control" placeholder="Search by customer name or email...">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="statusFilter" class="form-label">Status</label>
+                        <select id="statusFilter" class="form-select">
+                            <option value="">All Statuses</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Approved">Approved</option>
+                            <option value="Rejected">Rejected</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="documentTypeFilter" class="form-label">Document Type</label>
+                        <select id="documentTypeFilter" class="form-select">
+                            <option value="">All Types</option>
+                            <option value="National ID">National ID</option>
+                            <option value="Passport">Passport</option>
+                            <option value="Driver License">Driver License</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="form-label">&nbsp;</label>
+                        <button class="btn btn-primary w-100" onclick="applyFilters()">
+                            <i class="bi bi-funnel"></i> Filter
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KYC Documents List -->
+    <div class="card">
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover" id="kycTable">
+                        <thead>
+                            <tr>
+                                <th>Customer Details</th>
+                                <th>Document Information</th>
+                                <th>Upload Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var kyc in Model)
+                            {
+                                <tr data-kyc-id="@kyc.Id">
+                                    <td>
+                                        <div class="customer-info">
+                                            <div class="customer-name">
+                                                <strong>@kyc.UserName</strong>
+                                            </div>
+                                            <small class="text-muted">@kyc.UserEmail</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="document-info">
+                                            <div class="document-type">
+                                                <strong>@kyc.DocumentType</strong>
+                                            </div>
+                                            @if (!string.IsNullOrEmpty(kyc.FilePath))
+                                            {
+                                                <div class="document-preview mt-2">
+                                                    <a href="/Admin/KYC/View/@kyc.Id" target="_blank" class="btn btn-outline-info btn-sm" title="View Document">
+                                                        <i class="bi bi-eye"></i> View Document
+                                                    </a>
+                                                </div>
+                                            }
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="upload-info">
+                                            <div class="upload-date">
+                                                <strong>@kyc.UploadedAt.ToString("MMM dd, yyyy")</strong>
+                                            </div>
+                                            <small class="text-muted">@kyc.UploadedAt.ToString("HH:mm")</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @{
+                                            var statusClass = kyc.Status switch
+                                            {
+                                                "Pending" => "warning",
+                                                "Approved" => "success",
+                                                "Rejected" => "danger",
+                                                _ => "secondary"
+                                            };
+                                        }
+                                        <span class="badge bg-@statusClass">@kyc.Status</span>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            @if (kyc.Status == "Pending")
+                                            {
+                                                <form asp-action="ApproveKYC" asp-route-kycId="@kyc.Id" method="post" class="d-inline">
+                                                    <button type="submit" class="btn btn-success btn-sm" title="Approve">
+                                                        <i class="bi bi-check"></i>
+                                                    </button>
+                                                </form>
+                                                <form asp-action="RejectKYC" asp-route-kycId="@kyc.Id" method="post" class="d-inline">
+                                                    <button type="submit" class="btn btn-danger btn-sm" title="Reject">
+                                                        <i class="bi bi-x"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="viewKYCDetails('@kyc.Id')" title="View Details">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-file-earmark-check text-muted" style="font-size: 3rem;"></i>
+                    <h5 class="mt-3">No KYC Documents Found</h5>
+                    <p class="text-muted">No KYC documents have been uploaded yet</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- KYC Details Modal -->
+<div class="modal fade" id="kycDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-file-earmark-check"></i> KYC Document Details
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="kycDetailsContent">
+                <!-- KYC details will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Document Preview Modal -->
+<div class="modal fade" id="documentModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-file-earmark"></i> Document Preview
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="documentContent">
+                <!-- Document will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function refreshPage() {
+            location.reload();
+        }
+
+        function viewKYCDetails(kycId) {
+            // Load KYC details via AJAX
+            fetch(`/Admin/KYC/Details/${kycId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.html) {
+                        document.getElementById('kycDetailsContent').innerHTML = data.html;
+                        new bootstrap.Modal(document.getElementById('kycDetailsModal')).show();
+                    } else {
+                        console.error('Error loading KYC details:', data.error);
+                        alert('Error loading KYC details');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading KYC details:', error);
+                    alert('Error loading KYC details');
+                });
+        }
+
+        function viewDocument(kycId) {
+            // Open document in new tab
+            window.open(`/Admin/KYC/View/${kycId}`, '_blank');
+        }
+
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const documentTypeFilter = document.getElementById('documentTypeFilter').value;
+            
+            const rows = document.querySelectorAll('#kycTable tbody tr');
+            
+            rows.forEach(row => {
+                const customerName = row.querySelector('.customer-name strong').textContent.toLowerCase();
+                const customerEmail = row.querySelector('.customer-info small').textContent.toLowerCase();
+                const status = row.querySelector('.badge').textContent;
+                const documentType = row.querySelector('.document-type strong').textContent;
+                
+                let showRow = true;
+                
+                // Search filter
+                if (searchTerm && !customerName.includes(searchTerm) && !customerEmail.includes(searchTerm)) {
+                    showRow = false;
+                }
+                
+                // Status filter
+                if (statusFilter && status !== statusFilter) {
+                    showRow = false;
+                }
+                
+                // Document type filter
+                if (documentTypeFilter && documentType !== documentTypeFilter) {
+                    showRow = false;
+                }
+                
+                row.style.display = showRow ? '' : 'none';
+            });
+        }
+
+        // Initialize search functionality
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+        document.getElementById('statusFilter').addEventListener('change', applyFilters);
+        document.getElementById('documentTypeFilter').addEventListener('change', applyFilters);
+    </script>
+}
+
+@section Styles {
+    <style>
+        .customer-info {
+            min-width: 150px;
+        }
+
+        .customer-name {
+            margin-bottom: 4px;
+        }
+
+        .document-info {
+            min-width: 200px;
+        }
+
+        .document-type {
+            margin-bottom: 4px;
+        }
+
+        .document-preview {
+            margin-top: 8px;
+        }
+
+        .upload-info {
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .upload-date {
+            margin-bottom: 4px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .stats-summary {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stats-summary.total .stats-icon {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .stats-summary.pending .stats-icon {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+
+        .stats-summary.approved .stats-icon {
+            background-color: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .stats-summary.rejected .stats-icon {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+
+        .stats-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stats-info h4 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .stats-info p {
+            margin: 0;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .page-title {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .header-actions .btn {
+            border-radius: 6px;
+        }
+    </style>
+}

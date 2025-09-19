@@ -1,0 +1,421 @@
+﻿@model List<CarRentalSystem.Web.ViewModels.Car.CarViewModel>
+
+@{
+    ViewData["Title"] = "Car Rental - 3D Interactive Experience";
+}
+
+<!-- 3D Interactive Scene Container -->
+<div class="scene-container">
+    <!-- Parallax Background Layers -->
+    <div class="parallax-layer parallax-bg"></div>
+    <div class="parallax-layer white-dots-bg"></div>
+    
+    <!-- Animated Dots Container -->
+    <div class="animated-dots-container">
+        <!-- Dynamic dots will be created by JavaScript -->
+    </div>
+    
+    <!-- Interactive Particles -->
+    <div class="particles-3d"></div>
+    
+    <!-- Car Particles Container -->
+    <div class="car-particles-container">
+        <i class="car-particle bi bi-car-front-fill"></i>
+        <i class="car-particle bi bi-truck"></i>
+        <i class="car-particle bi bi-car-front"></i>
+        <i class="car-particle bi bi-truck-front"></i>
+        <i class="car-particle bi bi-car-front-fill"></i>
+        <i class="car-particle bi bi-truck"></i>
+    </div>
+    
+    <!-- Floating 3D Elements Container -->
+    <div class="floating-3d-container">
+        <!-- Dynamic floating elements will be created by JavaScript -->
+    </div>
+
+    <!-- Hero Section with 3D Effects -->
+    <section class="hero-3d">
+        <div class="container">
+            <div class="row align-items-center min-vh-100">
+                <div class="col-lg-6">
+                    <div class="hero-content-3d scroll-reveal-3d">
+                        <h1 class="hero-title-3d">
+                            Drive Your Dreams
+                        </h1>
+                        <p class="hero-subtitle-3d">
+                            Experience the Future of Car Rental
+                        </p>
+                        <p class="hero-description-3d">
+                            Immerse yourself in our revolutionary 3D interactive platform. 
+                            Discover luxury vehicles with cutting-edge technology, seamless booking, 
+                            and unparalleled service in a completely immersive environment.
+                        </p>
+                        
+                        <!-- 3D Interactive Action Buttons -->
+                        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-start mt-5">
+                            <a href="#cars" class="btn-3d-interactive btn-primary-3d">
+                                <i class="bi bi-car-front me-2"></i>
+                                Explore 3D Fleet
+                            </a>
+                            <a href="#how-it-works" class="btn-3d-interactive btn-secondary-3d">
+                                <i class="bi bi-play-circle me-2"></i>
+                                How It Works
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="hero-car-container scroll-reveal-3d">
+                        <div class="hero-car-3d">
+                            <div class="car-showcase">
+                                <img src="~/images/hero-car.png" 
+                                     alt="Premium Car" 
+                                     class="hero-car-image"
+                                     loading="lazy" />
+                                <div class="car-glow-effect"></div>
+                                <div class="car-reflection"></div>
+                            </div>
+                            <div class="car-features-3d">
+                                <div class="feature-badge">
+                                    <i class="bi bi-shield-check"></i>
+                                    <span>Fully Insured</span>
+                                </div>
+                                <div class="feature-badge">
+                                    <i class="bi bi-fuel-pump"></i>
+                                    <span>Full Tank</span>
+                                </div>
+                                <div class="feature-badge">
+                                    <i class="bi bi-headset"></i>
+                                    <span>24/7 Support</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advanced 3D Search Form -->
+            <div class="search-form-3d scroll-reveal-3d">
+                <form method="post" asp-controller="Cars" asp-action="Search">
+                    @Html.AntiForgeryToken()
+                    <div class="row g-4 align-items-end">
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label text-light fw-semibold">
+                                <i class="bi bi-geo-alt me-2"></i>Pickup Location
+                            </label>
+                            <input type="text" name="PickupLocation" class="form-control form-control-3d" placeholder="Enter pickup location..." required />
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <label class="form-label text-light fw-semibold">
+                                <i class="bi bi-geo-alt-fill me-2"></i>Drop Location
+                            </label>
+                            <input type="text" name="DropLocation" class="form-control form-control-3d" placeholder="Enter drop location..." required />
+                        </div>
+                        <div class="col-lg-2 col-md-6">
+                            <label class="form-label text-light fw-semibold">
+                                <i class="bi bi-calendar-event me-2"></i>Pickup Date
+                            </label>
+                            <input type="datetime-local" name="PickupDate" class="form-control form-control-3d" required />
+                        </div>
+                        <div class="col-lg-2 col-md-6">
+                            <label class="form-label text-light fw-semibold">
+                                <i class="bi bi-calendar-check me-2"></i>Drop Date
+                            </label>
+                            <input type="datetime-local" name="DropDate" class="form-control form-control-3d" required />
+                        </div>
+                        <div class="col-lg-2 col-md-12">
+                            <button type="submit" class="btn-3d-interactive btn-primary-3d w-100">
+                                <i class="bi bi-search me-2"></i>Search
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3D Statistics Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="stats-3d-container scroll-reveal-3d">
+                <div class="stat-item-3d">
+                    <div class="stat-number-3d">500+</div>
+                    <div class="stat-label-3d">
+                        <i class="bi bi-people-fill me-2"></i>Happy Customers
+                    </div>
+                </div>
+                <div class="stat-item-3d">
+                    <div class="stat-number-3d">50+</div>
+                    <div class="stat-label-3d">
+                        <i class="bi bi-car-front-fill me-2"></i>Premium Cars
+                    </div>
+                </div>
+                <div class="stat-item-3d">
+                    <div class="stat-number-3d">15+</div>
+                    <div class="stat-label-3d">
+                        <i class="bi bi-geo-alt-fill me-2"></i>Cities Covered
+                    </div>
+                </div>
+                <div class="stat-item-3d">
+                    <div class="stat-number-3d">24/7</div>
+                    <div class="stat-label-3d">
+                        <i class="bi bi-headset me-2"></i>Customer Support
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works-3d" id="how-it-works">
+        <div class="container">
+            <div class="text-center mb-5 scroll-reveal-3d">
+                <h2 class="hero-subtitle-3d">How It Works</h2>
+                <p class="hero-description-3d">
+                    Get on the road in just 4 simple steps with our streamlined rental process
+                </p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6 scroll-reveal-3d">
+                    <div class="step-3d">
+                        <div class="step-number">
+                            <span>1</span>
+                        </div>
+                        <div class="step-icon">
+                            <i class="bi bi-search"></i>
+                        </div>
+                        <h4 class="step-title">Search & Browse</h4>
+                        <p class="step-description">
+                            Browse our extensive fleet of premium vehicles and find the perfect car for your needs using our advanced search filters.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 scroll-reveal-3d">
+                    <div class="step-3d">
+                        <div class="step-number">
+                            <span>2</span>
+                        </div>
+                        <div class="step-icon">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+                        <h4 class="step-title">Select & Book</h4>
+                        <p class="step-description">
+                            Choose your pickup and drop-off dates, select additional services, and complete your booking with our secure payment system.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 scroll-reveal-3d">
+                    <div class="step-3d">
+                        <div class="step-number">
+                            <span>3</span>
+                        </div>
+                        <div class="step-icon">
+                            <i class="bi bi-credit-card"></i>
+                        </div>
+                        <h4 class="step-title">Pay & Confirm</h4>
+                        <p class="step-description">
+                            Make secure payment using your preferred method and receive instant confirmation with all booking details.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 scroll-reveal-3d">
+                    <div class="step-3d">
+                        <div class="step-number">
+                            <span>4</span>
+                        </div>
+                        <div class="step-icon">
+                            <i class="bi bi-car-front"></i>
+                        </div>
+                        <h4 class="step-title">Pickup & Drive</h4>
+                        <p class="step-description">
+                            Collect your vehicle from the designated location and enjoy your journey with full insurance coverage and 24/7 support.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Available Cars Section with Enhanced 3D Effects -->
+    <section class="car-section-enhanced" id="cars">
+        <div class="container">
+            <div class="text-center mb-5 scroll-reveal-3d">
+                <h2 class="hero-subtitle-3d">Our Premium Fleet</h2>
+                <p class="hero-description-3d">
+                    Choose from our collection of luxury and premium vehicles with enhanced 3D experience
+                </p>
+            </div>
+
+            @if (Model != null && Model.Any())
+            {
+                <div class="row g-4">
+                    @foreach (var car in Model)
+                    {
+                        <div class="col-lg-4 col-md-6 scroll-reveal-3d">
+                            <partial name="_CarCardPartial" model="car" />
+                        </div>
+                    }
+                </div>
+                
+                <!-- Enhanced View All Cars Button -->
+                <div class="text-center mt-5 scroll-reveal-3d">
+                    <a href="@Url.Action("Index", "Cars")" class="btn-3d-interactive btn-primary-3d btn-lg">
+                        <i class="bi bi-car-front-fill me-2"></i>
+                        <span>View All Vehicles</span>
+                        <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                    <p class="text-muted mt-3">
+                        <i class="bi bi-shield-check me-2"></i>
+                        All vehicles are fully insured and regularly maintained
+                    </p>
+                </div>
+            }
+            else
+            {
+                <div class="text-center scroll-reveal-3d">
+                    <div class="py-5">
+                        <div class="empty-state-container">
+                            <div class="empty-state-icon">
+                                <i class="bi bi-car-front display-1 mb-4"></i>
+                            </div>
+                            <h4 class="text-light mb-3">No Cars Available</h4>
+                            <p class="text-muted mb-4">We're currently updating our fleet with the latest premium vehicles. Please check back soon!</p>
+                            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                                <a href="/Contact" class="btn-3d-interactive btn-primary-3d">
+                                    <i class="bi bi-envelope me-2"></i>Contact Us
+                                </a>
+                                <a href="#how-it-works" class="btn-3d-interactive btn-secondary-3d">
+                                    <i class="bi bi-info-circle me-2"></i>Learn More
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials-3d" id="testimonials">
+        <div class="container">
+            <div class="text-center mb-5 scroll-reveal-3d">
+                <h2 class="hero-subtitle-3d">What Our Customers Say</h2>
+                <p class="hero-description-3d">
+                    Don't just take our word for it - hear from our satisfied customers
+                </p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6 scroll-reveal-3d">
+                    <div class="testimonial-card-3d">
+                        <div class="testimonial-avatar">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                        <div class="rating-stars">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                        <p class="testimonial-quote">
+                            The entire rental process was seamless! The car was pristine, and the 3D interface made browsing their fleet an amazing experience. Highly recommend for anyone looking for premium service.
+                        </p>
+                        <div class="testimonial-author">Sarah Johnson</div>
+                        <div class="testimonial-role">Business Executive</div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6 scroll-reveal-3d">
+                    <div class="testimonial-card-3d">
+                        <div class="testimonial-avatar">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                        <div class="rating-stars">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                        <p class="testimonial-quote">
+                            Outstanding customer service and an impressive fleet of vehicles. The booking system is intuitive, and the 24/7 support team was incredibly helpful during my trip.
+                        </p>
+                        <div class="testimonial-author">Michael Chen</div>
+                        <div class="testimonial-role">Travel Blogger</div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6 scroll-reveal-3d">
+                    <div class="testimonial-card-3d">
+                        <div class="testimonial-avatar">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                        <div class="rating-stars">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                        <p class="testimonial-quote">
+                            I've used many car rental services, but this one stands out. The vehicles are well-maintained, the pricing is transparent, and the innovative 3D platform is a game-changer.
+                        </p>
+                        <div class="testimonial-author">Emily Rodriguez</div>
+                        <div class="testimonial-role">Marketing Director</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="py-5" id="contact">
+        <div class="container">
+            <div class="text-center mb-5 scroll-reveal-3d">
+                <h2 class="hero-subtitle-3d">Get in Touch</h2>
+                <p class="hero-description-3d">Have questions? We're here to help you get on the road</p>
+            </div>
+
+            <div class="features-3d-grid scroll-reveal-3d">
+                <div class="card-3d-interactive">
+                    <div class="feature-icon-3d">
+                        <i class="bi bi-telephone-fill"></i>
+                    </div>
+                    <h5 class="feature-title-3d">Call Us</h5>
+                    <p class="feature-description-3d">Speak directly with our customer service team</p>
+                    <a href="tel:+94771234567" class="btn-3d-interactive btn-secondary-3d">+94 77 123 4567</a>
+                </div>
+                
+                <div class="card-3d-interactive">
+                    <div class="feature-icon-3d">
+                        <i class="bi bi-envelope-fill"></i>
+                    </div>
+                    <h5 class="feature-title-3d">Email Us</h5>
+                    <p class="feature-description-3d">Send us your queries and we'll respond quickly</p>
+                    <a href="mailto:support@carrentalsystem.com" class="btn-3d-interactive btn-secondary-3d">Email Us</a>
+                </div>
+                
+                <div class="card-3d-interactive">
+                    <div class="feature-icon-3d">
+                        <i class="bi bi-chat-dots-fill"></i>
+                    </div>
+                    <h5 class="feature-title-3d">Live Chat</h5>
+                    <p class="feature-description-3d">Get instant support through our live chat</p>
+                    <button class="btn-3d-interactive btn-secondary-3d" onclick="openLiveChat()">Start Chat</button>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+function openLiveChat() {
+    alert('Live chat feature will be available soon!');
+}
+</script>

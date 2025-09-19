@@ -1,0 +1,208 @@
+@using CarRentalSystem.Web.ViewModels.Account
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - User Dashboard</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/3d-interactive-landing.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/modern-theme.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/sidebar-3d.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/CarRentalSystem.Web.styles.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body class="user-dashboard-body">
+    <div class="user-wrapper">
+        <!-- Enhanced Interactive Sidebar -->
+        <nav class="user-sidebar enhanced-sidebar" id="userSidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-brand interactive-brand">
+                    <div class="brand-icon-3d">
+                        <i class="bi bi-car-front-fill"></i>
+                        <div class="icon-glow"></div>
+                    </div>
+                    <span class="brand-text">CarRental</span>
+                    <div class="brand-effect"></div>
+                </div>
+                <button class="sidebar-toggle d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+
+            <div class="sidebar-menu" id="sidebarMenu">
+                <ul class="nav flex-column enhanced-nav">
+                    <li class="nav-item">
+                        <a class="nav-link enhanced-nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")" asp-controller="Dashboard" asp-action="Index" data-tooltip="Dashboard Overview">
+                            <div class="nav-icon-3d">
+                                <i class="bi bi-grid-3x3-gap-fill"></i>
+                                <div class="icon-background"></div>
+                            </div>
+                            <span class="nav-text">Overview</span>
+                            <div class="nav-indicator"></div>
+                            <div class="hover-effect"></div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link enhanced-nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Bookings" ? "active" : "")" asp-controller="Dashboard" asp-action="Bookings" data-tooltip="Manage Your Bookings">
+                            <div class="nav-icon-3d">
+                                <i class="bi bi-calendar-check"></i>
+                                <div class="icon-background"></div>
+                            </div>
+                            <span class="nav-text">My Bookings</span>
+                            <div class="nav-indicator"></div>
+                            <div class="hover-effect"></div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link enhanced-nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Profile" ? "active" : "")" asp-controller="Dashboard" asp-action="Profile" data-tooltip="View Profile">
+                            <div class="nav-icon-3d">
+                                <i class="bi bi-person-circle"></i>
+                                <div class="icon-background"></div>
+                            </div>
+                            <span class="nav-text">Profile</span>
+                            <div class="nav-indicator"></div>
+                            <div class="hover-effect"></div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link enhanced-nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Cars" ? "active" : "")" asp-controller="Cars" asp-action="Search" data-tooltip="Browse Available Cars">
+                            <div class="nav-icon-3d">
+                                <i class="bi bi-search"></i>
+                                <div class="icon-background"></div>
+                            </div>
+                            <span class="nav-text">Find Cars</span>
+                            <div class="nav-indicator"></div>
+                            <div class="hover-effect"></div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link enhanced-nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Account" && ViewContext.RouteData.Values["Action"]?.ToString() == "Kyc" ? "active" : "")" asp-controller="Account" asp-action="Kyc" data-tooltip="Identity Verification">
+                            <div class="nav-icon-3d">
+                                <i class="bi bi-shield-check"></i>
+                                <div class="icon-background"></div>
+                            </div>
+                            <span class="nav-text">KYC Status</span>
+                            <div class="nav-indicator"></div>
+                            <div class="hover-effect"></div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link enhanced-nav-link" asp-controller="Account" asp-action="Logout" data-tooltip="Sign Out">
+                            <div class="nav-icon-3d">
+                                <i class="bi bi-box-arrow-right"></i>
+                                <div class="icon-background"></div>
+                            </div>
+                            <span class="nav-text">Logout</span>
+                            <div class="nav-indicator"></div>
+                            <div class="hover-effect"></div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link enhanced-nav-link" href="#" data-tooltip="24/7 Customer Support">
+                            <div class="nav-icon-3d">
+                                <i class="bi bi-headset"></i>
+                                <div class="icon-background"></div>
+                            </div>
+                            <span class="nav-text">Support</span>
+                            <div class="live-indicator">
+                                <div class="pulse-dot"></div>
+                                <span class="live-text">Live</span>
+                            </div>
+                            <div class="nav-indicator"></div>
+                            <div class="hover-effect"></div>
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Quick Stats in Sidebar -->
+                <div class="sidebar-quick-stats">
+                    <h6 class="stats-title">Quick Stats</h6>
+                    <div class="quick-stat-item">
+                        <div class="stat-icon">
+                            <i class="bi bi-speedometer2"></i>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-value">2,450</span>
+                            <span class="stat-label">Miles Driven</span>
+                        </div>
+                    </div>
+                    <div class="quick-stat-item">
+                        <div class="stat-icon">
+                            <i class="bi bi-tree-fill"></i>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-value">45kg</span>
+                            <span class="stat-label">CO2 Saved</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-footer">
+                    <div class="nav-item">
+                        <a class="nav-link enhanced-nav-link" asp-controller="Home" asp-action="Index" target="_blank" data-tooltip="Visit Main Website">
+                            <div class="nav-icon-3d">
+                                <i class="bi bi-globe"></i>
+                                <div class="icon-background"></div>
+                            </div>
+                            <span class="nav-text">View Site</span>
+                            <div class="external-link-icon">
+                                <i class="bi bi-box-arrow-up-right"></i>
+                            </div>
+                            <div class="hover-effect"></div>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline w-100">
+                            <button type="submit" class="nav-link logout-btn enhanced-nav-link" data-tooltip="Sign Out Securely">
+                                <div class="nav-icon-3d">
+                                    <i class="bi bi-box-arrow-right"></i>
+                                    <div class="icon-background"></div>
+                                </div>
+                                <span class="nav-text">Logout</span>
+                                <div class="hover-effect"></div>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="user-content">
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle me-2"></i>
+                        @TempData["Success"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        @TempData["Error"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                @RenderBody()
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="~/js/toast.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/dashboard.js" asp-append-version="true"></script>
+    <script src="~/js/sidebar-3d.js" asp-append-version="true"></script>
+    <script src="~/js/dashboard-3d-effects.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

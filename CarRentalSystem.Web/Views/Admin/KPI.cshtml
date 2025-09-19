@@ -1,0 +1,577 @@
+@model CarRentalSystem.Web.ViewModels.Admin.KPIViewModel
+
+@{
+    ViewData["Title"] = "KPI Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-dashboard-3d">
+    <!-- Enhanced 3D Header -->
+    <div class="dashboard-header-3d">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="dashboard-title-3d">
+                    <div class="title-icon-3d">
+                        <i class="bi bi-bar-chart-line"></i>
+                        <div class="icon-glow-3d"></div>
+                    </div>
+                    KPI Dashboard
+                </h1>
+                <p class="dashboard-subtitle-3d">Key Performance Indicators & Analytics</p>
+            </div>
+            <div class="dashboard-actions-3d">
+                <button class="btn-3d-interactive btn-primary-3d" onclick="refreshKPIData()">
+                    <i class="bi bi-arrow-clockwise"></i>
+                    <span>Refresh</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- KPI Tabs -->
+    <ul class="nav nav-tabs nav-tabs-3d mb-4" id="kpiTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
+                <i class="bi bi-speedometer2"></i> Overview
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="bookings-tab" data-bs-toggle="tab" data-bs-target="#bookings" type="button" role="tab">
+                <i class="bi bi-calendar-check"></i> Bookings & Revenue
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="customers-tab" data-bs-toggle="tab" data-bs-target="#customers" type="button" role="tab">
+                <i class="bi bi-people"></i> Customers
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="cars-tab" data-bs-toggle="tab" data-bs-target="#cars" type="button" role="tab">
+                <i class="bi bi-car-front"></i> Cars
+            </button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="kpiTabContent">
+        <!-- Overview Tab -->
+        <div class="tab-pane fade show active" id="overview" role="tabpanel">
+            <div class="row g-4 mb-4">
+                <!-- Key Metrics Cards -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="stats-card-3d revenue-3d">
+                        <div class="stats-icon-3d">
+                            <i class="bi bi-currency-dollar"></i>
+                            <div class="icon-glow-3d"></div>
+                        </div>
+                        <div class="stats-content-3d">
+                            <h3>$@Model.BookingKPIData.TotalRevenue.ToString("N0")</h3>
+                            <p>Total Revenue</p>
+                            <small>$@Model.BookingKPIData.PaidRevenue.ToString("N0") paid</small>
+                        </div>
+                        <div class="card-glow-3d"></div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="stats-card-3d bookings-3d">
+                        <div class="stats-icon-3d">
+                            <i class="bi bi-calendar-check"></i>
+                            <div class="icon-glow-3d"></div>
+                        </div>
+                        <div class="stats-content-3d">
+                            <h3>@Model.BookingKPIData.TotalBookings</h3>
+                            <p>Total Bookings</p>
+                            <small>@Model.BookingKPIData.ConfirmedBookings confirmed</small>
+                        </div>
+                        <div class="card-glow-3d"></div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="stats-card-3d customers-3d">
+                        <div class="stats-icon-3d">
+                            <i class="bi bi-people"></i>
+                            <div class="icon-glow-3d"></div>
+                        </div>
+                        <div class="stats-content-3d">
+                            <h3>@Model.CustomerKPIData.TotalCustomers</h3>
+                            <p>Total Customers</p>
+                            <small>@Model.CustomerKPIData.ActiveCustomers active</small>
+                        </div>
+                        <div class="card-glow-3d"></div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="stats-card-3d cars-3d">
+                        <div class="stats-icon-3d">
+                            <i class="bi bi-car-front"></i>
+                            <div class="icon-glow-3d"></div>
+                        </div>
+                        <div class="stats-content-3d">
+                            <h3>@Model.CarKPIData.TotalCars</h3>
+                            <p>Total Cars</p>
+                            <small>@Model.CarKPIData.ApprovedCars approved</small>
+                        </div>
+                        <div class="card-glow-3d"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overview Charts -->
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="card-3d-interactive">
+                        <div class="card-header-3d">
+                            <h5 class="card-title-3d">
+                                <i class="bi bi-graph-up"></i> Revenue Trend
+                            </h5>
+                        </div>
+                        <div class="card-body-3d">
+                            <canvas id="revenueChart" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card-3d-interactive">
+                        <div class="card-header-3d">
+                            <h5 class="card-title-3d">
+                                <i class="bi bi-calendar-check"></i> Booking Status
+                            </h5>
+                        </div>
+                        <div class="card-body-3d">
+                            <canvas id="bookingStatusChart" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bookings & Revenue Tab -->
+        <div class="tab-pane fade" id="bookings" role="tabpanel">
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="card-3d-interactive">
+                        <div class="card-header-3d d-flex justify-content-between align-items-center">
+                            <h5 class="card-title-3d">
+                                <i class="bi bi-graph-up"></i> Monthly Bookings & Revenue
+                            </h5>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="loadBookingData(null, null)">All Time</button>
+                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="loadBookingData(new Date().getFullYear(), null)">This Year</button>
+                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="loadBookingData(new Date().getFullYear(), new Date().getMonth() + 1)">This Month</button>
+                            </div>
+                        </div>
+                        <div class="card-body-3d">
+                            <canvas id="monthlyBookingsChart" height="400"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card-3d-interactive">
+                        <div class="card-header-3d">
+                            <h5 class="card-title-3d">
+                                <i class="bi bi-pie-chart"></i> Payment Status
+                            </h5>
+                        </div>
+                        <div class="card-body-3d">
+                            <canvas id="paymentStatusChart" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customers Tab -->
+        <div class="tab-pane fade" id="customers" role="tabpanel">
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="card-3d-interactive">
+                        <div class="card-header-3d">
+                            <h5 class="card-title-3d">
+                                <i class="bi bi-graph-up"></i> Customer Growth
+                            </h5>
+                        </div>
+                        <div class="card-body-3d">
+                            <canvas id="customerGrowthChart" height="400"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card-3d-interactive">
+                        <div class="card-header-3d">
+                            <h5 class="card-title-3d">
+                                <i class="bi bi-pie-chart"></i> Customer Segments
+                            </h5>
+                        </div>
+                        <div class="card-body-3d">
+                            <canvas id="customerSegmentsChart" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cars Tab -->
+        <div class="tab-pane fade" id="cars" role="tabpanel">
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="card-3d-interactive">
+                        <div class="card-header-3d">
+                            <h5 class="card-title-3d">
+                                <i class="bi bi-pie-chart"></i> Car Status Distribution
+                            </h5>
+                        </div>
+                        <div class="card-body-3d">
+                            <canvas id="carStatusChart" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card-3d-interactive">
+                        <div class="card-header-3d">
+                            <h5 class="card-title-3d">
+                                <i class="bi bi-graph-up"></i> Car Registrations
+                            </h5>
+                        </div>
+                        <div class="card-body-3d">
+                            <canvas id="carRegistrationsChart" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-4">
+                <div class="col-12">
+                    <div class="card-3d-interactive">
+                        <div class="card-header-3d">
+                            <h5 class="card-title-3d">
+                                <i class="bi bi-bar-chart"></i> Top Performing Cars
+                            </h5>
+                        </div>
+                        <div class="card-body-3d">
+                            <canvas id="carUtilizationChart" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Chart.js configuration
+        Chart.defaults.font.family = 'Inter, sans-serif';
+        Chart.defaults.color = '#6c757d';
+
+        // Global chart instances
+        let revenueChart, bookingStatusChart, monthlyBookingsChart, paymentStatusChart;
+        let customerGrowthChart, customerSegmentsChart, carStatusChart, carRegistrationsChart, carUtilizationChart;
+
+        // Initialize all charts when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeOverviewCharts();
+            initializeBookingCharts();
+            initializeCustomerCharts();
+            initializeCarCharts();
+        });
+
+        // Overview Charts
+        function initializeOverviewCharts() {
+            // Revenue Trend Chart
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            revenueChart = new Chart(revenueCtx, {
+                type: 'line',
+                data: {
+                    labels: @Html.Raw(Json.Serialize(Model.BookingKPIData.MonthlyRevenue.Select(m => m.Month))),
+                    datasets: [{
+                        label: 'Revenue',
+                        data: @Html.Raw(Json.Serialize(Model.BookingKPIData.MonthlyRevenue.Select(m => m.Amount))),
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Booking Status Chart
+            const bookingStatusCtx = document.getElementById('bookingStatusChart').getContext('2d');
+            bookingStatusChart = new Chart(bookingStatusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: @Html.Raw(Json.Serialize(Model.BookingKPIData.BookingStatusBreakdown.Select(b => b.Status))),
+                    datasets: [{
+                        data: @Html.Raw(Json.Serialize(Model.BookingKPIData.BookingStatusBreakdown.Select(b => b.Count))),
+                        backgroundColor: [
+                            '#28a745',
+                            '#ffc107',
+                            '#dc3545',
+                            '#17a2b8',
+                            '#6f42c1'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Booking Charts
+        function initializeBookingCharts() {
+            // Monthly Bookings Chart
+            const monthlyBookingsCtx = document.getElementById('monthlyBookingsChart').getContext('2d');
+            monthlyBookingsChart = new Chart(monthlyBookingsCtx, {
+                type: 'bar',
+                data: {
+                    labels: @Html.Raw(Json.Serialize(Model.BookingKPIData.MonthlyBookings.Select(m => m.Month))),
+                    datasets: [{
+                        label: 'Bookings',
+                        data: @Html.Raw(Json.Serialize(Model.BookingKPIData.MonthlyBookings.Select(m => m.Count))),
+                        backgroundColor: 'rgba(0, 123, 255, 0.8)',
+                        borderColor: '#007bff',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Payment Status Chart
+            const paymentStatusCtx = document.getElementById('paymentStatusChart').getContext('2d');
+            paymentStatusChart = new Chart(paymentStatusCtx, {
+                type: 'pie',
+                data: {
+                    labels: @Html.Raw(Json.Serialize(Model.BookingKPIData.PaymentStatusBreakdown.Select(p => p.Status))),
+                    datasets: [{
+                        data: @Html.Raw(Json.Serialize(Model.BookingKPIData.PaymentStatusBreakdown.Select(p => p.Count))),
+                        backgroundColor: [
+                            '#28a745',
+                            '#ffc107',
+                            '#dc3545'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Customer Charts
+        function initializeCustomerCharts() {
+            // Customer Growth Chart
+            const customerGrowthCtx = document.getElementById('customerGrowthChart').getContext('2d');
+            customerGrowthChart = new Chart(customerGrowthCtx, {
+                type: 'line',
+                data: {
+                    labels: @Html.Raw(Json.Serialize(Model.CustomerKPIData.MonthlyCustomerGrowth.Select(m => m.Month))),
+                    datasets: [{
+                        label: 'New Customers',
+                        data: @Html.Raw(Json.Serialize(Model.CustomerKPIData.MonthlyCustomerGrowth.Select(m => m.NewCustomers))),
+                        borderColor: '#28a745',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'Total Customers',
+                        data: @Html.Raw(Json.Serialize(Model.CustomerKPIData.MonthlyCustomerGrowth.Select(m => m.TotalCustomers))),
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                        tension: 0.4,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Customer Segments Chart
+            const customerSegmentsCtx = document.getElementById('customerSegmentsChart').getContext('2d');
+            customerSegmentsChart = new Chart(customerSegmentsCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: @Html.Raw(Json.Serialize(Model.CustomerKPIData.CustomerSegments.Select(s => s.Segment))),
+                    datasets: [{
+                        data: @Html.Raw(Json.Serialize(Model.CustomerKPIData.CustomerSegments.Select(s => s.Count))),
+                        backgroundColor: [
+                            '#6c757d',
+                            '#17a2b8',
+                            '#ffc107',
+                            '#28a745'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Car Charts
+        function initializeCarCharts() {
+            // Car Status Chart
+            const carStatusCtx = document.getElementById('carStatusChart').getContext('2d');
+            carStatusChart = new Chart(carStatusCtx, {
+                type: 'pie',
+                data: {
+                    labels: @Html.Raw(Json.Serialize(Model.CarKPIData.CarStatusBreakdown.Select(s => s.Status))),
+                    datasets: [{
+                        data: @Html.Raw(Json.Serialize(Model.CarKPIData.CarStatusBreakdown.Select(s => s.Count))),
+                        backgroundColor: [
+                            '#28a745',
+                            '#ffc107',
+                            '#dc3545'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Car Registrations Chart
+            const carRegistrationsCtx = document.getElementById('carRegistrationsChart').getContext('2d');
+            carRegistrationsChart = new Chart(carRegistrationsCtx, {
+                type: 'bar',
+                data: {
+                    labels: @Html.Raw(Json.Serialize(Model.CarKPIData.MonthlyCarRegistrations.Select(m => m.Month))),
+                    datasets: [{
+                        label: 'New Cars',
+                        data: @Html.Raw(Json.Serialize(Model.CarKPIData.MonthlyCarRegistrations.Select(m => m.NewCars))),
+                        backgroundColor: 'rgba(0, 123, 255, 0.8)',
+                        borderColor: '#007bff',
+                        borderWidth: 1
+                    }, {
+                        label: 'Approved Cars',
+                        data: @Html.Raw(Json.Serialize(Model.CarKPIData.MonthlyCarRegistrations.Select(m => m.ApprovedCars))),
+                        backgroundColor: 'rgba(40, 167, 69, 0.8)',
+                        borderColor: '#28a745',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Car Utilization Chart
+            const carUtilizationCtx = document.getElementById('carUtilizationChart').getContext('2d');
+            carUtilizationChart = new Chart(carUtilizationCtx, {
+                type: 'bar',
+                data: {
+                    labels: @Html.Raw(Json.Serialize(Model.CarKPIData.CarUtilization.Select(c => c.CarName))),
+                    datasets: [{
+                        label: 'Bookings',
+                        data: @Html.Raw(Json.Serialize(Model.CarKPIData.CarUtilization.Select(c => c.BookingCount))),
+                        backgroundColor: 'rgba(0, 123, 255, 0.8)',
+                        borderColor: '#007bff',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Load booking data with filters
+        function loadBookingData(year, month) {
+            fetch(`/Admin/KPI/BookingData?year=${year}&month=${month}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        console.error('Error loading booking data:', data.error);
+                        return;
+                    }
+                    
+                    // Update monthly bookings chart
+                    monthlyBookingsChart.data.labels = data.monthlyBookings.map(m => m.month);
+                    monthlyBookingsChart.data.datasets[0].data = data.monthlyBookings.map(m => m.count);
+                    monthlyBookingsChart.update();
+                    
+                    // Update payment status chart
+                    paymentStatusChart.data.labels = data.paymentStatusBreakdown.map(p => p.status);
+                    paymentStatusChart.data.datasets[0].data = data.paymentStatusBreakdown.map(p => p.count);
+                    paymentStatusChart.update();
+                })
+                .catch(error => {
+                    console.error('Error loading booking data:', error);
+                });
+        }
+
+        // Refresh all KPI data
+        function refreshKPIData() {
+            location.reload();
+        }
+    </script>
+}

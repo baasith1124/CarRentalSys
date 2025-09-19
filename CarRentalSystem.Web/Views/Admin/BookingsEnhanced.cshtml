@@ -1,0 +1,579 @@
+@model CarRentalSystem.Web.ViewModels.Admin.BookingManagementViewModel
+
+@{
+    ViewData["Title"] = "Enhanced Booking Management";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="booking-management">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="page-title">
+                <i class="bi bi-calendar-check"></i>
+                Enhanced Booking Management
+            </h2>
+            <p class="text-muted">Manage all bookings with detailed information and controls</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-outline-primary" onclick="refreshPage()">
+                <i class="bi bi-arrow-clockwise"></i> Refresh
+            </button>
+            <button class="btn btn-primary" onclick="exportBookings()">
+                <i class="bi bi-download"></i> Export
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats Summary -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-2">
+            <div class="stats-summary total">
+                <div class="stats-icon">
+                    <i class="bi bi-calendar-check"></i>
+                </div>
+                <div class="stats-info">
+                    <h4>@Model.TotalBookings</h4>
+                    <p>Total</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="stats-summary pending">
+                <div class="stats-icon">
+                    <i class="bi bi-clock"></i>
+                </div>
+                <div class="stats-info">
+                    <h4>@Model.PendingBookings</h4>
+                    <p>Pending</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="stats-summary confirmed">
+                <div class="stats-icon">
+                    <i class="bi bi-check-circle"></i>
+                </div>
+                <div class="stats-info">
+                    <h4>@Model.ConfirmedBookings</h4>
+                    <p>Confirmed</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="stats-summary completed">
+                <div class="stats-icon">
+                    <i class="bi bi-check2-all"></i>
+                </div>
+                <div class="stats-info">
+                    <h4>@Model.CompletedBookings</h4>
+                    <p>Completed</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="stats-summary cancelled">
+                <div class="stats-icon">
+                    <i class="bi bi-x-circle"></i>
+                </div>
+                <div class="stats-info">
+                    <h4>@Model.CancelledBookings</h4>
+                    <p>Cancelled</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="stats-summary revenue">
+                <div class="stats-icon">
+                    <i class="bi bi-currency-dollar"></i>
+                </div>
+                <div class="stats-info">
+                    <h4>$@Model.TotalRevenue.ToString("N0")</h4>
+                    <p>Revenue</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" asp-action="BookingsEnhanced">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select name="status" id="status" class="form-select">
+                            <option value="">All Statuses</option>
+                            <option value="Pending" selected="@(Model.FilterStatus == "Pending")">Pending</option>
+                            <option value="Confirmed" selected="@(Model.FilterStatus == "Confirmed")">Confirmed</option>
+                            <option value="Completed" selected="@(Model.FilterStatus == "Completed")">Completed</option>
+                            <option value="Cancelled" selected="@(Model.FilterStatus == "Cancelled")">Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="startDate" class="form-label">Start Date</label>
+                        <input type="date" name="startDate" id="startDate" class="form-control" value="@Model.FilterStartDate?.ToString("yyyy-MM-dd")">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="endDate" class="form-label">End Date</label>
+                        <input type="date" name="endDate" id="endDate" class="form-control" value="@Model.FilterEndDate?.ToString("yyyy-MM-dd")">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">&nbsp;</label>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-funnel"></i> Filter
+                            </button>
+                            <a href="@Url.Action("BookingsEnhanced")" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-clockwise"></i> Clear
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bookings Table -->
+    <div class="card">
+        <div class="card-body">
+            @if (Model.Bookings.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover" id="bookingsTable">
+                        <thead>
+                            <tr>
+                                <th>Booking Details</th>
+                                <th>Customer</th>
+                                <th>Car & Owner</th>
+                                <th>Dates</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var booking in Model.Bookings)
+                            {
+                                <tr data-booking-id="@booking.BookingId">
+                                    <td>
+                                        <div class="booking-info">
+                                            <div class="booking-id">
+                                                <strong>#@booking.BookingId.ToString().Substring(0, 8)</strong>
+                                            </div>
+                                            <small class="text-muted">
+                                                Created: @booking.CreatedDate.ToString("MMM dd, yyyy HH:mm")
+                                            </small>
+                                            @if (!string.IsNullOrEmpty(booking.Notes))
+                                            {
+                                                <div class="booking-notes">
+                                                    <small class="text-info">
+                                                        <i class="bi bi-info-circle"></i> @booking.Notes
+                                                    </small>
+                                                </div>
+                                            }
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="customer-info">
+                                            <div class="customer-name">
+                                                <strong>@booking.CustomerName</strong>
+                                            </div>
+                                            <small class="text-muted">@booking.CustomerEmail</small>
+                                            @if (!string.IsNullOrEmpty(booking.CustomerPhone))
+                                            {
+                                                <br><small class="text-muted">@booking.CustomerPhone</small>
+                                            }
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="car-owner-info">
+                                            <div class="car-info">
+                                                <div class="car-image">
+                                                    @if (!string.IsNullOrEmpty(booking.CarImagePath))
+                                                    {
+                                                        <img src="@booking.CarImagePath" alt="@booking.CarName" class="car-thumbnail" 
+                                                             onerror="console.log('Image failed to load: @booking.CarImagePath'); this.style.display='none'; this.nextElementSibling.style.display='block';"
+                                                             onload="console.log('Image loaded successfully: @booking.CarImagePath');">
+                                                        <div class="car-placeholder" style="display:none;">
+                                                            <i class="bi bi-car-front"></i>
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="car-placeholder">
+                                                            <i class="bi bi-car-front"></i>
+                                                        </div>
+                                                    }
+                                                </div>
+                                                <div class="car-details">
+                                                    <div class="car-name">
+                                                        <strong>@booking.CarName @booking.CarModel</strong>
+                                                    </div>
+                                                    <small class="text-muted">$@booking.CarRatePerDay/day</small>
+                                                </div>
+                                            </div>
+                                            <div class="owner-info">
+                                                <small class="text-muted">
+                                                    <i class="bi bi-person"></i> @booking.CarOwnerName
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="date-info">
+                                            <div class="date-range">
+                                                <div class="start-date">
+                                                    <strong>Start:</strong> @booking.StartDate.ToString("MMM dd, yyyy")
+                                                </div>
+                                                <div class="end-date">
+                                                    <strong>End:</strong> @booking.EndDate.ToString("MMM dd, yyyy")
+                                                </div>
+                                            </div>
+                                            <div class="duration">
+                                                <span class="badge bg-info">@booking.TotalDays days</span>
+                                            </div>
+                                            @{
+                                                var timeStatusClass = booking.IsActive ? "success" : booking.IsUpcoming ? "warning" : "secondary";
+                                                var timeStatusText = booking.IsActive ? "Active" : booking.IsUpcoming ? "Upcoming" : "Past";
+                                            }
+                                            <div class="time-status">
+                                                <span class="badge bg-@timeStatusClass">@timeStatusText</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="amount-info">
+                                            <div class="total-amount">
+                                                <strong>$@booking.TotalAmount.ToString("N2")</strong>
+                                            </div>
+                                            <small class="text-muted">
+                                                $@booking.DailyRate.ToString("N2")/day
+                                            </small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="status-info">
+                                            @{
+                                                var statusClass = booking.Status switch
+                                                {
+                                                    "Pending" => "warning",
+                                                    "Confirmed" => "success",
+                                                    "Completed" => "info",
+                                                    "Cancelled" => "danger",
+                                                    _ => "secondary"
+                                                };
+                                                var paymentClass = booking.PaymentStatus switch
+                                                {
+                                                    "Paid" => "success",
+                                                    "Pending" => "warning",
+                                                    "Failed" => "danger",
+                                                    _ => "secondary"
+                                                };
+                                            }
+                                            <div class="booking-status">
+                                                <span class="badge bg-@statusClass">@booking.Status</span>
+                                            </div>
+                                            <div class="payment-status">
+                                                <span class="badge bg-@paymentClass">@booking.PaymentStatus</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="viewBookingDetails('@booking.BookingId')" title="View Details">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            @if (booking.Status == "Pending")
+                                            {
+                                                <button type="button" class="btn btn-success btn-sm" onclick="updateBookingStatus('@booking.BookingId', 'Confirmed')" title="Confirm">
+                                                    <i class="bi bi-check"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-danger btn-sm" onclick="updateBookingStatus('@booking.BookingId', 'Cancelled')" title="Cancel">
+                                                    <i class="bi bi-x"></i>
+                                                </button>
+                                            }
+                                            @if (booking.Status == "Confirmed")
+                                            {
+                                                <button type="button" class="btn btn-info btn-sm" onclick="updateBookingStatus('@booking.BookingId', 'Completed')" title="Complete">
+                                                    <i class="bi bi-check2-all"></i>
+                                                </button>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-calendar-check text-muted" style="font-size: 3rem;"></i>
+                    <h5 class="mt-3">No Bookings Found</h5>
+                    <p class="text-muted">No bookings match your current filters</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Booking Details Modal -->
+<div class="modal fade" id="bookingDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-calendar-check"></i> Booking Details
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="bookingDetailsContent">
+                <!-- Booking details will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function refreshPage() {
+            location.reload();
+        }
+
+        function exportBookings() {
+            // Implementation for exporting bookings to CSV/Excel
+            window.location.href = '/Admin/Bookings/Export';
+        }
+
+        function viewBookingDetails(bookingId) {
+            console.log('Loading booking details for:', bookingId);
+            
+            // Load booking details via AJAX
+            fetch(`/Admin/Bookings/Details/${bookingId}`)
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Received data:', data);
+                    if (data.html) {
+                        document.getElementById('bookingDetailsContent').innerHTML = data.html;
+                        new bootstrap.Modal(document.getElementById('bookingDetailsModal')).show();
+                    } else {
+                        console.error('Error loading booking details:', data.error);
+                        alert('Error loading booking details: ' + (data.error || 'Unknown error'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading booking details:', error);
+                    alert('Error loading booking details: ' + error.message);
+                });
+        }
+
+        function updateBookingStatus(bookingId, status) {
+            if (confirm(`Are you sure you want to ${status.toLowerCase()} this booking?`)) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/Admin/Bookings/UpdateStatus/${bookingId}`;
+                
+                const statusInput = document.createElement('input');
+                statusInput.type = 'hidden';
+                statusInput.name = 'status';
+                statusInput.value = status;
+                
+                form.appendChild(statusInput);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+        // Initialize date picker functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+            
+            startDateInput.addEventListener('change', function() {
+                if (this.value && endDateInput.value && this.value > endDateInput.value) {
+                    endDateInput.value = this.value;
+                }
+            });
+            
+            endDateInput.addEventListener('change', function() {
+                if (this.value && startDateInput.value && this.value < startDateInput.value) {
+                    startDateInput.value = this.value;
+                }
+            });
+        });
+    </script>
+}
+
+@section Styles {
+    <style>
+        .booking-info {
+            min-width: 150px;
+        }
+
+        .booking-id {
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+
+        .booking-notes {
+            margin-top: 4px;
+        }
+
+        .customer-info {
+            min-width: 120px;
+        }
+
+        .customer-name {
+            margin-bottom: 4px;
+        }
+
+        .car-owner-info {
+            min-width: 200px;
+        }
+
+        .car-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .car-thumbnail {
+            width: 40px;
+            height: 30px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .car-placeholder {
+            width: 40px;
+            height: 30px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 0.8rem;
+        }
+
+        .car-name {
+            font-size: 0.9rem;
+        }
+
+        .owner-info {
+            margin-top: 4px;
+        }
+
+        .date-info {
+            min-width: 140px;
+        }
+
+        .date-range {
+            margin-bottom: 8px;
+        }
+
+        .start-date, .end-date {
+            font-size: 0.85rem;
+            margin-bottom: 2px;
+        }
+
+        .duration, .time-status {
+            margin-bottom: 4px;
+        }
+
+        .amount-info {
+            text-align: right;
+            min-width: 100px;
+        }
+
+        .total-amount {
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .status-info {
+            min-width: 120px;
+        }
+
+        .booking-status, .payment-status {
+            margin-bottom: 4px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .stats-summary {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .stats-summary.total .stats-icon {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .stats-summary.pending .stats-icon {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+
+        .stats-summary.confirmed .stats-icon {
+            background-color: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .stats-summary.completed .stats-icon {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .stats-summary.cancelled .stats-icon {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+
+        .stats-summary.revenue .stats-icon {
+            background-color: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .stats-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .stats-info h4 {
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .stats-info p {
+            margin: 0;
+            color: #6c757d;
+            font-size: 0.8rem;
+        }
+    </style>
+}

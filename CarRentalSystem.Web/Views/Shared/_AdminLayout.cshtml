@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin Panel</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/3d-interactive-landing.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin-3d.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body-3d">
+    <!-- 3D Background with Parallax Effects -->
+    <div class="admin-background-3d">
+        <div class="parallax-layer admin-parallax-bg"></div>
+        <div class="parallax-layer admin-white-dots-bg"></div>
+        <div class="admin-pattern-3d"></div>
+    </div>
+    
+    <!-- Animated Background Elements -->
+    <div class="admin-particles-container">
+        <div class="admin-particle"></div>
+        <div class="admin-particle"></div>
+        <div class="admin-particle"></div>
+        <div class="admin-particle"></div>
+        <div class="admin-particle"></div>
+    </div>
+    
+    <!-- Floating Admin Icons -->
+    <div class="floating-admin-container">
+        <i class="floating-admin bi bi-shield-lock"></i>
+        <i class="floating-admin bi bi-gear"></i>
+        <i class="floating-admin bi bi-graph-up"></i>
+    </div>
+
+    <div class="admin-wrapper">
+        <!-- Enhanced 3D Sidebar -->
+        <nav class="admin-sidebar-3d" id="adminSidebar">
+            <div class="sidebar-header-3d">
+                <div class="sidebar-brand-3d">
+                    <div class="brand-logo-container-3d">
+                        <i class="bi bi-shield-lock"></i>
+                        <div class="brand-glow-3d"></div>
+                    </div>
+                    <span class="brand-text-3d">Admin Panel</span>
+                </div>
+                <button class="sidebar-toggle d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+
+            <div class="sidebar-menu-3d show" id="sidebarMenu">
+                <ul class="nav flex-column">
+                    <li class="nav-item-3d">
+                        <a class="nav-link-3d @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")" asp-action="Index">
+                            <div class="nav-icon-3d">
+                                <i class="bi bi-speedometer2"></i>
+                            </div>
+                            <span>Dashboard</span>
+                            <div class="nav-glow-3d"></div>
+                        </a>
+                    </li>
+                    <li class="nav-item-3d">
+                        <a class="nav-link-3d @(ViewContext.RouteData.Values["Action"]?.ToString() == "Cars" ? "active" : "")" asp-action="Cars">
+                            <div class="nav-icon-3d">
+                                <i class="bi bi-car-front"></i>
+                            </div>
+                            <span>Car Management</span>
+                            @if (ViewBag.PendingCarsCount > 0)
+                            {
+                                <span class="badge bg-warning">@ViewBag.PendingCarsCount</span>
+                            }
+                            <div class="nav-glow-3d"></div>
+                        </a>
+                    </li>
+                    <li class="nav-item-3d">
+                        <a class="nav-link-3d @(ViewContext.RouteData.Values["Action"]?.ToString() == "KYC" ? "active" : "")" asp-action="KYC">
+                            <div class="nav-icon-3d">
+                                <i class="bi bi-file-earmark-check"></i>
+                            </div>
+                            <span>KYC Review</span>
+                            @if (ViewBag.PendingKYCCount > 0)
+                            {
+                                <span class="badge bg-info">@ViewBag.PendingKYCCount</span>
+                            }
+                            <div class="nav-glow-3d"></div>
+                        </a>
+                    </li>
+                    <li class="nav-item-3d">
+                        <a class="nav-link-3d @(ViewContext.RouteData.Values["Action"]?.ToString() == "BookingsEnhanced" ? "active" : "")" asp-action="BookingsEnhanced">
+                            <div class="nav-icon-3d">
+                                <i class="bi bi-calendar-check"></i>
+                            </div>
+                            <span>Booking Management</span>
+                            <div class="nav-glow-3d"></div>
+                        </a>
+                    </li>
+                    <li class="nav-item-3d">
+                        <a class="nav-link-3d @(ViewContext.RouteData.Values["Action"]?.ToString() == "CarOwners" ? "active" : "")" asp-action="CarOwners">
+                            <div class="nav-icon-3d">
+                                <i class="bi bi-people-fill"></i>
+                            </div>
+                            <span>Car Owner Management</span>
+                            <div class="nav-glow-3d"></div>
+                        </a>
+                    </li>
+                    <li class="nav-item-3d">
+                        <a class="nav-link-3d @(ViewContext.RouteData.Values["Action"]?.ToString() == "Customers" ? "active" : "")" asp-action="Customers">
+                            <div class="nav-icon-3d">
+                                <i class="bi bi-people"></i>
+                            </div>
+                            <span>Customer Management</span>
+                            <div class="nav-glow-3d"></div>
+                        </a>
+                    </li>
+                    <li class="nav-item-3d">
+                        <a class="nav-link-3d @(ViewContext.RouteData.Values["Action"]?.ToString() == "KPI" ? "active" : "")" asp-action="KPI">
+                            <div class="nav-icon-3d">
+                                <i class="bi bi-bar-chart-line"></i>
+                            </div>
+                            <span>KPI Dashboard</span>
+                            <div class="nav-glow-3d"></div>
+                        </a>
+                    </li>
+                    <li class="nav-item-3d">
+                        <a class="nav-link-3d" href="#" data-bs-toggle="modal" data-bs-target="#reportsModal">
+                            <div class="nav-icon-3d">
+                                <i class="bi bi-graph-up"></i>
+                            </div>
+                            <span>Reports</span>
+                            <div class="nav-glow-3d"></div>
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="sidebar-footer-3d">
+                    <div class="nav-item-3d">
+                        <a class="nav-link-3d" asp-controller="Home" asp-action="Index" target="_blank">
+                            <div class="nav-icon-3d">
+                                <i class="bi bi-globe"></i>
+                            </div>
+                            <span>View Site</span>
+                            <div class="nav-glow-3d"></div>
+                        </a>
+                    </div>
+                    <div class="nav-item-3d">
+                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline w-100">
+                            <button type="submit" class="nav-link-3d logout-btn-3d w-100 text-start">
+                                <div class="nav-icon-3d">
+                                    <i class="bi bi-box-arrow-right"></i>
+                                </div>
+                                <span>Logout</span>
+                                <div class="nav-glow-3d"></div>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Enhanced 3D Main Content -->
+        <div class="admin-main-3d">
+            <!-- Enhanced 3D Top Navigation -->
+            <header class="admin-header-3d">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <button class="sidebar-toggle-mobile d-lg-none me-3" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+                            <i class="bi bi-list"></i>
+                        </button>
+                        <h4 class="page-title mb-0">@ViewData["Title"]</h4>
+                    </div>
+                    
+                    <div class="header-actions">
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-bell"></i>
+                                <span class="badge bg-danger">3</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><h6 class="dropdown-header">Notifications</h6></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-car-front me-2"></i>New car pending approval</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark me-2"></i>KYC document uploaded</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-calendar me-2"></i>New booking created</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-center" href="#">View all notifications</a></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="dropdown ms-3">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle"></i>
+                                @User.Identity?.Name
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profile</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Settings</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                        <button type="submit" class="dropdown-item">
+                                            <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Enhanced 3D Page Content -->
+            <main class="admin-content-3d">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <!-- Enhanced 3D Toast Notifications Container -->
+    <div class="toast-container-3d position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+        @if (TempData["Success"] != null)
+        {
+            <div class="toast-3d toast-success" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
+                <div class="toast-header-3d">
+                    <div class="toast-icon-3d">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                    <strong class="me-auto">Success</strong>
+                    <button type="button" class="btn-close-3d" data-bs-dismiss="toast" aria-label="Close">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </div>
+                <div class="toast-body-3d">
+                    @TempData["Success"]
+                </div>
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="toast-3d toast-error" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="7000">
+                <div class="toast-header-3d">
+                    <div class="toast-icon-3d">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                    </div>
+                    <strong class="me-auto">Error</strong>
+                    <button type="button" class="btn-close-3d" data-bs-dismiss="toast" aria-label="Close">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </div>
+                <div class="toast-body-3d">
+                    @TempData["Error"]
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Reports Modal -->
+    <div class="modal fade" id="reportsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-graph-up"></i> Reports & Analytics
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="report-card">
+                                <h6><i class="bi bi-calendar-check"></i> Booking Reports</h6>
+                                <p>View detailed booking analytics and trends</p>
+                                <button class="btn btn-outline-primary btn-sm">Generate Report</button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="report-card">
+                                <h6><i class="bi bi-currency-dollar"></i> Revenue Reports</h6>
+                                <p>Financial reports and payment analytics</p>
+                                <button class="btn btn-outline-primary btn-sm">Generate Report</button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="report-card">
+                                <h6><i class="bi bi-car-front"></i> Car Utilization</h6>
+                                <p>Car usage statistics and performance</p>
+                                <button class="btn btn-outline-primary btn-sm">Generate Report</button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="report-card">
+                                <h6><i class="bi bi-people"></i> Customer Analytics</h6>
+                                <p>Customer behavior and demographics</p>
+                                <button class="btn btn-outline-primary btn-sm">Generate Report</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="~/js/admin.js" asp-append-version="true"></script>
+    <script src="~/js/admin-3d.js" asp-append-version="true"></script>
+    
+    <!-- Enhanced 3D Toast Notifications Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize all toast notifications
+            var toastElements = document.querySelectorAll('.toast-3d');
+            toastElements.forEach(function(toastElement) {
+                var toast = new bootstrap.Toast(toastElement, {
+                    autohide: true,
+                    delay: toastElement.classList.contains('toast-success') ? 5000 : 7000
+                });
+                toast.show();
+            });
+        });
+    </script>
+    
+    @await RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync("Styles", required: false)
+</body>
+</html>

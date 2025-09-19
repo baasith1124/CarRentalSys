@@ -1,0 +1,280 @@
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿@using CarRentalSystem.Web.ViewModels.Account
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CarRentalSystem.Web</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/modern-theme.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/3d-interactive-landing.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/CarRentalSystem.Web.styles.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+    <!-- Google Fonts for better typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Theme Toggle Button -->
+    <button id="theme-toggle" class="theme-toggle">
+        <i class="bi bi-moon-fill" id="theme-icon"></i>
+        <span id="theme-text">Dark Mode</span>
+    </button>
+    
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-dark border-bottom shadow-lg py-3 modern-nav">
+            <div class="container px-4">
+                <a class="navbar-brand fw-bold text-gradient d-flex align-items-center" asp-controller="Home" asp-action="Index">
+                    <div class="brand-icon-3d me-2">
+                        <i class="bi bi-car-front-fill"></i>
+                    </div>
+                    <span class="brand-text">CarRental<span class="text-primary">.lk</span></span>
+                </a>
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav mx-auto gap-3">
+                        <li class="nav-item">
+                            <a class="nav-link text-light nav-hover-3d" asp-controller="Home" asp-action="Index">
+                                <i class="bi bi-house-door me-2"></i>Home
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light nav-hover-3d" href="#about">
+                                <i class="bi bi-info-circle me-2"></i>About
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light nav-hover-3d" href="#cars">
+                                <i class="bi bi-car-front me-2"></i>Cars
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light nav-hover-3d" href="#WhyChooseUs">
+                                <i class="bi bi-award me-2"></i>Why Choose Us
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link text-light nav-hover-3d" href="#Testimonials">
+                                <i class="bi bi-chat-quote me-2"></i>Testimonials
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light nav-hover-3d" href="#contact">
+                                <i class="bi bi-envelope me-2"></i>Contact
+                            </a>
+                        </li>
+                    </ul>
+
+                    <ul class="navbar-nav ms-auto gap-2">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle d-flex align-items-center text-light nav-hover-3d" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <div class="avatar-3d me-2">
+                                        <i class="bi bi-person-circle"></i>
+                                    </div>
+                                    @User.Identity.Name
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-dark border-0 shadow-lg">
+                                    <li><a class="dropdown-item" asp-controller="Dashboard" asp-action="Index">
+                                        <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                                    </a></li>
+                                    <li><a class="dropdown-item" asp-controller="Bookings" asp-action="MyBookings">
+                                        <i class="bi bi-calendar-check me-2"></i>My Bookings
+                                    </a></li>
+                                    <li><a class="dropdown-item" asp-controller="Profile" asp-action="Index">
+                                        <i class="bi bi-person me-2"></i>Profile
+                                    </a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    @if (User.IsInRole("Admin") || Context.Session.GetString("AdminLoggedIn") == "true")
+                                    {
+                                        <li><a class="dropdown-item" href="/Admin" id="admin-panel-link" onclick="window.location.href='/Admin'; return false;">
+                                            <i class="bi bi-shield-check me-2"></i>Admin Panel
+                                        </a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                    }
+                                    <li>
+                                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="btn btn-outline-light px-4 me-2 btn-3d-outline" asp-controller="Account" asp-action="Login">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <button class="btn btn-primary px-4 text-white btn-3d-primary" data-bs-toggle="modal" data-bs-target="#registerModal">
+                                    <i class="bi bi-person-plus me-2"></i>
+                                </button>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+
+    <div class="container-fluid px-0">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="footer-3d mt-5">
+        <div class="container text-md-start text-center">
+            <div class="row">
+                <!-- Company Info -->
+                <div class="col-md-3 mb-4">
+                    <div class="footer-brand mb-3">
+                        <h5 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-car-front-fill me-2"></i>CarRental.lk
+                        </h5>
+                    </div>
+                    <p class="text-light-50 mb-3">Reliable, affordable, and secure car rentals across Sri Lanka. Your journey starts with us.</p>
+                    <div class="social-links-3d">
+                        <a href="#" class="social-link-3d me-3" title="Facebook">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="#" class="social-link-3d me-3" title="Twitter">
+                            <i class="bi bi-twitter-x"></i>
+                        </a>
+                        <a href="#" class="social-link-3d" title="Instagram">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="col-md-3 mb-4">
+                    <h6 class="fw-bold mb-3 text-light">Quick Links</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <a href="#cars" class="footer-link-3d">
+                                <i class="bi bi-car-front me-2"></i>Available Cars
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#contact" class="footer-link-3d">
+                                <i class="bi bi-envelope me-2"></i>Contact Us
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a asp-controller="Home" asp-action="Privacy" class="footer-link-3d">
+                                <i class="bi bi-shield-check me-2"></i>Privacy Policy
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#about" class="footer-link-3d">
+                                <i class="bi bi-info-circle me-2"></i>About Us
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Locations -->
+                <div class="col-md-3 mb-4">
+                    <h6 class="fw-bold mb-3 text-light">Rental Locations</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2 d-flex align-items-center">
+                            <i class="bi bi-geo-alt-fill text-primary me-2"></i>
+                            <span class="text-light-50">Colombo</span>
+                        </li>
+                        <li class="mb-2 d-flex align-items-center">
+                            <i class="bi bi-geo-alt-fill text-primary me-2"></i>
+                            <span class="text-light-50">Kandy</span>
+                        </li>
+                        <li class="mb-2 d-flex align-items-center">
+                            <i class="bi bi-geo-alt-fill text-primary me-2"></i>
+                            <span class="text-light-50">Jaffna</span>
+                        </li>
+                        <li class="mb-2 d-flex align-items-center">
+                            <i class="bi bi-geo-alt-fill text-primary me-2"></i>
+                            <span class="text-light-50">Galle</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div class="col-md-3 mb-4">
+                    <h6 class="fw-bold mb-3 text-light">Contact Us</h6>
+                    <div class="contact-info-3d">
+                        <div class="contact-item-3d mb-3">
+                            <i class="bi bi-envelope-fill text-primary me-3"></i>
+                            <div>
+                                <span class="text-light-50">Email</span>
+                                <p class="text-light mb-0">support@carrentalsystem.com</p>
+                            </div>
+                        </div>
+                        <div class="contact-item-3d mb-3">
+                            <i class="bi bi-telephone-fill text-primary me-3"></i>
+                            <div>
+                                <span class="text-light-50">Phone</span>
+                                <p class="text-light mb-0">+94 77 123 4567</p>
+                            </div>
+                        </div>
+                        <div class="contact-item-3d">
+                            <i class="bi bi-clock-fill text-primary me-3"></i>
+                            <div>
+                                <span class="text-light-50">Support</span>
+                                <p class="text-light mb-0">24/7 Available</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="border-light opacity-25 my-4" />
+            <div class="text-center py-3">
+                <p class="mb-0 text-light-50">
+                    &copy; 2025 <span class="text-gradient fw-bold">CarRental.lk</span> — All rights reserved. 
+                    <span class="text-primary">Made with</span> 
+                    <i class="bi bi-heart-fill text-danger"></i> 
+                    <span class="text-primary">in Sri Lanka</span>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    @await Html.PartialAsync("_ToastPartial") 
+    
+    @await Html.PartialAsync("_RegisterModalPartial", new RegisterCustomerViewModel())
+    @await Html.PartialAsync("_AuthModalPartial")
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Core scripts -->
+    <script src="~/js/theme-toggle.js" asp-append-version="true"></script>
+    <script src="~/js/toast.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/register.js" asp-append-version="true"></script>
+    <script src="~/js/login-modal.js" asp-append-version="true"></script>
+    <script src="~/js/auth-modal.js" asp-append-version="true"></script>
+    
+    <!-- 3D Interactive Landing Experience Scripts -->
+    <script src="~/js/3d-interactive-landing.js" asp-append-version="true" onerror="console.warn('3D Interactive landing script failed to load')"></script>
+    <script src="~/js/enhanced-3d-landing.js" asp-append-version="true" onerror="console.warn('Enhanced 3D landing script failed to load')"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+    
+
+</body>
+</html>

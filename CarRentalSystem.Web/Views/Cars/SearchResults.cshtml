@@ -1,0 +1,225 @@
+@model CarRentalSystem.Web.ViewModels.Car.CarSearchResultViewModel
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/3d-interactive-landing.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/modern-theme.css" asp-append-version="true" />
+}
+
+<!-- Animated Background -->
+<div class="animated-bg">
+    <div class="floating-dots">
+        @for (int i = 0; i < 15; i++)
+        {
+            <div class="dot" style="--delay: @(i * 0.5)s; --size: @(Random.Shared.Next(4, 12))px;"></div>
+        }
+    </div>
+</div>
+
+<div class="search-results-container">
+    <!-- Hero Header Section -->
+    <div class="search-hero-section">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="search-hero-title">Search Results</h1>
+                    <p class="search-hero-subtitle">Found @Model.Cars.Count() premium vehicles for your journey</p>
+                    <div class="search-meta">
+                        <span class="meta-item">
+                            <i class="bi bi-calendar"></i>
+                            @Model.PickupDate.ToString("MMM dd") - @Model.DropDate.ToString("MMM dd, yyyy")
+                        </span>
+                        <span class="meta-item">
+                            <i class="bi bi-geo-alt"></i>
+                            @Model.PickupLocation @(Model.PickupLocation != Model.DropLocation ? " → " + Model.DropLocation : "")
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="search-stats-card">
+                        <div class="stat-number">@Model.Cars.Count()</div>
+                        <div class="stat-label">Available Cars</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid py-5 px-4">
+        <div class="row">
+            <!-- Enhanced Filter Sidebar -->
+            <div class="col-lg-3 mb-4">
+                <div class="filter-sidebar-3d">
+                    <div class="filter-header">
+                        <h5 class="filter-title">
+                            <i class="bi bi-funnel"></i>
+                            Refine Your Search
+                        </h5>
+                    </div>
+                    <form method="get" asp-action="Search" class="filter-form">
+                        <!-- Pickup and Drop Dates -->
+                        <div class="filter-group">
+                            <label class="filter-label">
+                                <i class="bi bi-calendar-event"></i>
+                                Pickup Date
+                            </label>
+                            <input type="datetime-local" name="PickupDate"
+                                   class="form-control-3d"
+                                   value="@Model.PickupDate.ToString("yyyy-MM-ddTHH:mm")"
+                                   required />
+                        </div>
+
+                        <div class="filter-group">
+                            <label class="filter-label">
+                                <i class="bi bi-calendar-check"></i>
+                                Drop Date
+                            </label>
+                            <input type="datetime-local" name="DropDate"
+                                   class="form-control-3d"
+                                   value="@Model.DropDate.ToString("yyyy-MM-ddTHH:mm")"
+                                   required />
+                        </div>
+
+                        <!-- Brands -->
+                        <div class="filter-group">
+                            <label class="filter-label">
+                                <i class="bi bi-car-front"></i>
+                                Brand
+                            </label>
+                            <select name="Brand" class="form-select-3d">
+                                <option value="">All Brands</option>
+                                @foreach (var brand in Model.Brands)
+                                {
+                                    <option value="@brand" selected="@(Model.Brand == brand ? "selected" : null)">@brand</option>
+                                }
+                            </select>
+                        </div>
+
+                        <!-- Transmission -->
+                        <div class="filter-group">
+                            <label class="filter-label">
+                                <i class="bi bi-gear"></i>
+                                Transmission
+                            </label>
+                            <select name="Transmission" class="form-select-3d">
+                                <option value="">All Types</option>
+                                @foreach (var t in Model.Transmissions)
+                                {
+                                    <option value="@t" selected="@(Model.Transmission == t ? "selected" : null)">@t</option>
+                                }
+                            </select>
+                        </div>
+
+                        <!-- Fuel Type -->
+                        <div class="filter-group">
+                            <label class="filter-label">
+                                <i class="bi bi-fuel-pump"></i>
+                                Fuel Type
+                            </label>
+                            <select name="FuelType" class="form-select-3d">
+                                <option value="">All Fuels</option>
+                                @foreach (var f in Model.FuelTypes)
+                                {
+                                    <option value="@f" selected="@(Model.FuelType == f ? "selected" : null)">@f</option>
+                                }
+                            </select>
+                        </div>
+
+                        <!-- Year Range -->
+                        <div class="filter-group">
+                            <label class="filter-label">
+                                <i class="bi bi-calendar-range"></i>
+                                Year Range
+                            </label>
+                            <div class="year-range-inputs">
+                                <input type="number" name="MinYear" class="form-control-3d" 
+                                       placeholder="From" min="2000" value="@Model.MinYear" />
+                                <input type="number" name="MaxYear" class="form-control-3d" 
+                                       placeholder="To" max="@DateTime.Now.Year" value="@Model.MaxYear" />
+                            </div>
+                        </div>
+
+                        <button type="submit" class="filter-apply-btn">
+                            <i class="bi bi-search"></i>
+                            Apply Filters
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Enhanced Car Grid -->
+            <div class="col-lg-9">
+                @if (!Model.Cars.Any())
+                {
+                    <div class="no-results-3d">
+                        <div class="no-results-icon">
+                            <i class="bi bi-search"></i>
+                        </div>
+                        <h3>No Cars Found</h3>
+                        <p>Try adjusting your search filters to find more vehicles.</p>
+                        <button onclick="clearFilters()" class="btn-clear-filters">
+                            <i class="bi bi-arrow-clockwise"></i>
+                            Clear Filters
+                        </button>
+                    </div>
+                }
+                else
+                {
+                    <div class="cars-grid-enhanced">
+                        @foreach (var car in Model.Cars)
+                        {
+                            <partial name="_CarCardEnhancedPartial" model="car" />
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/3d-interactive-landing.js" asp-append-version="true"></script>
+    <script>
+        // Show login modal function for Book Now buttons
+        function showLoginModal() {
+            var authModal = new bootstrap.Modal(document.getElementById('authModal'));
+            authModal.show();
+        }
+        
+        function clearFilters() {
+            const form = document.querySelector('.filter-form');
+            const inputs = form.querySelectorAll('input[type="number"], select');
+            inputs.forEach(input => {
+                if (input.tagName === 'SELECT') {
+                    input.selectedIndex = 0;
+                } else {
+                    input.value = '';
+                }
+            });
+            form.submit();
+        }
+        
+        // Enhanced filter interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterInputs = document.querySelectorAll('.form-control-3d, .form-select-3d');
+            
+            filterInputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('focused');
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.classList.remove('focused');
+                });
+            });
+            
+            // Add smooth scroll to results when filters are applied
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.toString()) {
+                document.querySelector('.cars-grid-enhanced')?.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    </script>
+}

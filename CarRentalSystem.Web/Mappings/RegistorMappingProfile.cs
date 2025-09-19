@@ -1,0 +1,14 @@
+﻿using AutoMapper;
+using CarRentalSystem.Application.Features.Account.Commands.RegisterCustomer;
+using CarRentalSystem.Web.ViewModels.Account;
+
+namespace CarRentalSystem.Web.Mappings
+{
+    public class RegistorMappingProfile :Profile
+    {
+        public RegistorMappingProfile() 
+        {
+            CreateMap<RegisterCustomerViewModel, RegisterCustomerCommand>();
+        }
+    }
+}

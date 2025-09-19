@@ -1,0 +1,115 @@
+@model CarRentalSystem.Application.Contracts.Car.CarDto
+
+<div class="col-lg-4 col-md-6 mb-4">
+    <div class="card car-card h-100 shadow-sm border-0 rounded-4 overflow-hidden position-relative">
+        <!-- Car Image -->
+        <div class="car-image-wrapper position-relative">
+            <img src="@(!string.IsNullOrEmpty(Model.ImagePath) ? $"/images/cars/{Model.ImagePath}" : "/images/default-car.jpg")" 
+                 class="card-img-top" 
+                 alt="@Model.Name @Model.Model"
+                 style="height: 200px; object-fit: cover;"
+                 onerror="this.src='/images/default-car.jpg'" />
+            
+            <!-- Price Badge -->
+            <div class="position-absolute top-0 end-0 m-3">
+                <span class="badge bg-primary fs-6 px-3 py-2 rounded-pill">
+                    $@Model.RatePerDay.ToString("N0")/day
+                </span>
+            </div>
+            
+            <!-- Status Badge -->
+            <div class="position-absolute top-0 start-0 m-3">
+                <span class="badge bg-success px-3 py-2 rounded-pill">
+                    <i class="bi bi-check-circle me-1"></i>
+                    Available
+                </span>
+            </div>
+        </div>
+
+        <!-- Card Body -->
+        <div class="card-body d-flex flex-column">
+            <!-- Car Title -->
+            <h5 class="card-title fw-bold text-primary mb-2">
+                @Model.Name @Model.Model
+            </h5>
+            
+            <!-- Year -->
+            <p class="text-muted mb-3">@Model.Year</p>
+            
+            <!-- Features -->
+            <div class="car-features mb-3">
+                <div class="row g-2">
+                    <div class="col-6">
+                        <small class="text-muted">
+                            <i class="bi bi-gear text-primary me-1"></i>
+                            @(Model.Transmission ?? "Manual")
+                        </small>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted">
+                            <i class="bi bi-fuel-pump text-primary me-1"></i>
+                            @(Model.FuelType ?? "Petrol")
+                        </small>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted">
+                            <i class="bi bi-people text-primary me-1"></i>
+                            5 Seats
+                        </small>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-success fw-semibold">
+                            <i class="bi bi-star-fill me-1"></i>
+                            4.8
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Owner Info -->
+            <div class="owner-info mb-3">
+                <small class="text-muted">
+                    <i class="bi bi-person-circle me-1"></i>
+                    Owner: @(Model.OwnerName ?? "Car Owner")
+                </small>
+            </div>
+            
+            <!-- Estimated Cost -->
+            <div class="estimated-cost mb-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted">Estimated Total:</span>
+                    <span class="fw-bold text-success fs-5">
+                        $@Model.EstimatedCost.ToString("N2")
+                    </span>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="mt-auto">
+                <div class="d-grid gap-2">
+                    <a asp-controller="Cars" asp-action="Details" asp-route-id="@Model.CarId" 
+                       class="btn btn-outline-primary">
+                        <i class="bi bi-eye me-2"></i>
+                        View Details
+                    </a>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a asp-controller="Bookings" asp-action="Book" asp-route-carId="@Model.CarId" 
+                           class="btn btn-primary">
+                            <i class="bi bi-calendar-plus me-2"></i>
+                            Book Now
+                        </a>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-primary" 
+                                onclick="showLoginModal()">
+                            <i class="bi bi-calendar-plus me-2"></i>
+                            Book Now
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

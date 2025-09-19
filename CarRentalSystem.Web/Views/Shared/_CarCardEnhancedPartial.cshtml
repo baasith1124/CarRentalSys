@@ -1,0 +1,235 @@
+@model CarRentalSystem.Application.Contracts.Car.CarDto
+
+<div class="car-card-enhanced-3d" data-anime="carCardMain">
+    <div class="car-card-inner">
+        <!-- Image Section with Enhanced 3D Effects -->
+        <div class="car-image-container" data-anime="imageContainer">
+            <div class="image-wrapper">
+                <img src="@(!string.IsNullOrEmpty(Model.ImagePath) ? $"/images/cars/{Model.ImagePath}" : "/images/default-car.jpg")"
+                     class="car-image-3d"
+                     alt="@Model.Name @Model.Model"
+                     loading="lazy"
+                     onerror="this.src='/images/default-car.jpg'"
+                     data-anime="carImage" />
+                <div class="image-overlay-3d" data-anime="overlay">
+                    <div class="overlay-content">
+                        <div class="action-buttons" data-anime="actionButtons">
+                            <button class="action-btn favorite-btn" title="Add to Favorites" aria-label="Add to Favorites" data-anime="actionBtn">
+                                <i class="bi bi-heart"></i>
+                            </button>
+                            <button class="action-btn share-btn" title="Share Vehicle" aria-label="Share Vehicle" data-anime="actionBtn">
+                                <i class="bi bi-share"></i>
+                            </button>
+                            <a href="@Url.Action("Details", "Cars", new { id = Model.CarId })" 
+                               class="action-btn view-btn" 
+                               title="View Details" 
+                               aria-label="View Vehicle Details"
+                               data-anime="actionBtn">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </div>
+                        <div class="quick-info" data-anime="quickInfo">
+                            <span class="quick-info-badge">Premium</span>
+                            <span class="quick-info-badge">Insured</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Status Badge -->
+            <div class="status-badge-3d" data-anime="statusBadge">
+                <i class="bi bi-check-circle"></i>
+                <span>Available</span>
+            </div>
+            
+            <!-- Estimated Cost Display -->
+            <div class="estimated-cost-badge" data-anime="costBadge">
+                <div class="cost-label">Total Estimate</div>
+                <div class="cost-amount">${@Model.EstimatedCost.ToString("F0")}</div>
+            </div>
+        </div>
+
+        <!-- Content Section -->
+        <div class="car-content-3d" data-anime="carContent">
+            <!-- Header Info -->
+            <div class="car-header" data-anime="carHeader">
+                <h5 class="car-title">
+                    <a href="@Url.Action("Details", "Cars", new { id = Model.CarId })" class="car-title-link" data-anime="titleLink">
+                        @Model.Name @Model.Model
+                    </a>
+                </h5>
+                <p class="car-model" data-anime="carModel">
+                    <i class="bi bi-calendar"></i>
+                    @Model.Year
+                </p>
+                
+                <!-- Enhanced Rating Display -->
+                <div class="rating-display" data-anime="ratingDisplay">
+                    <div class="stars-container" data-anime="starsContainer">
+                        <div class="stars-filled" style="width: 84%;" data-anime="starsFilled"> <!-- 4.2/5 = 84% -->
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                        <div class="stars-empty">
+                            <i class="bi bi-star"></i>
+                            <i class="bi bi-star"></i>
+                            <i class="bi bi-star"></i>
+                            <i class="bi bi-star"></i>
+                            <i class="bi bi-star"></i>
+                        </div>
+                    </div>
+                    <span class="rating-info" data-anime="ratingInfo">(4.2) • 15 reviews</span>
+                </div>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="features-grid-3d" data-anime="featuresGrid">
+                <div class="feature-item" data-anime="featureItem">
+                    <div class="feature-icon" data-anime="featureIcon">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <div class="feature-info">
+                        <span class="feature-value">5</span>
+                        <span class="feature-label">Seats</span>
+                    </div>
+                </div>
+                <div class="feature-item" data-anime="featureItem">
+                    <div class="feature-icon" data-anime="featureIcon">
+                        <i class="bi bi-gear"></i>
+                    </div>
+                    <div class="feature-info">
+                        <span class="feature-value">@(Model.Transmission ?? "Auto")</span>
+                        <span class="feature-label">Transmission</span>
+                    </div>
+                </div>
+                <div class="feature-item" data-anime="featureItem">
+                    <div class="feature-icon" data-anime="featureIcon">
+                        <i class="bi bi-fuel-pump"></i>
+                    </div>
+                    <div class="feature-info">
+                        <span class="feature-value">@(Model.FuelType ?? "Petrol")</span>
+                        <span class="feature-label">Fuel Type</span>
+                    </div>
+                </div>
+                <div class="feature-item" data-anime="featureItem">
+                    <div class="feature-icon" data-anime="featureIcon">
+                        <i class="bi bi-cash-coin"></i>
+                    </div>
+                    <div class="feature-info">
+                        <span class="feature-value">${@Model.RatePerDay.ToString("F0")}</span>
+                        <span class="feature-label">Per Day</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Availability Info -->
+            <div class="availability-info-3d">
+                <div class="availability-item">
+                    <i class="bi bi-calendar-event"></i>
+                    <div class="availability-details">
+                        <span class="availability-label">Available From</span>
+                        <span class="availability-date">@Model.AvailableFrom.ToString("dd MMM yyyy")</span>
+                    </div>
+                </div>
+                <div class="availability-item">
+                    <i class="bi bi-calendar-check"></i>
+                    <div class="availability-details">
+                        <span class="availability-label">Available To</span>
+                        <span class="availability-date">@Model.AvailableTo.ToString("dd MMM yyyy")</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Owner Info -->
+            <div class="owner-info-3d">
+                <div class="owner-avatar">
+                    <i class="bi bi-person-circle"></i>
+                </div>
+                <div class="owner-details">
+                    <span class="owner-label">Car Owner</span>
+                    <span class="owner-name">@(Model.OwnerName ?? "Car Owner")</span>
+                </div>
+            </div>
+
+            <!-- Enhanced Features Display -->
+            <div class="features-highlight-3d">
+                <div class="feature-main">
+                    <div class="feature-info">
+                        <span class="feature-label">Premium Features</span>
+                        <div class="feature-value">
+                            <span class="feature-text">Luxury Experience</span>
+                        </div>
+                    </div>
+                    <div class="feature-badge">
+                        <i class="bi bi-star-fill"></i>
+                        <span>Premium</span>
+                    </div>
+                </div>
+                <div class="feature-breakdown">
+                    <small class="insurance-info">
+                        <i class="bi bi-shield-check"></i>
+                        Full coverage included
+                    </small>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="car-actions" data-anime="carActions">
+                <a href="@Url.Action("Details", "Cars", new { id = Model.CarId })" 
+                   class="btn-view-details-3d"
+                   data-anime="viewDetailsBtn">
+                    <span class="btn-content">
+                        <i class="bi bi-eye"></i>
+                        <span class="btn-text">View Details</span>
+                        <i class="bi bi-arrow-right btn-arrow"></i>
+                    </span>
+                    <div class="btn-background"></div>
+                </a>
+                
+                <!-- Book Now Button -->
+                <div class="booking-actions">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a href="@Url.Action("Book", "Bookings", new { carId = Model.CarId })" 
+                           class="btn-book-now-3d"
+                           data-anime="bookNowBtn">
+                            <span class="btn-content">
+                                <i class="bi bi-calendar-plus"></i>
+                                <span class="btn-text">Book Now</span>
+                            </span>
+                            <div class="btn-background"></div>
+                        </a>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn-book-now-3d" 
+                                onclick="showLoginModal()"
+                                data-anime="bookNowBtn">
+                            <span class="btn-content">
+                                <i class="bi bi-calendar-plus"></i>
+                                <span class="btn-text">Book Now</span>
+                            </span>
+                            <div class="btn-background"></div>
+                        </button>
+                    }
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="quick-actions" data-anime="quickActions">
+                    <button class="quick-action-btn" title="Compare" data-anime="quickActionBtn">
+                        <i class="bi bi-arrows-angle-expand"></i>
+                    </button>
+                    <button class="quick-action-btn" title="Calculate Price" data-anime="quickActionBtn">
+                        <i class="bi bi-calculator"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Hover Effects Background -->
+        <div class="card-hover-bg"></div>
+    </div>
+</div>

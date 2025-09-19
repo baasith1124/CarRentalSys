@@ -1,0 +1,436 @@
+@model CarRentalSystem.Web.ViewModels.Dashboard.UserDashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<!-- 3D Interactive Dashboard Scene Container -->
+<div class="dashboard-3d-container">
+    <!-- Parallax Background Layers -->
+    <div class="parallax-layer dashboard-parallax-bg"></div>
+    <div class="parallax-layer dashboard-dots-bg"></div>
+    
+    <!-- Animated Dots Container -->
+    <div class="dashboard-animated-dots-container">
+        <!-- Dynamic dots will be created by JavaScript -->
+    </div>
+    
+    <!-- Interactive Particles -->
+    <div class="dashboard-particles-3d"></div>
+    
+    <!-- Floating 3D Elements Container -->
+    <div class="dashboard-floating-3d-container">
+        <!-- Dynamic floating elements will be created by JavaScript -->
+    </div>
+
+    <!-- Dashboard Content Container -->
+    <div class="dashboard-content-container">
+        <!-- Main Dashboard Content -->
+        <div class="dashboard-main">
+            <!-- Dashboard Header -->
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <h1 class="dashboard-title">Car Rental Dashboard</h1>
+                    <p class="dashboard-subtitle">Welcome back, @Model.Customer.FullName</p>
+                </div>
+                <div class="header-right">
+                    <div class="user-profile">
+                        <img src="~/images/default-avatar.png" alt="Profile" class="profile-img">
+                        <span class="profile-name">@Model.Customer.FullName</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <!-- Key Metrics Cards -->
+                <div class="metrics-grid">
+                    <div class="metric-card bookings-card">
+                        <div class="metric-icon">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-number">@Model.TotalBookings</div>
+                            <div class="metric-label">Total Bookings</div>
+                            <div class="metric-trend positive">
+                                <i class="bi bi-arrow-up"></i>
+                                <span>All time</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card active-card">
+                        <div class="metric-icon">
+                            <i class="bi bi-car-front"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-number">@Model.ActiveRentals</div>
+                            <div class="metric-label">Active Rentals</div>
+                            <div class="metric-trend neutral">
+                                <i class="bi bi-dash"></i>
+                                <span>Currently ongoing</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card spent-card">
+                        <div class="metric-icon">
+                            <i class="bi bi-currency-dollar"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-number">$@Model.TotalSpent.ToString("N0")</div>
+                            <div class="metric-label">Total Spent</div>
+                            <div class="metric-trend positive">
+                                <i class="bi bi-arrow-up"></i>
+                                <span>All time</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card savings-card">
+                        <div class="metric-icon">
+                            <i class="bi bi-piggy-bank"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-number">$@Model.Savings.ToString("N0")</div>
+                            <div class="metric-label">You Saved</div>
+                            <div class="metric-trend positive">
+                                <i class="bi bi-arrow-up"></i>
+                                <span>vs. traditional rental</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Booking Trends</h3>
+                            <div class="chart-controls">
+                                <button class="chart-btn active">Monthly</button>
+                                <button class="chart-btn">Weekly</button>
+                                <button class="chart-btn">Yearly</button>
+                            </div>
+                        </div>
+                        <div class="chart-content">
+                            <canvas id="bookingTrendsChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Spending Analytics</h3>
+                        </div>
+                        <div class="chart-content">
+                            <canvas id="spendingChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Bookings Section -->
+                <div class="recent-section">
+                    <div class="section-header">
+                        <h3 class="section-title">Recent Bookings</h3>
+                        <a href="#" class="view-all-btn">View All</a>
+                    </div>
+                    <div class="bookings-list">
+                        @if (Model.RecentBookings.Any())
+                        {
+                            @foreach (var booking in Model.RecentBookings.Take(5))
+                            {
+                                <div class="booking-item">
+                                    <div class="booking-info">
+                                        <div class="booking-car">@booking.Car.Make @booking.Car.Model</div>
+                                        <div class="booking-details">
+                                            <span class="booking-date">@booking.StartDate.ToString("MMM dd, yyyy")</span>
+                                            <span class="booking-duration">@booking.Duration days</span>
+                                        </div>
+                                    </div>
+                                    <div class="booking-status">
+                                        <span class="status-badge @booking.Status.ToLower()">@booking.Status</span>
+                                        <div class="booking-amount">$@booking.TotalAmount.ToString("N0")</div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="empty-state">
+                                <i class="bi bi-calendar-x"></i>
+                                <p>No recent bookings found</p>
+                                <a asp-controller="Cars" asp-action="Search" class="btn btn-primary">Book Your First Car</a>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Quick Actions Section -->
+                <div class="quick-actions-section">
+                    <div class="section-header">
+                        <h3 class="section-title">Quick Actions</h3>
+                    </div>
+                    <div class="quick-actions-grid">
+                        <a asp-controller="Cars" asp-action="Search" class="quick-action-card">
+                            <div class="action-icon">
+                                <i class="bi bi-search"></i>
+                            </div>
+                            <div class="action-content">
+                                <h4>Find Cars</h4>
+                                <p>Search and book your next rental</p>
+                            </div>
+                        </a>
+
+                        <a asp-controller="Bookings" asp-action="Index" class="quick-action-card">
+                            <div class="action-icon">
+                                <i class="bi bi-calendar-check"></i>
+                            </div>
+                            <div class="action-content">
+                                <h4>My Bookings</h4>
+                                <p>View and manage your bookings</p>
+                            </div>
+                        </a>
+
+                        <a asp-controller="Account" asp-action="Profile" class="quick-action-card">
+                            <div class="action-icon">
+                                <i class="bi bi-person-circle"></i>
+                            </div>
+                            <div class="action-content">
+                                <h4>Profile</h4>
+                                <p>Update your profile information</p>
+                            </div>
+                        </a>
+
+                        <a asp-controller="Account" asp-action="Kyc" class="quick-action-card">
+                            <div class="action-icon">
+                                <i class="bi bi-shield-check"></i>
+                            </div>
+                            <div class="action-content">
+                                <h4>KYC Verification</h4>
+                                <p>Complete your verification</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/dashboard-interactive.css" />
+}
+
+@section Scripts {
+    <!-- Three.js for 3D Effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- Chart.js and Animation Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.0/dist/vanilla-tilt.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="~/js/dashboard-interactive.js"></script>
+    <script src="~/js/dashboard-charts.js"></script>
+    <script src="~/js/sidebar-3d.js"></script>
+    <script src="~/js/dashboard-3d-full.js"></script>
+    <script src="~/js/dashboard-3d-effects.js" asp-append-version="true"></script>
+    
+    <script>
+        // Enhanced 3D Interactive Dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize 3D scene elements
+            initializeDashboardScene3D();
+            
+            // Initialize enhanced animations
+            initializeDashboardAnimations();
+            
+            // Parallax scrolling effect
+            setupParallaxScrolling();
+            
+            // Initialize sidebar navigation (handled by _UserLayout.cshtml)
+            
+            // Initialize charts
+            initializeDashboardCharts();
+        });
+        
+        function initializeDashboardScene3D() {
+            // Create animated dots
+            createDashboardAnimatedDots();
+            
+            // Create floating particles
+            createDashboardFloatingParticles();
+            
+            // Create floating 3D elements
+            createDashboardFloating3DElements();
+        }
+        
+        function createDashboardAnimatedDots() {
+            const container = document.querySelector('.dashboard-animated-dots-container');
+            if (!container) return;
+            
+            for (let i = 0; i < 25; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dashboard-floating-dot';
+                dot.style.left = Math.random() * 100 + '%';
+                dot.style.top = Math.random() * 100 + '%';
+                dot.style.width = Math.random() * 8 + 4 + 'px';
+                dot.style.height = dot.style.width;
+                dot.style.animationDelay = Math.random() * 8 + 's';
+                dot.style.animationDuration = (Math.random() * 4 + 6) + 's';
+                container.appendChild(dot);
+            }
+        }
+        
+        function createDashboardFloatingParticles() {
+            const container = document.querySelector('.dashboard-particles-3d');
+            if (!container) return;
+            
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'dashboard-particle-3d';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                container.appendChild(particle);
+            }
+        }
+        
+        function createDashboardFloating3DElements() {
+            const container = document.querySelector('.dashboard-floating-3d-container');
+            if (!container) return;
+            
+            for (let i = 0; i < 10; i++) {
+                const element = document.createElement('div');
+                element.className = 'dashboard-floating-element-3d';
+                element.style.left = Math.random() * 100 + '%';
+                element.style.top = Math.random() * 100 + '%';
+                element.style.width = Math.random() * 60 + 40 + 'px';
+                element.style.height = Math.random() * 60 + 40 + 'px';
+                element.style.animationDelay = Math.random() * 10 + 's';
+                element.style.animationDuration = (Math.random() * 5 + 8) + 's';
+                container.appendChild(element);
+            }
+        }
+        
+        function setupParallaxScrolling() {
+            const parallaxLayers = document.querySelectorAll('.parallax-layer');
+            
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                const rate = scrolled * -0.5;
+                
+                parallaxLayers.forEach((layer, index) => {
+                    const speed = (index + 1) * 0.1;
+                    layer.style.transform = `translateY(${rate * speed}px)`;
+                });
+            });
+        }
+        
+        function initializeDashboardAnimations() {
+            // Animate cards on scroll
+            const cards = document.querySelectorAll('.metric-card, .chart-card, .booking-item, .quick-action-card');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationDelay = '0s';
+                        entry.target.classList.add('animate-in');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            cards.forEach(card => observer.observe(card));
+        }
+        
+        // Sidebar navigation is handled by _UserLayout.cshtml
+        
+        function initializeDashboardCharts() {
+            // Initialize booking trends chart
+            const bookingCtx = document.getElementById('bookingTrendsChart');
+            if (bookingCtx) {
+                new Chart(bookingCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                        datasets: [{
+                            label: 'Bookings',
+                            data: [12, 19, 3, 5, 2, 3, 8],
+                            backgroundColor: 'rgba(35, 35, 255, 0.8)',
+                            borderColor: 'rgba(35, 35, 255, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: 'rgba(255, 255, 255, 0.7)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Initialize spending chart
+            const spendingCtx = document.getElementById('spendingChart');
+            if (spendingCtx) {
+                new Chart(spendingCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Car Rental', 'Insurance', 'Fuel', 'Maintenance'],
+                        datasets: [{
+                            data: [65, 15, 10, 10],
+                            backgroundColor: [
+                                'rgba(35, 35, 255, 0.8)',
+                                'rgba(16, 185, 129, 0.8)',
+                                'rgba(245, 158, 11, 0.8)',
+                                'rgba(236, 72, 153, 0.8)'
+                            ],
+                            borderColor: [
+                                'rgba(35, 35, 255, 1)',
+                                'rgba(16, 185, 129, 1)',
+                                'rgba(245, 158, 11, 1)',
+                                'rgba(236, 72, 153, 1)'
+                            ],
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    color: 'rgba(255, 255, 255, 0.7)',
+                                    padding: 20
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+    </script>
+}

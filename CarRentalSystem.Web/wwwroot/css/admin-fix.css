@@ -1,0 +1,53 @@
+/* Admin Panel Link Fix */
+#admin-panel-link {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    z-index: 9999 !important;
+    position: relative !important;
+    display: block !important;
+    text-decoration: none !important;
+}
+
+#admin-panel-link:hover {
+    background-color: #f8f9fa !important;
+    color: #000 !important;
+    text-decoration: none !important;
+}
+
+#admin-panel-link:active {
+    background-color: #e9ecef !important;
+    color: #000 !important;
+}
+
+/* Ensure dropdown is clickable */
+.dropdown-menu {
+    pointer-events: auto !important;
+    z-index: 1050 !important;
+}
+
+.dropdown-item {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+/* Fix any potential Bootstrap conflicts */
+.navbar-nav .dropdown-menu {
+    pointer-events: auto !important;
+}
+
+/* Ensure no overlay is blocking clicks */
+.navbar-nav .dropdown-menu::before,
+.navbar-nav .dropdown-menu::after {
+    display: none !important;
+}
+
+/* Force admin link to be visible and clickable */
+#admin-panel-link * {
+    pointer-events: auto !important;
+}
+
+/* Debug styles - remove in production */
+#admin-panel-link {
+    border: 2px solid red !important;
+    background-color: rgba(255, 0, 0, 0.1) !important;
+}

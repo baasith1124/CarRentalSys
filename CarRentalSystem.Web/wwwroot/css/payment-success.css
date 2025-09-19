@@ -1,0 +1,104 @@
+/* Payment Success Page Styles */
+
+.payment-success {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    min-height: 100vh;
+}
+
+.success-card {
+    border: none;
+    border-radius: 1.5rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    background: white;
+}
+
+.success-icon i {
+    font-size: 4rem;
+    color: #28a745;
+    animation: bounceIn 0.6s ease-out;
+}
+
+@keyframes bounceIn {
+    0% {
+        transform: scale(0.3);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.payment-details {
+    background: #f8f9fa;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+}
+
+.detail-item {
+    text-align: center;
+}
+
+.steps-list {
+    text-align: left;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+}
+
+.step-item i {
+    font-size: 1.25rem;
+    width: 20px;
+    text-align: center;
+}
+
+.action-buttons .btn {
+    border-radius: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+}
+
+.support-info {
+    font-size: 0.875rem;
+}
+
+.support-info a {
+    color: #007bff;
+}
+
+.support-info a:hover {
+    text-decoration: underline !important;
+}
+
+@media (max-width: 576px) {
+    .success-icon i {
+        font-size: 3rem;
+    }
+    
+    .display-6 {
+        font-size: 1.75rem;
+    }
+    
+    .action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .action-buttons .btn {
+        width: 100%;
+    }
+}

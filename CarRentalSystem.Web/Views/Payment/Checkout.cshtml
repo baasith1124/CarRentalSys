@@ -1,0 +1,487 @@
+@model CarRentalSystem.Web.ViewModels.Payment.PaymentCheckoutViewModel
+
+@{
+    ViewData["Title"] = "Complete Your Payment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/payment-checkout.css" asp-append-version="true" />
+}
+
+<!-- 3D Interactive Payment Scene Container -->
+<div class="payment-scene-container">
+    <!-- Parallax Background Layers -->
+    <div class="parallax-layer payment-parallax-bg"></div>
+    <div class="parallax-layer payment-dots-bg"></div>
+    
+    <!-- Animated Dots Container -->
+    <div class="payment-animated-dots-container">
+        <!-- Dynamic dots will be created by JavaScript -->
+    </div>
+    
+    <!-- Interactive Particles -->
+    <div class="payment-particles-3d"></div>
+    
+    <!-- Floating 3D Elements Container -->
+    <div class="payment-floating-3d-container">
+        <!-- Dynamic floating elements will be created by JavaScript -->
+    </div>
+
+    <div class="payment-checkout">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <!-- Enhanced Header with 3D Effects -->
+                    <div class="text-center mb-5 payment-hero-section">
+                        <div class="payment-hero-content-3d">
+                            <h1 class="payment-hero-title-3d">
+                                <i class="bi bi-credit-card payment-hero-icon"></i>
+                                Complete Your Payment
+                            </h1>
+                            <p class="payment-hero-subtitle-3d">Secure payment powered by Stripe</p>
+                            <div class="payment-security-badge">
+                                <i class="bi bi-shield-check"></i>
+                                <span>256-bit SSL Encryption</span>
+                            </div>
+                        </div>
+                    </div>
+
+                <div class="row g-4">
+                    <!-- Enhanced Payment Form with 3D Effects -->
+                    <div class="col-lg-6">
+                        <div class="card-3d-interactive payment-card-enhanced">
+                            <div class="card-header-3d payment-header">
+                                <h5 class="card-title-3d mb-0">
+                                    <i class="bi bi-shield-check payment-header-icon"></i>
+                                    Payment Information
+                                </h5>
+                                <div class="payment-header-glow"></div>
+                            </div>
+                            <div class="card-body-3d">
+                                <form id="payment-form" class="payment-form-3d">
+                                    <div class="form-group-3d mb-4">
+                                        <label class="form-label-3d">
+                                            <i class="bi bi-credit-card"></i>
+                                            Card Number
+                                        </label>
+                                        <div id="card-number-element" class="form-control-3d stripe-element-3d">
+                                            <!-- Stripe Elements will create form elements here -->
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="form-group-3d">
+                                                <label class="form-label-3d">
+                                                    <i class="bi bi-calendar"></i>
+                                                    Expiry Date
+                                                </label>
+                                                <div id="card-expiry-element" class="form-control-3d stripe-element-3d">
+                                                    <!-- Stripe Elements will create form elements here -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group-3d">
+                                                <label class="form-label-3d">
+                                                    <i class="bi bi-key"></i>
+                                                    CVC
+                                                </label>
+                                                <div id="card-cvc-element" class="form-control-3d stripe-element-3d">
+                                                    <!-- Stripe Elements will create form elements here -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group-3d mb-4">
+                                        <label class="form-label-3d">
+                                            <i class="bi bi-person"></i>
+                                            Cardholder Name
+                                        </label>
+                                        <input type="text" id="cardholder-name" class="form-control-3d" placeholder="John Doe" required />
+                                    </div>
+                                    
+                                    <div id="card-errors" class="alert-3d alert-danger-3d d-none" role="alert"></div>
+                                    
+                                    <button type="submit" id="submit-payment" class="btn-3d-interactive btn-primary-3d payment-submit-btn">
+                                        <span id="button-text" class="btn-content">
+                                            <i class="bi bi-lock"></i>
+                                            Pay $@Model.Amount.ToString("N2")
+                                        </span>
+                                        <span id="spinner" class="spinner d-none">
+                                            <i class="bi bi-arrow-clockwise spin"></i>
+                                            Processing...
+                                        </span>
+                                        <div class="btn-background"></div>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Enhanced Order Summary with 3D Effects -->
+                    <div class="col-lg-6">
+                        <div class="card-3d-interactive order-summary-enhanced">
+                            <div class="card-header-3d order-summary-header">
+                                <h5 class="card-title-3d mb-0">
+                                    <i class="bi bi-receipt order-summary-icon"></i>
+                                    Order Summary
+                                </h5>
+                                <div class="order-summary-glow"></div>
+                            </div>
+                            <div class="card-body-3d">
+                                <!-- Enhanced Car Details -->
+                                <div class="order-item-3d">
+                                    <div class="car-details-card-3d">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div class="car-info-3d">
+                                                <h6 class="car-name-3d">@Model.CarName</h6>
+                                                <div class="rental-dates-3d">
+                                                    <div class="date-item">
+                                                        <i class="bi bi-calendar-plus text-success"></i>
+                                                        <span>@Model.PickupDate.ToString("MMM dd, yyyy")</span>
+                                                    </div>
+                                                    <div class="date-item">
+                                                        <i class="bi bi-calendar-minus text-danger"></i>
+                                                        <span>@Model.ReturnDate.ToString("MMM dd, yyyy")</span>
+                                                    </div>
+                                                </div>
+                                                <div class="rental-duration-3d">
+                                                    <i class="bi bi-clock text-info"></i>
+                                                    <span>@Model.Days day(s)</span>
+                                                </div>
+                                            </div>
+                                            <div class="car-image-3d">
+                                                <i class="bi bi-car-front-fill"></i>
+                                                <div class="car-image-glow"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Enhanced Pricing Breakdown -->
+                                <div class="pricing-breakdown-3d">
+                                    <div class="pricing-header">
+                                        <i class="bi bi-calculator"></i>
+                                        <span>Payment Breakdown</span>
+                                    </div>
+                                    
+                                    <div class="pricing-items-3d">
+                                        <div class="pricing-item-3d">
+                                            <span class="pricing-label-3d">Daily Rate</span>
+                                            <span class="pricing-value-3d">$@Model.DailyRate.ToString("N2")</span>
+                                        </div>
+                                        <div class="pricing-item-3d">
+                                            <span class="pricing-label-3d">Duration</span>
+                                            <span class="pricing-value-3d">@Model.Days day(s)</span>
+                                        </div>
+                                        <div class="pricing-item-3d">
+                                            <span class="pricing-label-3d">Subtotal</span>
+                                            <span class="pricing-value-3d">$@Model.Amount.ToString("N2")</span>
+                                        </div>
+                                        <div class="pricing-item-3d">
+                                            <span class="pricing-label-3d">Service Fee</span>
+                                            <span class="pricing-value-3d text-success-3d">FREE</span>
+                                        </div>
+                                        
+                                        <div class="pricing-divider"></div>
+                                        
+                                        <div class="pricing-item-3d total-item-3d">
+                                            <span class="pricing-label-3d fw-bold">Total</span>
+                                            <span class="pricing-value-3d fw-bold text-primary-3d">$@Model.Amount.ToString("N2")</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Enhanced Security Features -->
+                                <div class="security-features-3d">
+                                    <div class="security-header">
+                                        <i class="bi bi-shield-check"></i>
+                                        <span>Security Features</span>
+                                    </div>
+                                    
+                                    <div class="security-items-3d">
+                                        <div class="security-item-3d">
+                                            <i class="bi bi-shield-check text-success-3d"></i>
+                                            <span>256-bit SSL encryption</span>
+                                        </div>
+                                        <div class="security-item-3d">
+                                            <i class="bi bi-credit-card text-primary-3d"></i>
+                                            <span>Powered by Stripe</span>
+                                        </div>
+                                        <div class="security-item-3d">
+                                            <i class="bi bi-lock text-warning-3d"></i>
+                                            <span>Your payment information is secure</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enhanced Back to Booking Button -->
+                <div class="text-center mt-5">
+                    <a href="javascript:history.back()" class="btn-3d-interactive btn-secondary-3d back-to-booking-btn">
+                        <i class="bi bi-arrow-left"></i>
+                        Back to Booking
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Enhanced Payment Success Modal with 3D Effects -->
+<div class="modal fade" id="paymentSuccessModal" tabindex="-1" aria-labelledby="paymentSuccessModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg payment-success-modal-3d">
+            <!-- Modal Header -->
+            <div class="modal-header-3d border-0 pb-0">
+                <button type="button" class="btn-close-3d" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body-3d p-0">
+                <div class="row g-0">
+                    <!-- Left Side - Enhanced Success Animation & Message -->
+                    <div class="col-lg-5 success-section-3d d-flex flex-column justify-content-center align-items-center p-5">
+                        <!-- Enhanced Success Animation -->
+                        <div class="success-checkmark-3d mb-4">
+                            <div class="check-icon-3d">
+                                <span class="icon-line-3d line-tip-3d"></span>
+                                <span class="icon-line-3d line-long-3d"></span>
+                                <div class="icon-circle-3d"></div>
+                                <div class="icon-fix-3d"></div>
+                            </div>
+                            <div class="success-particles"></div>
+                        </div>
+                        
+                        <!-- Enhanced Success Message -->
+                        <h2 class="success-title-3d text-white fw-bold mb-3 text-center">
+                            Payment Successful!
+                        </h2>
+                        
+                        <p class="success-subtitle-3d text-white-50 mb-4 text-center">
+                            Your booking has been confirmed and payment processed successfully.
+                        </p>
+                        
+                        <!-- Enhanced Transaction Info -->
+                        <div class="transaction-info-3d bg-white bg-opacity-10 rounded p-3 w-100">
+                            <h6 class="text-white fw-bold mb-2">
+                                <i class="bi bi-receipt"></i>
+                                Transaction Details
+                            </h6>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-white-50">Booking ID:</span>
+                                <span id="successBookingId" class="text-white fw-bold"></span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-white-50">Payment ID:</span>
+                                <span id="successPaymentId" class="text-white"></span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-white-50">Date:</span>
+                                <span id="successDate" class="text-white"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Side - Enhanced Order Summary -->
+                    <div class="col-lg-7 order-summary-section-3d p-5">
+                        <div class="order-summary-header-3d mb-4">
+                            <h4 class="fw-bold text-dark mb-2">
+                                <i class="bi bi-file-earmark-text text-primary"></i>
+                                Order Summary
+                            </h4>
+                            <p class="text-muted mb-0">Your rental booking details</p>
+                        </div>
+                        
+                        <!-- Enhanced Car Details Card -->
+                        <div class="car-details-card-3d mb-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="car-icon-3d me-3">
+                                    <i class="bi bi-car-front-fill text-primary"></i>
+                                    <div class="car-icon-glow"></div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 id="successCarName" class="fw-bold text-dark mb-1">@Model.CarName</h5>
+                                    <p class="text-muted mb-0">
+                                        <i class="bi bi-geo-alt"></i>
+                                        Pickup & Return Location
+                                    </p>
+                                </div>
+                                <div class="booking-status-3d">
+                                    <span class="badge-3d bg-success-3d fs-6 px-3 py-2">
+                                        <i class="bi bi-check-circle"></i>
+                                        Confirmed
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Rental Details -->
+                        <div class="rental-details mb-4">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="detail-item">
+                                        <div class="detail-icon">
+                                            <i class="bi bi-calendar-plus text-success"></i>
+                                        </div>
+                                        <div class="detail-content">
+                                            <span class="detail-label">Pickup Date</span>
+                                            <span id="successPickupDate" class="detail-value">@Model.PickupDate.ToString("MMM dd, yyyy h:mm tt")</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="detail-item">
+                                        <div class="detail-icon">
+                                            <i class="bi bi-calendar-minus text-danger"></i>
+                                        </div>
+                                        <div class="detail-content">
+                                            <span class="detail-label">Return Date</span>
+                                            <span id="successReturnDate" class="detail-value">@Model.ReturnDate.ToString("MMM dd, yyyy h:mm tt")</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="detail-item">
+                                        <div class="detail-icon">
+                                            <i class="bi bi-clock text-info"></i>
+                                        </div>
+                                        <div class="detail-content">
+                                            <span class="detail-label">Duration</span>
+                                            <span id="successDuration" class="detail-value">@Model.Days day(s)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="detail-item">
+                                        <div class="detail-icon">
+                                            <i class="bi bi-currency-dollar text-warning"></i>
+                                        </div>
+                                        <div class="detail-content">
+                                            <span class="detail-label">Daily Rate</span>
+                                            <span id="successDailyRate" class="detail-value">$@Model.DailyRate.ToString("N2")</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Pricing Breakdown -->
+                        <div class="pricing-breakdown-card">
+                            <h6 class="fw-bold text-dark mb-3">
+                                <i class="bi bi-calculator text-primary"></i>
+                                Payment Breakdown
+                            </h6>
+                            
+                            <div class="pricing-items">
+                                <div class="pricing-item">
+                                    <span class="pricing-label">Rental Cost (@Model.Days days × $@Model.DailyRate.ToString("N2"))</span>
+                                    <span class="pricing-value">$@Model.Amount.ToString("N2")</span>
+                                </div>
+                                <div class="pricing-item">
+                                    <span class="pricing-label">Service Fee</span>
+                                    <span class="pricing-value text-success">FREE</span>
+                                </div>
+                                <div class="pricing-item">
+                                    <span class="pricing-label">Processing Fee</span>
+                                    <span class="pricing-value text-success">FREE</span>
+                                </div>
+                                <div class="pricing-item">
+                                    <span class="pricing-label">Taxes & Fees</span>
+                                    <span class="pricing-value">Included</span>
+                                </div>
+                                <hr class="my-3">
+                                <div class="pricing-item total-item">
+                                    <span class="pricing-label fw-bold">Total Paid</span>
+                                    <span id="successTotalAmount" class="pricing-value fw-bold text-primary fs-5">$@Model.Amount.ToString("N2")</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Enhanced Action Buttons -->
+                        <div class="action-buttons-3d mt-4">
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <button type="button" class="btn-3d-interactive btn-primary-3d w-100" onclick="goToDashboard()">
+                                        <i class="bi bi-speedometer2"></i>
+                                        View My Bookings
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button type="button" class="btn-3d-interactive btn-secondary-3d w-100" onclick="downloadReceipt()">
+                                        <i class="bi bi-download"></i>
+                                        Download Receipt
+                                    </button>
+                                </div>
+                                <div class="col-12">
+                                    <button type="button" class="btn-3d-interactive btn-outline-3d w-100" onclick="goToHome()">
+                                        <i class="bi bi-house"></i>
+                                        Continue Shopping
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Enhanced Support Info -->
+                        <div class="support-info-3d mt-4 p-3 bg-light rounded">
+                            <div class="row g-3 text-center">
+                                <div class="col-md-4">
+                                    <div class="support-item-3d">
+                                        <i class="bi bi-headset text-primary"></i>
+                                        <div class="support-text-3d">
+                                            <small class="fw-bold d-block">24/7 Support</small>
+                                            <small class="text-muted">We're here to help</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="support-item-3d">
+                                        <i class="bi bi-shield-check text-success"></i>
+                                        <div class="support-text-3d">
+                                            <small class="fw-bold d-block">Secure Payment</small>
+                                            <small class="text-muted">SSL Protected</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="support-item-3d">
+                                        <i class="bi bi-arrow-clockwise text-info"></i>
+                                        <div class="support-text-3d">
+                                            <small class="fw-bold d-block">Easy Cancellation</small>
+                                            <small class="text-muted">Flexible booking</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        // Set model data for external script
+        window.paymentCheckoutData = {
+            stripePublishableKey: '@ViewBag.StripePublishableKey',
+            bookingId: '@Model.BookingId',
+            amount: @Model.Amount,
+            carName: '@Model.CarName',
+            pickupDate: '@Model.PickupDate.ToString("MMM dd, yyyy h:mm tt")',
+            returnDate: '@Model.ReturnDate.ToString("MMM dd, yyyy h:mm tt")',
+            days: '@Model.Days',
+            dailyRate: '@Model.DailyRate.ToString("N2")',
+            totalAmount: '@Model.Amount.ToString("N2")'
+        };
+    </script>
+    <script src="~/js/payment-checkout.js" asp-append-version="true"></script>
+}

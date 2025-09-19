@@ -1,0 +1,318 @@
+@model CarRentalSystem.Application.Contracts.Booking.BookingDto
+
+@{
+    ViewData["Title"] = "Booking Details";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="booking-details-page">
+    <div class="container py-4">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" class="text-decoration-none">Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-action="Bookings" class="text-decoration-none">My Bookings</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Booking Details</li>
+                    </ol>
+                </nav>
+                <h1 class="display-6 fw-bold text-primary mb-0">
+                    <i class="bi bi-file-earmark-text"></i>
+                    Booking Details
+                </h1>
+                <p class="text-muted">Booking ID: #@Model.BookingId.ToString().Substring(0, 8).ToUpper()</p>
+            </div>
+            <div>
+                <a asp-action="Bookings" class="btn btn-outline-secondary me-2">
+                    <i class="bi bi-arrow-left"></i> Back to Bookings
+                </a>
+                @if (Model.PaymentStatus == "Paid")
+                {
+                    <button type="button" class="btn btn-success" onclick="downloadInvoice('@Model.BookingId')">
+                        <i class="bi bi-download"></i> Download Invoice
+                    </button>
+                }
+            </div>
+        </div>
+
+        <!-- Booking Status Banner -->
+        <div class="alert @(Model.BookingStatus == "Confirmed" ? "alert-success" : 
+                           Model.BookingStatus == "Pending" ? "alert-warning" : 
+                           Model.BookingStatus == "Cancelled" ? "alert-danger" : 
+                           Model.BookingStatus == "Completed" ? "alert-info" : "alert-secondary") 
+                           d-flex align-items-center mb-4">
+            <i class="bi @(Model.BookingStatus == "Confirmed" ? "bi-check-circle" : 
+                          Model.BookingStatus == "Pending" ? "bi-clock" : 
+                          Model.BookingStatus == "Cancelled" ? "bi-x-circle" : 
+                          Model.BookingStatus == "Completed" ? "bi-flag" : "bi-info-circle") 
+                          me-2"></i>
+            <div>
+                <strong>Booking Status: @Model.BookingStatus</strong>
+                @if (Model.BookingStatus == "Confirmed")
+                {
+                    <div class="small">Your booking is confirmed and ready for pickup.</div>
+                }
+                else if (Model.BookingStatus == "Pending")
+                {
+                    <div class="small">Your booking is being processed. We'll update you soon.</div>
+                }
+                else if (Model.BookingStatus == "Cancelled")
+                {
+                    <div class="small">This booking has been cancelled.</div>
+                }
+                else if (Model.BookingStatus == "Completed")
+                {
+                    <div class="small">This rental has been completed. Thank you for choosing us!</div>
+                }
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="row g-4">
+            <!-- Booking Information -->
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-car-front text-primary"></i>
+                            Vehicle & Rental Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="detail-group">
+                                    <label class="detail-label">Vehicle</label>
+                                    <div class="detail-value">
+                                        <i class="bi bi-car-front me-2 text-primary"></i>
+                                        <strong>@Model.CarName</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="detail-group">
+                                    <label class="detail-label">Customer</label>
+                                    <div class="detail-value">
+                                        <i class="bi bi-person me-2 text-primary"></i>
+                                        @Model.CustomerName
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="detail-group">
+                                    <label class="detail-label">Pickup Date & Time</label>
+                                    <div class="detail-value">
+                                        <i class="bi bi-calendar-event me-2 text-success"></i>
+                                        @Model.PickupDate.ToString("dddd, MMMM dd, yyyy")
+                                        <br>
+                                        <small class="text-muted">@Model.PickupDate.ToString("hh:mm tt")</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="detail-group">
+                                    <label class="detail-label">Return Date & Time</label>
+                                    <div class="detail-value">
+                                        <i class="bi bi-calendar-check me-2 text-warning"></i>
+                                        @Model.ReturnDate.ToString("dddd, MMMM dd, yyyy")
+                                        <br>
+                                        <small class="text-muted">@Model.ReturnDate.ToString("hh:mm tt")</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="detail-group">
+                                    <label class="detail-label">Pickup Location</label>
+                                    <div class="detail-value">
+                                        <i class="bi bi-geo-alt me-2 text-info"></i>
+                                        @Model.PickupLocation
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="rental-duration-card">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-8">
+                                            <h6 class="mb-1">
+                                                <i class="bi bi-clock me-2"></i>
+                                                Rental Duration
+                                            </h6>
+                                            <p class="mb-0 text-muted">
+                                                @{
+                                                    var duration = (Model.ReturnDate - Model.PickupDate).Days;
+                                                    var hours = (Model.ReturnDate - Model.PickupDate).Hours;
+                                                }
+                                                @duration day@(duration != 1 ? "s" : "")
+                                                @if (hours > 0)
+                                                {
+                                                    <text>, @hours hour@(hours != 1 ? "s" : "")</text>
+                                                }
+                                            </p>
+                                        </div>
+                                        <div class="col-md-4 text-md-end">
+                                            <div class="duration-badge">
+                                                @duration day@(duration != 1 ? "s" : "")
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline (if confirmed) -->
+                @if (Model.BookingStatus == "Confirmed" || Model.BookingStatus == "Completed")
+                {
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-list-check text-primary"></i>
+                                Rental Timeline
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="timeline">
+                                <div class="timeline-item @(DateTime.Now >= Model.PickupDate.AddDays(-1) ? "completed" : "")">
+                                    <div class="timeline-marker">
+                                        <i class="bi bi-calendar-plus"></i>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <h6>Booking Confirmed</h6>
+                                        <p class="text-muted mb-0">Your reservation is confirmed and vehicle is reserved.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item @(DateTime.Now >= Model.PickupDate ? "completed" : DateTime.Now >= Model.PickupDate.AddHours(-2) ? "active" : "")">
+                                    <div class="timeline-marker">
+                                        <i class="bi bi-car-front"></i>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <h6>Vehicle Pickup</h6>
+                                        <p class="text-muted mb-0">
+                                            @Model.PickupDate.ToString("MMM dd, yyyy hh:mm tt")
+                                            <br>
+                                            <small>@Model.PickupLocation</small>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item @(DateTime.Now >= Model.ReturnDate ? "completed" : DateTime.Now >= Model.ReturnDate.AddHours(-2) ? "active" : "")">
+                                    <div class="timeline-marker">
+                                        <i class="bi bi-arrow-return-left"></i>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <h6>Vehicle Return</h6>
+                                        <p class="text-muted mb-0">
+                                            @Model.ReturnDate.ToString("MMM dd, yyyy hh:mm tt")
+                                            <br>
+                                            <small>@Model.PickupLocation</small>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item @(Model.BookingStatus == "Completed" ? "completed" : "")">
+                                    <div class="timeline-marker">
+                                        <i class="bi bi-check-circle"></i>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <h6>Rental Complete</h6>
+                                        <p class="text-muted mb-0">Vehicle returned and rental completed successfully.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Payment Summary -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-credit-card text-primary"></i>
+                            Payment Summary
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="payment-details">
+                            <div class="payment-row">
+                                <span>Rental Cost</span>
+                                <span>$@Model.TotalCost.ToString("N2")</span>
+                            </div>
+                            <div class="payment-row total">
+                                <span><strong>Total Amount</strong></span>
+                                <span><strong>$@Model.TotalCost.ToString("N2")</strong></span>
+                            </div>
+                            <div class="payment-status mt-3">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span>Payment Status:</span>
+                                    <span class="badge @(Model.PaymentStatus == "Paid" ? "bg-success" : "bg-warning") px-3 py-2">
+                                        @Model.PaymentStatus
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (Model.PaymentStatus == "Pending" && Model.BookingStatus != "Cancelled")
+                        {
+                            <div class="mt-4">
+                                <a asp-controller="Payment" asp-action="Checkout" asp-route-bookingId="@Model.BookingId" 
+                                   class="btn btn-primary w-100">
+                                    <i class="bi bi-credit-card"></i> Complete Payment
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-lightning text-primary"></i>
+                            Quick Actions
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            @if (Model.PaymentStatus == "Paid")
+                            {
+                                <button type="button" class="btn btn-outline-success" onclick="downloadInvoice('@Model.BookingId')">
+                                    <i class="bi bi-download"></i> Download Invoice
+                                </button>
+                            }
+                            @if (Model.BookingStatus == "Confirmed" && Model.PickupDate > DateTime.Now.AddHours(24))
+                            {
+                                <button type="button" class="btn btn-outline-warning" onclick="modifyBooking('@Model.BookingId')">
+                                    <i class="bi bi-pencil"></i> Modify Booking
+                                </button>
+                                <button type="button" class="btn btn-outline-danger" onclick="cancelBooking('@Model.BookingId')">
+                                    <i class="bi bi-x-circle"></i> Cancel Booking
+                                </button>
+                            }
+                            <a asp-controller="Contact" asp-action="Index" class="btn btn-outline-info">
+                                <i class="bi bi-headset"></i> Contact Support
+                            </a>
+                            <a asp-controller="Cars" asp-action="Search" class="btn btn-outline-primary">
+                                <i class="bi bi-search"></i> Book Another Car
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/booking-details.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script src="~/js/booking-details.js" asp-append-version="true"></script>
+}

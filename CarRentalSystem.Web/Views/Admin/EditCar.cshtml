@@ -1,0 +1,329 @@
+@model CarRentalSystem.Web.ViewModels.Admin.AdminEditCarViewModel
+
+@{
+    ViewData["Title"] = "Edit Car";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="edit-car-page-3d">
+    <!-- Enhanced 3D Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="page-title-3d">
+                <i class="bi bi-pencil-square title-icon-3d"></i>
+                Edit Car: @Model.Name @Model.Model
+            </h2>
+            <p class="text-muted-3d">Update car information and settings</p>
+        </div>
+        <div class="header-actions-3d">
+            <a asp-action="Cars" class="btn-3d-interactive btn-secondary-3d">
+                <i class="bi bi-arrow-left"></i> Back to Cars
+            </a>
+        </div>
+    </div>
+
+    <!-- Edit Car Form -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card-3d-interactive">
+                <div class="card-header-3d">
+                    <h5 class="card-title-3d mb-0">
+                        <i class="bi bi-car-front"></i>
+                        Car Information
+                    </h5>
+                </div>
+                <div class="card-body-3d">
+                    <form asp-action="EditCar" asp-route-carId="@Model.CarId" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+                        <input type="hidden" asp-for="CarId" />
+                        <input type="hidden" name="carId" value="@Model.CarId" />
+                        
+                        <div class="row g-3">
+                            <!-- Basic Information -->
+                            <div class="col-md-6">
+                                <label asp-for="Name" class="form-label"></label>
+                                <input asp-for="Name" class="form-control" placeholder="Enter car name">
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Model" class="form-label"></label>
+                                <input asp-for="Model" class="form-control" placeholder="Enter car model">
+                                <span asp-validation-for="Model" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="Year" class="form-label"></label>
+                                <input asp-for="Year" class="form-control" placeholder="2024">
+                                <span asp-validation-for="Year" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="Transmission" class="form-label"></label>
+                                <select asp-for="Transmission" class="form-select">
+                                    <option value="">Select Transmission</option>
+                                    <option value="Manual">Manual</option>
+                                    <option value="Automatic">Automatic</option>
+                                    <option value="CVT">CVT</option>
+                                    <option value="Semi-Automatic">Semi-Automatic</option>
+                                </select>
+                                <span asp-validation-for="Transmission" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="FuelType" class="form-label"></label>
+                                <select asp-for="FuelType" class="form-select">
+                                    <option value="">Select Fuel Type</option>
+                                    <option value="Petrol">Petrol</option>
+                                    <option value="Diesel">Diesel</option>
+                                    <option value="Electric">Electric</option>
+                                    <option value="Hybrid">Hybrid</option>
+                                    <option value="CNG">CNG</option>
+                                </select>
+                                <span asp-validation-for="FuelType" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="RatePerDay" class="form-label"></label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input asp-for="RatePerDay" class="form-control" placeholder="0.00">
+                                </div>
+                                <span asp-validation-for="RatePerDay" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="OwnerId" class="form-label"></label>
+                                <select asp-for="OwnerId" class="form-select">
+                                    <option value="">Select Car Owner</option>
+                                    @foreach (var owner in Model.AvailableOwners)
+                                    {
+                                        <option value="@owner.Id" selected="@(owner.Id == Model.OwnerId)">
+                                            @owner.Name (@owner.Email)
+                                        </option>
+                                    }
+                                </select>
+                                <span asp-validation-for="OwnerId" class="text-danger"></span>
+                            </div>
+
+                            <!-- Approval Status -->
+                            <div class="col-md-6">
+                                <label asp-for="ApprovalStatus" class="form-label"></label>
+                                <select asp-for="ApprovalStatus" class="form-select">
+                                    @foreach (var status in Model.AvailableStatuses)
+                                    {
+                                        <option value="@status.Value" selected="@(status.Value == Model.ApprovalStatus)">
+                                            @status.Text
+                                        </option>
+                                    }
+                                </select>
+                                <span asp-validation-for="ApprovalStatus" class="text-danger"></span>
+                            </div>
+
+                            <!-- Availability -->
+                            <div class="col-md-6">
+                                <label asp-for="AvailableFrom" class="form-label"></label>
+                                <input asp-for="AvailableFrom" class="form-control" type="date">
+                                <span asp-validation-for="AvailableFrom" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="AvailableTo" class="form-label"></label>
+                                <input asp-for="AvailableTo" class="form-control" type="date">
+                                <span asp-validation-for="AvailableTo" class="text-danger"></span>
+                            </div>
+
+                            <!-- Current Image Display -->
+                            @if (!string.IsNullOrEmpty(Model.CurrentImagePath))
+                            {
+                                <div class="col-12">
+                                    <label class="form-label">Current Image</label>
+                                    <div class="current-image-container">
+                                        <img src="@Model.CurrentImagePath" alt="Current car image" class="current-car-image">
+                                    </div>
+                                    <small class="form-text text-muted">Current car image</small>
+                                </div>
+                            }
+
+                            <!-- New Image Upload -->
+                            <div class="col-12">
+                                <label asp-for="ImageFile" class="form-label"></label>
+                                <input asp-for="ImageFile" class="form-control" type="file" accept="image/*">
+                                <small class="form-text text-muted">Upload a new car image (JPG, PNG, GIF - Max 5MB)</small>
+                                <span asp-validation-for="ImageFile" class="text-danger"></span>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="col-12">
+                                <label asp-for="Description" class="form-label"></label>
+                                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Enter car description..."></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+
+                            <!-- Features -->
+                            <div class="col-12">
+                                <label asp-for="Features" class="form-label"></label>
+                                <textarea asp-for="Features" class="form-control" rows="3" placeholder="Enter car features (e.g., Air Conditioning, GPS, Bluetooth...)"></textarea>
+                                <span asp-validation-for="Features" class="text-danger"></span>
+                            </div>
+
+                            <!-- Submit Buttons -->
+                            <div class="col-12">
+                                <hr>
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn-3d-interactive btn-primary-3d">
+                                        <i class="bi bi-check-circle"></i> Update Car
+                                    </button>
+                                    <a asp-action="Cars" class="btn-3d-interactive btn-secondary-3d">
+                                        <i class="bi bi-x-circle"></i> Cancel
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Car Info Panel -->
+        <div class="col-lg-4">
+            <div class="card-3d-interactive">
+                <div class="card-header-3d">
+                    <h6 class="card-title-3d mb-0">
+                        <i class="bi bi-info-circle"></i>
+                        Car Details
+                    </h6>
+                </div>
+                <div class="card-body-3d">
+                    <div class="car-info-item">
+                        <strong>Car ID:</strong>
+                        <span class="text-muted">#@Model.CarId.ToString().Substring(0, 8)</span>
+                    </div>
+                    
+                    <div class="car-info-item">
+                        <strong>Current Owner:</strong>
+                        <span class="text-muted">@Model.OwnerName</span>
+                    </div>
+                    
+                    <div class="car-info-item">
+                        <strong>Current Status:</strong>
+                        <span class="badge bg-@(Model.ApprovalStatus == "Approved" ? "success" : Model.ApprovalStatus == "Pending" ? "warning" : "danger")">
+                            @Model.ApprovalStatus
+                        </span>
+                    </div>
+                    
+                    @if (!string.IsNullOrEmpty(Model.CurrentImagePath))
+                    {
+                        <div class="car-info-item">
+                            <strong>Current Image:</strong>
+                            <div class="mt-2">
+                                <img src="@Model.CurrentImagePath" alt="Car image" class="img-fluid rounded" style="max-width: 100%; height: auto;">
+                            </div>
+                        </div>
+                    }
+
+                    <hr>
+                    
+                    <h6>Update Guidelines</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-check text-success"></i> Verify all information is accurate</li>
+                        <li><i class="bi bi-check text-success"></i> Update rates based on market conditions</li>
+                        <li><i class="bi bi-check text-success"></i> Ensure availability dates are correct</li>
+                        <li><i class="bi bi-check text-success"></i> Review and update features list</li>
+                        <li><i class="bi bi-check text-success"></i> Upload high-quality images</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    
+    <script>
+        // Form validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const availableFrom = new Date(document.getElementById('AvailableFrom').value);
+            const availableTo = new Date(document.getElementById('AvailableTo').value);
+            
+            if (availableTo <= availableFrom) {
+                e.preventDefault();
+                alert('Available To date must be after Available From date.');
+                return false;
+            }
+        });
+    </script>
+}
+
+@section Styles {
+    <style>
+        .edit-car-page .card {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: none;
+        }
+
+        .edit-car-page .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .edit-car-page .form-label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .edit-car-page .form-control:focus,
+        .edit-car-page .form-select:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+
+        .edit-car-page .btn {
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .edit-car-page .btn-primary {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+
+        .edit-car-page .btn-primary:hover {
+            background-color: #0b5ed7;
+            border-color: #0a58ca;
+        }
+
+        .page-title {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .header-actions .btn {
+            border-radius: 6px;
+        }
+
+        .car-info-item {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .car-info-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .current-image-container {
+            margin-bottom: 10px;
+        }
+
+        .current-car-image {
+            max-width: 200px;
+            max-height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+    </style>
+}
