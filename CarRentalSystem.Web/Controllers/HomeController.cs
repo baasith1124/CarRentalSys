@@ -1,8 +1,10 @@
 using AutoMapper;
 using CarRentalSystem.Application.Common.Interfaces;
+using CarRentalSystem.Application.Common.Settings;
 using CarRentalSystem.Web.Models;
 using CarRentalSystem.Web.ViewModels.Car;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System.Diagnostics;
 using System.Net.Mail;
 using System.Net;
@@ -16,17 +18,20 @@ namespace CarRentalSystem.Web.Controllers
         private readonly ICarRepository _carRepository;
         private readonly IMapper _mapper;
         private readonly EmailSettings _emailSettings;
+        private readonly GoogleSettings _googleSettings;
 
         public HomeController(
             ILogger<HomeController> logger,
             ICarRepository carRepository,
             IMapper mapper,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IOptions<GoogleSettings> googleSettings)
         {
             _logger = logger;
             _carRepository = carRepository;
             _mapper = mapper;
             _emailSettings = configuration.GetSection("EmailSettings").Get<EmailSettings>() ?? new EmailSettings();
+            _googleSettings = googleSettings.Value;
         }
 
         public async Task<IActionResult> Index(string? error = null)
@@ -39,6 +44,9 @@ namespace CarRentalSystem.Web.Controllers
             {
                 TempData["Error"] = error;
             }
+            
+            // Pass Google Places API key to the view
+            ViewBag.GooglePlacesApiKey = _googleSettings.PlacesApiKey;
             
             return View(carViewModels);
         }

@@ -1,18 +1,22 @@
 ﻿﻿using CarRentalSystem.Application.Features.Cars.Queries.SearchCars;
 using CarRentalSystem.Application.Features.Cars.Queries.GetCarById;
+using CarRentalSystem.Application.Common.Settings;
 using CarRentalSystem.Web.ViewModels.Car;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace CarRentalSystem.Web.Controllers
 {
     public class CarsController : Controller
     {
         private readonly IMediator _mediator;
+        private readonly GoogleSettings _googleSettings;
 
-        public CarsController(IMediator mediator)
+        public CarsController(IMediator mediator, IOptions<GoogleSettings> googleSettings)
         {
             _mediator = mediator;
+            _googleSettings = googleSettings.Value;
         }
 
         [HttpPost]
@@ -46,6 +50,9 @@ namespace CarRentalSystem.Web.Controllers
                 MinYear = query.MinYear ?? 2000,
                 MaxYear = query.MaxYear ?? DateTime.Now.Year
             };
+
+            // Pass Google Places API key to the view
+            ViewBag.GooglePlacesApiKey = _googleSettings.PlacesApiKey;
 
             return View("SearchResults", resultViewModel);
         }

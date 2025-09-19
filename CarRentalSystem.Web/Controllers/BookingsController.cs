@@ -1,11 +1,13 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿using CarRentalSystem.Application.Features.Bookings.Commands.CreateBooking;
+﻿﻿using CarRentalSystem.Application.Features.Bookings.Commands.CreateBooking;
 using CarRentalSystem.Application.Features.Cars.Queries.GetCarById;
 using CarRentalSystem.Application.Features.KYC.Queries.HasUploadedKYC;
+using CarRentalSystem.Application.Common.Settings;
 using CarRentalSystem.Web.Extensions;
 using CarRentalSystem.Web.ViewModels.Bookings;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace CarRentalSystem.Web.Controllers
 {
@@ -14,10 +16,12 @@ namespace CarRentalSystem.Web.Controllers
     public class BookingsController : Controller
     {
         private readonly IMediator _mediator;
+        private readonly GoogleSettings _googleSettings;
 
-        public BookingsController(IMediator mediator)
+        public BookingsController(IMediator mediator, IOptions<GoogleSettings> googleSettings)
         {
             _mediator = mediator;
+            _googleSettings = googleSettings.Value;
         }
 
         // Index action for /Bookings - redirect to search
@@ -95,6 +99,9 @@ namespace CarRentalSystem.Web.Controllers
                 CustomerName = userName,
                 CustomerEmail = userEmail
             };
+
+            // Pass Google Places API key to the view
+            ViewBag.GooglePlacesApiKey = _googleSettings.PlacesApiKey;
 
             return View("BookingSummary", viewModel);
         }

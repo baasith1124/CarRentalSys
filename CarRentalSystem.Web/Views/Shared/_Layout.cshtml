@@ -37,52 +37,62 @@
     
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-dark border-bottom shadow-lg py-3 modern-nav">
-            <div class="container px-4">
+            <div class="container-fluid px-4">
+                <!-- Brand Section -->
                 <a class="navbar-brand fw-bold text-gradient d-flex align-items-center" asp-controller="Home" asp-action="Index">
-                    <div class="brand-icon-3d me-2">
+                    <div class="brand-icon-3d me-3">
                         <i class="bi bi-car-front-fill"></i>
                     </div>
                     <span class="brand-text">CarRental<span class="text-primary">.lk</span></span>
                 </a>
+                
+                <!-- Mobile Toggle Button -->
                 <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
                 <div class="collapse navbar-collapse" id="mainNav">
-                    <ul class="navbar-nav mx-auto gap-3">
+                    <!-- Center Navigation Links -->
+                    <ul class="navbar-nav mx-auto gap-1">
                         <li class="nav-item">
-                            <a class="nav-link text-light nav-hover-3d" asp-controller="Home" asp-action="Index">
-                                <i class="bi bi-house-door me-2"></i>Home
+                            <a class="nav-link text-light nav-hover-3d d-flex flex-column align-items-center" asp-controller="Home" asp-action="Index">
+                                <i class="bi bi-house-door mb-1"></i>
+                                <span class="nav-text">Home</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light nav-hover-3d" href="#about">
-                                <i class="bi bi-info-circle me-2"></i>About
+                            <a class="nav-link text-light nav-hover-3d d-flex flex-column align-items-center" href="#about">
+                                <i class="bi bi-info-circle mb-1"></i>
+                                <span class="nav-text">About</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light nav-hover-3d" href="#cars">
-                                <i class="bi bi-car-front me-2"></i>Cars
+                            <a class="nav-link text-light nav-hover-3d d-flex flex-column align-items-center" href="#cars">
+                                <i class="bi bi-car-front mb-1"></i>
+                                <span class="nav-text">Cars</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light nav-hover-3d" href="#WhyChooseUs">
-                                <i class="bi bi-award me-2"></i>Why Choose Us
-                            </a>
-                        </li>
-                        
-                        <li class="nav-item">
-                            <a class="nav-link text-light nav-hover-3d" href="#Testimonials">
-                                <i class="bi bi-chat-quote me-2"></i>Testimonials
+                            <a class="nav-link text-light nav-hover-3d d-flex flex-column align-items-center" href="#WhyChooseUs">
+                                <i class="bi bi-award mb-1"></i>
+                                <span class="nav-text">Why Choose Us</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light nav-hover-3d" href="#contact">
-                                <i class="bi bi-envelope me-2"></i>Contact
+                            <a class="nav-link text-light nav-hover-3d d-flex flex-column align-items-center" href="#Testimonials">
+                                <i class="bi bi-chat-quote mb-1"></i>
+                                <span class="nav-text">Testimonials</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light nav-hover-3d d-flex flex-column align-items-center" href="#contact">
+                                <i class="bi bi-envelope mb-1"></i>
+                                <span class="nav-text">Contact</span>
                             </a>
                         </li>
                     </ul>
 
+                    <!-- Right Side Actions -->
                     <ul class="navbar-nav ms-auto gap-2">
                         @if (User.Identity?.IsAuthenticated == true)
                         {
@@ -91,7 +101,7 @@
                                     <div class="avatar-3d me-2">
                                         <i class="bi bi-person-circle"></i>
                                     </div>
-                                    @User.Identity.Name
+                                    <span class="d-none d-lg-inline">@User.Identity.Name</span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-dark border-0 shadow-lg">
                                     <li><a class="dropdown-item" asp-controller="Dashboard" asp-action="Index">
@@ -124,13 +134,15 @@
                         else
                         {
                             <li class="nav-item">
-                                <button class="btn btn-outline-light px-4 me-2 btn-3d-outline" data-bs-toggle="modal" data-bs-target="#loginModal">
-                                    <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                                <button class="btn btn-outline-light px-3 me-2 btn-3d-outline d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i>
+                                    <span class="d-none d-lg-inline">Login</span>
                                 </button>
                             </li>
                             <li class="nav-item">
-                                <button class="btn btn-primary px-4 text-white btn-3d-primary" data-bs-toggle="modal" data-bs-target="#registerModal">
+                                <button class="btn btn-primary px-3 text-white btn-3d-primary d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#registerModal">
                                     <i class="bi bi-person-plus me-2"></i>
+                                    <span class="d-none d-lg-inline">Sign Up</span>
                                 </button>
                             </li>
                         }
@@ -148,73 +160,109 @@
     </div>
 
     <footer class="footer-3d mt-5">
-        <div class="container text-md-start text-center">
-            <div class="row">
+        <div class="container-fluid px-4">
+            <div class="row g-4">
                 <!-- Company Info -->
-                <div class="col-md-3 mb-4">
-                    <div class="footer-brand mb-3">
-                        <h5 class="fw-bold text-gradient mb-3">
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="footer-brand mb-4">
+                        <h5 class="fw-bold text-gradient mb-3 d-flex align-items-center">
                             <i class="bi bi-car-front-fill me-2"></i>CarRental.lk
                         </h5>
                     </div>
-                    <p class="text-light-50 mb-3">Reliable, affordable, and secure car rentals across Sri Lanka. Your journey starts with us.</p>
-                    <div class="social-links-3d">
-                        <a href="#" class="social-link-3d me-3" title="Facebook">
+                    <p class="text-light-50 mb-4 lh-lg">Reliable, affordable, and secure car rentals across Sri Lanka. Your journey starts with us.</p>
+                    <div class="social-links-3d d-flex gap-3">
+                        <a href="#" class="social-link-3d" title="Facebook">
                             <i class="bi bi-facebook"></i>
                         </a>
-                        <a href="#" class="social-link-3d me-3" title="Twitter">
+                        <a href="#" class="social-link-3d" title="Twitter">
                             <i class="bi bi-twitter-x"></i>
                         </a>
                         <a href="#" class="social-link-3d" title="Instagram">
                             <i class="bi bi-instagram"></i>
                         </a>
+                        <a href="#" class="social-link-3d" title="LinkedIn">
+                            <i class="bi bi-linkedin"></i>
+                        </a>
                     </div>
                 </div>
 
                 <!-- Quick Links -->
-                <div class="col-md-3 mb-4">
-                    <h6 class="fw-bold mb-3 text-light">Quick Links</h6>
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h6 class="fw-bold mb-4 text-light d-flex align-items-center">
+                        <i class="bi bi-link-45deg me-2 text-primary"></i>Quick Links
+                    </h6>
                     <ul class="list-unstyled">
-                        <li class="mb-2">
-                            <a href="#cars" class="footer-link-3d">
+                        <li class="mb-3">
+                            <a href="#cars" class="footer-link-3d d-flex align-items-center">
                                 <i class="bi bi-car-front me-2"></i>Available Cars
                             </a>
                         </li>
-                        <li class="mb-2">
-                            <a href="#contact" class="footer-link-3d">
+                        <li class="mb-3">
+                            <a href="#contact" class="footer-link-3d d-flex align-items-center">
                                 <i class="bi bi-envelope me-2"></i>Contact Us
                             </a>
                         </li>
-                        <li class="mb-2">
-                            <a asp-controller="Home" asp-action="Privacy" class="footer-link-3d">
+                        <li class="mb-3">
+                            <a asp-controller="Home" asp-action="Privacy" class="footer-link-3d d-flex align-items-center">
                                 <i class="bi bi-shield-check me-2"></i>Privacy Policy
                             </a>
                         </li>
-                        <li class="mb-2">
-                            <a href="#about" class="footer-link-3d">
+                        <li class="mb-3">
+                            <a href="#about" class="footer-link-3d d-flex align-items-center">
                                 <i class="bi bi-info-circle me-2"></i>About Us
                             </a>
                         </li>
                     </ul>
                 </div>
 
-                <!-- Locations -->
-                <div class="col-md-3 mb-4">
-                    <h6 class="fw-bold mb-3 text-light">Rental Locations</h6>
+                <!-- Services -->
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h6 class="fw-bold mb-4 text-light d-flex align-items-center">
+                        <i class="bi bi-gear-fill me-2 text-primary"></i>Services
+                    </h6>
                     <ul class="list-unstyled">
-                        <li class="mb-2 d-flex align-items-center">
+                        <li class="mb-3">
+                            <a href="#" class="footer-link-3d d-flex align-items-center">
+                                <i class="bi bi-car-front me-2"></i>Car Rental
+                            </a>
+                        </li>
+                        <li class="mb-3">
+                            <a href="#" class="footer-link-3d d-flex align-items-center">
+                                <i class="bi bi-truck me-2"></i>Long Term Rental
+                            </a>
+                        </li>
+                        <li class="mb-3">
+                            <a href="#" class="footer-link-3d d-flex align-items-center">
+                                <i class="bi bi-airplane me-2"></i>Airport Transfer
+                            </a>
+                        </li>
+                        <li class="mb-3">
+                            <a href="#" class="footer-link-3d d-flex align-items-center">
+                                <i class="bi bi-person-badge me-2"></i>Driver Service
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Locations -->
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h6 class="fw-bold mb-4 text-light d-flex align-items-center">
+                        <i class="bi bi-geo-alt-fill me-2 text-primary"></i>Locations
+                    </h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-3 d-flex align-items-center">
                             <i class="bi bi-geo-alt-fill text-primary me-2"></i>
                             <span class="text-light-50">Colombo</span>
                         </li>
-                        <li class="mb-2 d-flex align-items-center">
+                        <li class="mb-3 d-flex align-items-center">
                             <i class="bi bi-geo-alt-fill text-primary me-2"></i>
                             <span class="text-light-50">Kandy</span>
                         </li>
-                        <li class="mb-2 d-flex align-items-center">
+                        <li class="mb-3 d-flex align-items-center">
                             <i class="bi bi-geo-alt-fill text-primary me-2"></i>
                             <span class="text-light-50">Jaffna</span>
                         </li>
-                        <li class="mb-2 d-flex align-items-center">
+                        <li class="mb-3 d-flex align-items-center">
                             <i class="bi bi-geo-alt-fill text-primary me-2"></i>
                             <span class="text-light-50">Galle</span>
                         </li>
@@ -222,27 +270,35 @@
                 </div>
 
                 <!-- Contact -->
-                <div class="col-md-3 mb-4">
-                    <h6 class="fw-bold mb-3 text-light">Contact Us</h6>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h6 class="fw-bold mb-4 text-light d-flex align-items-center">
+                        <i class="bi bi-telephone-fill me-2 text-primary"></i>Contact Us
+                    </h6>
                     <div class="contact-info-3d">
-                        <div class="contact-item-3d mb-3">
-                            <i class="bi bi-envelope-fill text-primary me-3"></i>
+                        <div class="contact-item-3d mb-4 d-flex align-items-start">
+                            <div class="contact-icon me-3">
+                                <i class="bi bi-envelope-fill text-primary"></i>
+                            </div>
                             <div>
-                                <span class="text-light-50">Email</span>
+                                <span class="text-light-50 d-block mb-1">Email</span>
                                 <p class="text-light mb-0">support@carrentalsystem.com</p>
                             </div>
                         </div>
-                        <div class="contact-item-3d mb-3">
-                            <i class="bi bi-telephone-fill text-primary me-3"></i>
+                        <div class="contact-item-3d mb-4 d-flex align-items-start">
+                            <div class="contact-icon me-3">
+                                <i class="bi bi-telephone-fill text-primary"></i>
+                            </div>
                             <div>
-                                <span class="text-light-50">Phone</span>
+                                <span class="text-light-50 d-block mb-1">Phone</span>
                                 <p class="text-light mb-0">+94 77 123 4567</p>
                             </div>
                         </div>
-                        <div class="contact-item-3d">
-                            <i class="bi bi-clock-fill text-primary me-3"></i>
+                        <div class="contact-item-3d d-flex align-items-start">
+                            <div class="contact-icon me-3">
+                                <i class="bi bi-clock-fill text-primary"></i>
+                            </div>
                             <div>
-                                <span class="text-light-50">Support</span>
+                                <span class="text-light-50 d-block mb-1">Support</span>
                                 <p class="text-light mb-0">24/7 Available</p>
                             </div>
                         </div>
@@ -250,14 +306,23 @@
                 </div>
             </div>
 
-            <hr class="border-light opacity-25 my-4" />
-            <div class="text-center py-3">
-                <p class="mb-0 text-light-50">
-                    &copy; 2025 <span class="text-gradient fw-bold">CarRental.lk</span> — All rights reserved. 
-                    <span class="text-primary">Made with</span> 
-                    <i class="bi bi-heart-fill text-danger"></i> 
-                    <span class="text-primary">in Sri Lanka</span>
-                </p>
+            <!-- Divider -->
+            <hr class="border-light opacity-25 my-5" />
+            
+            <!-- Copyright Section -->
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <p class="mb-0 text-light-50">
+                        &copy; 2025 <span class="text-gradient fw-bold">CarRental.lk</span> — All rights reserved.
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0 text-light-50 d-flex align-items-center justify-content-md-end">
+                        <span class="text-primary me-2">Made with</span> 
+                        <i class="bi bi-heart-fill text-danger me-2"></i> 
+                        <span class="text-primary">in Sri Lanka</span>
+                    </p>
+                </div>
             </div>
         </div>
     </footer>
@@ -296,6 +361,14 @@
     <script src="~/js/enhanced-3d-landing.js" asp-append-version="true" onerror="console.warn('Enhanced 3D landing script failed to load')"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
+    
+    <!-- Configuration Script -->
+    <script>
+        // Global configuration object
+        window.appConfig = {
+            googlePlacesApiKey: '@ViewBag.GooglePlacesApiKey'
+        };
+    </script>
     
     <!-- Handle TempData Messages -->
     <script>

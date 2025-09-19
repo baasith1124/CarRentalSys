@@ -1,8 +1,16 @@
 // Google Places Autocomplete for Sri Lankan Locations
+// This script now uses the API key from server configuration instead of hardcoded values
+// The API key is passed from appsettings.json through the ViewBag to window.appConfig
 console.log('Google Places Autocomplete script loaded');
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM Content Loaded - Initializing Google Places');
+    
+    // Check if configuration is available
+    if (!window.appConfig || !window.appConfig.googlePlacesApiKey) {
+        console.error('Google Places API key not found in configuration. Please ensure the API key is properly configured in appsettings.json');
+        return;
+    }
     
     // Test if inputs exist
     testInputs();
@@ -61,9 +69,18 @@ function loadGoogleMapsAPI() {
         return;
     }
     
-    // Get the API key from the server
+    // Get the API key from the global configuration
+    const apiKey = window.appConfig?.googlePlacesApiKey;
+    if (!apiKey) {
+        console.error('Google Places API key not found in configuration');
+        return;
+    }
+    
+    console.log('Using Google Places API key from configuration');
+    
+    // Create the script with the API key from configuration
     const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBdf2UWXbcGae7v4FI0ALJwmC6JZBUWBjE&libraries=places&callback=initializeAutocomplete`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initializeAutocomplete`;
     script.async = true;
     script.defer = true;
     script.onerror = function() {
