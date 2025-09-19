@@ -12,7 +12,12 @@ namespace CarRentalSystem.Infrastructure.Persistence.Seeders
     {
         public static async Task SeedAsync(ApplicationDbContext context)
         {
-            if (await context.Cars.AnyAsync()) return;
+            // Check if we have any approved cars, if not, seed them
+            var hasApprovedCars = await context.Cars
+                .Include(c => c.CarApprovalStatus)
+                .AnyAsync(c => c.CarApprovalStatus.Name == "Approved");
+            
+            if (hasApprovedCars) return;
 
             var defaultOwner = await context.Users
                 .Where(u => u.Email == "admin@carrental.com")
@@ -27,7 +32,7 @@ namespace CarRentalSystem.Infrastructure.Persistence.Seeders
                 .Select(x => x.Id)
                 .FirstOrDefaultAsync();
 
-            var today = DateTime.Today;
+            var today = DateTime.UtcNow.Date;
 
             var cars = new List<Car>
         {

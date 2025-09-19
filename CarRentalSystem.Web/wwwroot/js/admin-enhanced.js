@@ -618,6 +618,8 @@ function initializeMobileSidebar() {
         z-index: 1040;
         display: none;
         backdrop-filter: blur(5px);
+        opacity: 0;
+        transition: opacity 0.3s ease;
     `;
     document.body.appendChild(overlay);
     
@@ -628,17 +630,43 @@ function initializeMobileSidebar() {
         if (isOpen) {
             sidebar.classList.remove('show');
             overlay.style.display = 'none';
+            overlay.style.opacity = '0';
             document.body.style.overflow = '';
+            // Adjust echo admin position
+            adjustEchoAdminPosition(false);
         } else {
             sidebar.classList.add('show');
             overlay.style.display = 'block';
+            setTimeout(() => {
+                overlay.style.opacity = '1';
+            }, 10);
             document.body.style.overflow = 'hidden';
+            // Adjust echo admin position
+            adjustEchoAdminPosition(true);
+        }
+    }
+    
+    // Adjust echo admin chat position based on sidebar state
+    function adjustEchoAdminPosition(sidebarOpen) {
+        const echoAdmin = document.querySelector('.echo-admin-chat');
+        if (echoAdmin) {
+            if (sidebarOpen && window.innerWidth <= 768) {
+                echoAdmin.style.right = '20px';
+                echoAdmin.style.bottom = '20px';
+            } else {
+                echoAdmin.style.right = '';
+                echoAdmin.style.bottom = '';
+            }
         }
     }
     
     // Event listeners
     if (toggleButton) {
-        toggleButton.addEventListener('click', toggleSidebar);
+        toggleButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleSidebar();
+        });
     }
     
     // Close on overlay click
@@ -656,7 +684,12 @@ function initializeMobileSidebar() {
         if (window.innerWidth > 768 && sidebar.classList.contains('show')) {
             toggleSidebar();
         }
+        // Adjust echo admin on resize
+        adjustEchoAdminPosition(sidebar.classList.contains('show'));
     });
+    
+    // Initialize echo admin position
+    adjustEchoAdminPosition(false);
 }
 
 // Touch Interactions

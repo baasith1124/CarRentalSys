@@ -7,11 +7,9 @@
     <title>@ViewData["Title"] - User Dashboard</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link href="~/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/3d-interactive-landing.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/modern-theme.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/sidebar-3d.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/interactive-user-dashboard.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/CarRentalSystem.Web.styles.css" asp-append-version="true" />
     @await RenderSectionAsync("Styles", required: false)
 </head>
@@ -171,8 +169,16 @@
             </div>
         </nav>
 
-        <!-- Main Content -->
+        <!-- Main Content - Same Structure as Admin Panel -->
         <div class="user-content">
+            <!-- Mobile Header with Sidebar Toggle -->
+            <div class="mobile-header d-lg-none">
+                <button class="sidebar-toggle-mobile" type="button" aria-label="Toggle sidebar">
+                    <i class="bi bi-list"></i>
+                </button>
+                <h1 class="mobile-title">@ViewData["Title"]</h1>
+            </div>
+            
                 @if (TempData["Success"] != null)
                 {
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -200,9 +206,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="~/js/toast.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/dashboard.js" asp-append-version="true"></script>
-    <script src="~/js/sidebar-3d.js" asp-append-version="true"></script>
-    <script src="~/js/dashboard-3d-effects.js" asp-append-version="true"></script>
+    <script src="~/js/interactive-dashboard.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

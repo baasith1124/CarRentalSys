@@ -8,7 +8,8 @@ namespace CarRentalSystem.Web.Mappings
     {
         public CarWebProfile()
         {
-            CreateMap<CarDto, CarViewModel>();
+            CreateMap<CarDto, CarViewModel>()
+                .ForMember(dest => dest.DailyRate, opt => opt.MapFrom(src => src.RatePerDay));
         }
     }
 }

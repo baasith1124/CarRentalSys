@@ -121,7 +121,15 @@ namespace CarRentalSystem.Web.Controllers
 
             if (result.Succeeded)
             {
-                return LocalRedirect(returnUrl ?? Url.Action("Index", "Home"));
+                var user = await _signInManager.UserManager.FindByEmailAsync(model.Email);
+                if (user != null && await _signInManager.UserManager.IsInRoleAsync(user, "Admin"))
+                {
+                    return LocalRedirect(returnUrl ?? Url.Action("Index", "Admin"));
+                }
+                else
+                {
+                    return LocalRedirect(returnUrl ?? Url.Action("Index", "Home"));
+                }
             }
 
             ModelState.AddModelError(string.Empty, "Invalid login attempt.");

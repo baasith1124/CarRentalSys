@@ -28,6 +28,18 @@ namespace CarRentalSystem.Web.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null) return Unauthorized();
 
+            // Check if user is admin - redirect to admin dashboard
+            if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Index", "Admin");
+            }
+
+            // Check if user is a customer
+            if (!User.IsInRole("Customer"))
+            {
+                return Forbid("Access denied. Customer role required.");
+            }
+
             var customer = await _mediator.Send(new GetCustomerByIdQuery(Guid.Parse(userId)));
             var bookings = await _mediator.Send(new GetBookingsByCustomerQuery(Guid.Parse(userId)));
 
@@ -51,6 +63,18 @@ namespace CarRentalSystem.Web.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null) return Unauthorized();
 
+            // Check if user is admin - redirect to admin dashboard
+            if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Index", "Admin");
+            }
+
+            // Check if user is a customer
+            if (!User.IsInRole("Customer"))
+            {
+                return Forbid("Access denied. Customer role required.");
+            }
+
             var customer = await _mediator.Send(new GetCustomerByIdQuery(Guid.Parse(userId)));
             return View(customer);
         }
@@ -61,6 +85,18 @@ namespace CarRentalSystem.Web.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null) return Unauthorized();
+
+            // Check if user is admin - redirect to admin dashboard
+            if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Index", "Admin");
+            }
+
+            // Check if user is a customer
+            if (!User.IsInRole("Customer"))
+            {
+                return Forbid("Access denied. Customer role required.");
+            }
 
             if (paymentSuccess == true)
             {
@@ -77,6 +113,18 @@ namespace CarRentalSystem.Web.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null) return Unauthorized();
+
+            // Check if user is admin - redirect to admin dashboard
+            if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Index", "Admin");
+            }
+
+            // Check if user is a customer
+            if (!User.IsInRole("Customer"))
+            {
+                return Forbid("Access denied. Customer role required.");
+            }
 
             // Get the specific booking to verify ownership
             var booking = await _mediator.Send(new GetBookingByIdQuery { BookingId = bookingId });

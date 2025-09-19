@@ -13,6 +13,11 @@
     left: auto !important;
     width: auto !important;
     height: auto !important;
+    /* Enhanced mobile positioning */
+    max-width: calc(100vw - 20px);
+    max-height: calc(100vh - 20px);
+    /* Smooth transitions for mobile */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .echo-admin-toggle {
@@ -36,6 +41,10 @@
     overflow: hidden;
     /* Add a subtle pulse to indicate it's ready */
     animation: echoAdminReadyPulse 3s infinite;
+    /* Enhanced mobile touch targets */
+    min-height: 44px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
 @keyframes echoAdminReadyPulse {
@@ -123,6 +132,11 @@
     /* Ensure it's not affected by parent positioning */
     transform: translateZ(0);
     z-index: 99998;
+    /* Enhanced mobile responsiveness */
+    max-width: calc(100vw - 40px);
+    max-height: calc(100vh - 120px);
+    /* Smooth mobile transitions */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .echo-admin-window::before {
@@ -563,45 +577,294 @@
     left: 100%;
 }
 
-/* Responsive design */
+/* Enhanced Mobile Responsive Design */
+@media (max-width: 1200px) {
+    .echo-admin-window {
+        width: 350px;
+        height: 450px;
+    }
+    
+    .echo-admin-toggle {
+        min-width: 130px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 992px) {
+    .echo-admin-window {
+        width: 320px;
+        height: 420px;
+        bottom: 75px;
+    }
+    
+    .echo-admin-chat {
+        bottom: 25px;
+        right: 25px;
+    }
+    
+    .echo-admin-toggle {
+        padding: 12px 18px;
+        min-width: 125px;
+        font-size: 13px;
+    }
+}
+
 @media (max-width: 768px) {
     .echo-admin-window {
-        width: calc(100vw - 40px);
-        right: -10px;
-        height: 400px;
-        bottom: 70px;
+        width: calc(100vw - 30px) !important;
+        max-width: 350px;
+        right: 15px !important;
+        height: calc(100vh - 140px);
+        max-height: 450px;
+        bottom: 80px !important;
+        border-radius: 15px;
     }
     
     .echo-admin-chat {
         bottom: 20px;
         right: 20px;
+        max-width: calc(100vw - 40px);
     }
     
     .echo-admin-toggle {
         padding: 12px 16px;
         min-width: 120px;
         font-size: 13px;
+        border-radius: 40px;
     }
     
     .echo-admin-messages {
         padding: 15px;
+        font-size: 14px;
     }
     
     .echo-admin-input-container {
         padding: 15px;
     }
+    
+    .echo-admin-input {
+        padding: 10px 16px;
+        font-size: 14px;
+    }
+    
+    .echo-admin-send {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+    }
+    
+    .echo-admin-header {
+        padding: 15px;
+    }
+    
+    .echo-admin-title {
+        font-size: 15px;
+    }
+    
+    .echo-admin-close {
+        padding: 6px;
+        font-size: 16px;
+    }
 }
 
-/* Ensure it stays floating on all screen sizes */
-@media (max-width: 480px) {
+/* Small Mobile Optimization */
+@media (max-width: 576px) {
     .echo-admin-window {
-        width: calc(100vw - 20px);
-        right: -5px;
-        height: 350px;
+        width: calc(100vw - 20px) !important;
+        right: 10px !important;
+        height: calc(100vh - 120px);
+        max-height: 400px;
+        bottom: 70px !important;
+        border-radius: 12px;
     }
     
     .echo-admin-chat {
         bottom: 15px;
         right: 15px;
+        max-width: calc(100vw - 30px);
+    }
+    
+    .echo-admin-toggle {
+        padding: 10px 14px;
+        min-width: 110px;
+        font-size: 12px;
+        border-radius: 35px;
+    }
+    
+    .echo-admin-messages {
+        padding: 12px;
+        font-size: 13px;
+    }
+    
+    .echo-admin-input-container {
+        padding: 12px;
+    }
+    
+    .echo-admin-input {
+        padding: 8px 14px;
+        font-size: 13px;
+        border-radius: 20px;
+    }
+    
+    .echo-admin-send {
+        width: 35px;
+        height: 35px;
+        font-size: 13px;
+    }
+    
+    .echo-admin-header {
+        padding: 12px;
+    }
+    
+    .echo-admin-title {
+        font-size: 14px;
+    }
+    
+    .echo-admin-close {
+        padding: 5px;
+        font-size: 14px;
+    }
+}
+
+/* Extra Small Mobile */
+@media (max-width: 480px) {
+    .echo-admin-window {
+        width: calc(100vw - 16px) !important;
+        right: 8px !important;
+        height: calc(100vh - 100px);
+        max-height: 350px;
+        bottom: 60px !important;
+        border-radius: 10px;
+    }
+    
+    .echo-admin-chat {
+        bottom: 12px;
+        right: 12px;
+        max-width: calc(100vw - 24px);
+    }
+    
+    .echo-admin-toggle {
+        padding: 8px 12px;
+        min-width: 100px;
+        font-size: 11px;
+        border-radius: 30px;
+    }
+    
+    .echo-admin-messages {
+        padding: 10px;
+        font-size: 12px;
+    }
+    
+    .echo-admin-input-container {
+        padding: 10px;
+    }
+    
+    .echo-admin-input {
+        padding: 6px 12px;
+        font-size: 12px;
+        border-radius: 18px;
+    }
+    
+    .echo-admin-send {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+    }
+    
+    .echo-admin-header {
+        padding: 10px;
+    }
+    
+    .echo-admin-title {
+        font-size: 13px;
+    }
+    
+    .echo-admin-close {
+        padding: 4px;
+        font-size: 12px;
+    }
+}
+
+/* Landscape Mobile Optimization */
+@media (max-width: 768px) and (orientation: landscape) {
+    .echo-admin-window {
+        height: calc(100vh - 80px);
+        max-height: 300px;
+        bottom: 60px !important;
+    }
+    
+    .echo-admin-chat {
+        bottom: 15px;
+        right: 15px;
+    }
+    
+    .echo-admin-toggle {
+        padding: 8px 14px;
+        min-width: 110px;
+        font-size: 12px;
+    }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .echo-admin-toggle {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .echo-admin-send {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .echo-admin-close {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .echo-admin-input {
+        min-height: 44px;
+    }
+    
+    /* Disable hover effects on touch devices */
+    .echo-admin-toggle:hover {
+        transform: none;
+    }
+    
+    .echo-admin-send:hover {
+        transform: none;
+    }
+    
+    .echo-admin-close:hover {
+        transform: none;
+    }
+}
+
+/* Enhanced Scroll Sticking */
+.echo-admin-chat {
+    /* Ensure it always stays in viewport */
+    position: fixed !important;
+    /* Prevent it from being affected by page scroll */
+    transform: translateZ(0) !important;
+    /* Force hardware acceleration */
+    will-change: transform !important;
+    /* Ensure it's always on top */
+    z-index: 99999 !important;
+}
+
+/* Mobile-specific positioning fixes */
+@media (max-width: 768px) {
+    .echo-admin-chat {
+        /* Ensure it doesn't get cut off on mobile */
+        bottom: max(20px, env(safe-area-inset-bottom)) !important;
+        right: max(20px, env(safe-area-inset-right)) !important;
+        /* Prevent horizontal overflow */
+        max-width: calc(100vw - max(40px, env(safe-area-inset-left) + env(safe-area-inset-right))) !important;
+    }
+    
+    .echo-admin-window {
+        /* Ensure window doesn't overflow viewport */
+        max-width: calc(100vw - max(30px, env(safe-area-inset-left) + env(safe-area-inset-right))) !important;
+        max-height: calc(100vh - max(120px, env(safe-area-inset-top) + env(safe-area-inset-bottom))) !important;
     }
 }

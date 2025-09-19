@@ -149,16 +149,25 @@ namespace CarRentalSystem.Infrastructure.Persistence.Repositories
         }
         public async Task<List<CarDto>> GetTopAvailableCarsAsync(int count = 6, CancellationToken cancellationToken = default)
         {
-            return await _context.Cars
+            var today = DateTime.UtcNow.Date;
+            
+            // Debug: Check total cars and approved cars
+            var totalCars = await _context.Cars.CountAsync(cancellationToken);
+            var approvedCars = await _context.Cars
                 .Include(c => c.CarApprovalStatus)
-                .Where(c =>
-                    c.CarApprovalStatus.Name == "Approved" &&
-                    c.AvailableFrom <= DateTime.UtcNow &&
-                    c.AvailableTo >= DateTime.UtcNow)
+                .Where(c => c.CarApprovalStatus.Name == "Approved")
+                .CountAsync(cancellationToken);
+            
+            // For now, let's just get all approved cars regardless of date
+            var result = await _context.Cars
+                .Include(c => c.CarApprovalStatus)
+                .Where(c => c.CarApprovalStatus.Name == "Approved")
                 .OrderByDescending(c => c.AvailableFrom)
                 .ProjectTo<CarDto>(_mapper.ConfigurationProvider)
                 .Take(count)
                 .ToListAsync(cancellationToken);
+                
+            return result;
         }
 
 

@@ -19,9 +19,10 @@ namespace CarRentalSystem.Infrastructure.Persistence.Seeders
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-            var users = await userManager.Users.ToListAsync();
+            // Get all users with Customer role only
+            var customerUsers = await userManager.GetUsersInRoleAsync("Customer");
 
-            foreach (var user in users)
+            foreach (var user in customerUsers)
             {
                 bool customerExists = await context.Customers.AnyAsync(c => c.Id == user.Id);
                 if (!customerExists)

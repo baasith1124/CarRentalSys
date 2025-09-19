@@ -1,4 +1,6 @@
-﻿namespace CarRentalSystem.Web.ViewModels.Car
+﻿using System;
+
+namespace CarRentalSystem.Web.ViewModels.Car
 {
     public class CarViewModel
     {
