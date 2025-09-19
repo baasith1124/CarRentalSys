@@ -1,0 +1,313 @@
+/* Interactive Statistics Section - Enhanced 3D Effects */
+
+/* Section Wrapper */
+#statistics {
+    position: relative;
+    z-index: 1;
+    overflow: visible;
+}
+
+#statistics .container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Statistics Container - Higher Specificity */
+#statistics .stats-3d-container {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+    gap: 2rem !important;
+    margin-top: 3rem !important;
+    perspective: 1000px !important;
+    position: relative !important;
+    z-index: 1 !important;
+    padding: 1rem 0 !important;
+    margin: 3rem 0 !important;
+}
+
+/* Individual Stat Item - Higher Specificity */
+#statistics .stat-item-3d {
+    position: relative !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 20px !important;
+    padding: 2.5rem 2rem !important;
+    text-align: center !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    cursor: pointer !important;
+    overflow: visible !important;
+    transform-style: preserve-3d !important;
+    z-index: 1 !important;
+    opacity: 1 !important;
+    animation: none !important;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Glow Effect */
+.stat-glow-effect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, 
+        rgba(59, 130, 246, 0.1) 0%, 
+        rgba(147, 51, 234, 0.1) 50%, 
+        rgba(236, 72, 153, 0.1) 100%);
+    border-radius: 20px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Hover Effects - Higher Specificity */
+#statistics .stat-item-3d:hover {
+    transform: translateY(-10px) rotateX(5deg) rotateY(5deg) !important;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.2),
+        0 0 40px rgba(59, 130, 246, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    border-color: rgba(59, 130, 246, 0.3) !important;
+    z-index: 10 !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    opacity: 1 !important;
+}
+
+.stat-item-3d:hover .stat-glow-effect {
+    opacity: 1;
+}
+
+.stat-item-3d:hover .stat-icon-3d {
+    transform: scale(1.2) rotate(10deg);
+    color: var(--primary-blue-light);
+    text-shadow: 0 0 20px var(--primary-blue-light);
+}
+
+.stat-item-3d:hover .stat-number-3d {
+    transform: scale(1.1);
+    text-shadow: 0 0 30px var(--primary-blue-light);
+}
+
+/* Stat Number - Higher Specificity */
+#statistics .stat-number-3d {
+    font-size: 3.5rem !important;
+    font-weight: 800 !important;
+    color: var(--primary-blue-light) !important;
+    margin-bottom: 1rem !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    text-shadow: 0 0 20px rgba(59, 130, 246, 0.3) !important;
+    line-height: 1 !important;
+    position: relative !important;
+    z-index: 2 !important;
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    -webkit-text-fill-color: var(--primary-blue-light) !important;
+    transform: translateZ(20px) !important;
+}
+
+/* Stat Label - Higher Specificity */
+#statistics .stat-label-3d {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    margin-bottom: 1rem !important;
+    position: relative !important;
+    z-index: 2 !important;
+    font-size: 1.1rem !important;
+    color: #ffffff !important;
+    transform: translateZ(10px) !important;
+    font-weight: 500 !important;
+}
+
+.stat-icon-3d {
+    font-size: 2.5rem;
+    color: rgba(255, 255, 255, 0.8);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.stat-label-3d span {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ffffff;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Stat Description */
+.stat-description-3d {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-top: 1rem;
+    position: relative;
+    z-index: 2;
+}
+
+.stat-item-3d:hover .stat-description-3d {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.stat-description-3d p {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Counter Animation */
+.counter-animate {
+    animation: counterPulse 0.6s ease-out;
+}
+
+@keyframes counterPulse {
+    0% { 
+        transform: scale(1); 
+        text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+    }
+    50% { 
+        transform: scale(1.1); 
+        text-shadow: 0 0 40px var(--primary-blue-light);
+    }
+    100% { 
+        transform: scale(1); 
+        text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+    }
+}
+
+/* Click Animation */
+.stat-item-3d:active {
+    transform: translateY(-5px) scale(0.98);
+    transition: all 0.1s ease;
+}
+
+/* Pulse Animation for Glow */
+.stat-item-3d:hover .stat-glow-effect {
+    animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+    0%, 100% { 
+        opacity: 0.3; 
+        transform: scale(1);
+    }
+    50% { 
+        opacity: 0.6; 
+        transform: scale(1.05);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .stats-3d-container {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .stat-item-3d {
+        padding: 2rem 1.5rem;
+    }
+    
+    .stat-number-3d {
+        font-size: 2.8rem;
+    }
+    
+    .stat-icon-3d {
+        font-size: 2rem;
+    }
+    
+    .stat-label-3d span {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .stats-3d-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .stat-item-3d {
+        padding: 1.5rem 1rem;
+    }
+    
+    .stat-number-3d {
+        font-size: 2.5rem;
+    }
+    
+    .stat-icon-3d {
+        font-size: 1.8rem;
+    }
+}
+
+/* Loading Animation */
+.stat-item-3d.loading {
+    animation: statLoading 1s ease-in-out infinite;
+}
+
+@keyframes statLoading {
+    0%, 100% { 
+        opacity: 0.7; 
+        transform: scale(1);
+    }
+    50% { 
+        opacity: 1; 
+        transform: scale(1.02);
+    }
+}
+
+/* Success Animation */
+.stat-item-3d.animate-in {
+    animation: statSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes statSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(50px) rotateX(-10deg);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) rotateX(0deg);
+    }
+}
+
+/* Intersection Observer Animation */
+.stat-item-3d.animate-counter {
+    animation: counterReveal 1s ease-out forwards;
+}
+
+@keyframes counterReveal {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Override conflicting styles from 3d-interactive-landing.css */
+#statistics .stat-item-3d {
+    animation: none !important;
+    opacity: 1 !important;
+}
+
+#statistics .stat-item-3d:hover {
+    transform: translateY(-10px) rotateX(5deg) rotateY(5deg) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    opacity: 1 !important;
+}
+
+/* Ensure all stat elements are visible */
+#statistics .stat-item-3d * {
+    opacity: 1 !important;
+    visibility: visible !important;
+}

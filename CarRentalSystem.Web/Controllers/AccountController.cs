@@ -76,11 +76,11 @@ namespace CarRentalSystem.Web.Controllers
             returnUrl ??= Url.Content("~/");
 
             if (remoteError != null)
-                return RedirectToAction("Login", new { error = $"Error from provider: {remoteError}" });
+                return RedirectToAction("Index", "Home", new { error = $"Error from provider: {remoteError}" });
 
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
-                return RedirectToAction("Login");
+                return RedirectToAction("Index", "Home", new { error = "External login failed. Please try again." });
 
             var email = info.Principal.FindFirstValue(ClaimTypes.Email);
             var name = info.Principal.FindFirstValue(ClaimTypes.Name);
@@ -96,7 +96,7 @@ namespace CarRentalSystem.Web.Controllers
             var command = new ExternalLoginCommand { User = externalUser };
             var result = await _mediator.Send(command);
 
-            return result ? RedirectToAction("CompleteProfile") : RedirectToAction("Login", new { error = "External login failed." });
+            return result ? RedirectToAction("Index", "Home") : RedirectToAction("Index", "Home", new { error = "External login failed. Please try again." });
         }
 
         [HttpGet("Login")]

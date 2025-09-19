@@ -1,0 +1,181 @@
+@model CarRentalSystem.Web.ViewModels.Car.CarViewModel
+
+<!-- Car Details Modal -->
+<div class="modal fade" id="carDetailsModal" tabindex="-1" aria-labelledby="carDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content car-details-modal-3d">
+            <!-- Modal Header -->
+            <div class="modal-header car-details-header-3d">
+                <div class="header-content">
+                    <h2 class="modal-title car-details-title-3d" id="carDetailsModalLabel">
+                        <i class="bi bi-car-front-fill me-3"></i>
+                        <span id="modalCarName">Car Details</span>
+                    </h2>
+                    <div class="car-badge-container">
+                        <div class="status-badge-modal-3d">
+                            <i class="bi bi-check-circle"></i>
+                            <span>Available</span>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn-close-modal-3d" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body car-details-body-3d">
+                <div class="row g-4">
+                    <!-- Car Image Section -->
+                    <div class="col-lg-6">
+                        <div class="car-image-section-3d">
+                            <div class="image-container-modal">
+                                <img id="modalCarImage" 
+                                     src="" 
+                                     alt="Car Image" 
+                                     class="car-image-modal-3d" />
+                                <div class="image-overlay-modal-3d">
+                                    <div class="image-actions">
+                                        <button class="action-btn-modal favorite-btn-modal" title="Add to Favorites">
+                                            <i class="bi bi-heart"></i>
+                                        </button>
+                                        <button class="action-btn-modal share-btn-modal" title="Share Vehicle">
+                                            <i class="bi bi-share"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Car Gallery (if multiple images) -->
+                            <div class="car-gallery-3d">
+                                <div class="gallery-thumbnails">
+                                    <!-- Thumbnails will be populated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Car Information Section -->
+                    <div class="col-lg-6">
+                        <div class="car-info-section-3d">
+                            <!-- Basic Info -->
+                            <div class="car-basic-info-3d">
+                                <h3 id="modalCarModel" class="car-model-title-3d">Car Model</h3>
+                                <div class="rating-display-modal">
+                                    <div class="stars-container-modal">
+                                        <div class="stars-filled-modal" style="width: 84%;">
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                        </div>
+                                        <div class="stars-empty-modal">
+                                            <i class="bi bi-star"></i>
+                                            <i class="bi bi-star"></i>
+                                            <i class="bi bi-star"></i>
+                                            <i class="bi bi-star"></i>
+                                            <i class="bi bi-star"></i>
+                                        </div>
+                                    </div>
+                                    <span class="rating-info-modal">(4.2) • 15 reviews</span>
+                                </div>
+                            </div>
+
+                            <!-- Features Grid -->
+                            <div class="features-grid-modal-3d">
+                                <div class="feature-item-modal">
+                                    <div class="feature-icon-modal">
+                                        <i class="bi bi-people"></i>
+                                    </div>
+                                    <div class="feature-info-modal">
+                                        <span class="feature-value-modal" id="modalSeats">5</span>
+                                        <span class="feature-label-modal">Seats</span>
+                                    </div>
+                                </div>
+                                <div class="feature-item-modal">
+                                    <div class="feature-icon-modal">
+                                        <i class="bi bi-gear"></i>
+                                    </div>
+                                    <div class="feature-info-modal">
+                                        <span class="feature-value-modal" id="modalTransmission">Auto</span>
+                                        <span class="feature-label-modal">Transmission</span>
+                                    </div>
+                                </div>
+                                <div class="feature-item-modal">
+                                    <div class="feature-icon-modal">
+                                        <i class="bi bi-fuel-pump"></i>
+                                    </div>
+                                    <div class="feature-info-modal">
+                                        <span class="feature-value-modal" id="modalFuelType">Petrol</span>
+                                        <span class="feature-label-modal">Fuel Type</span>
+                                    </div>
+                                </div>
+                                <div class="feature-item-modal">
+                                    <div class="feature-icon-modal">
+                                        <i class="bi bi-speedometer"></i>
+                                    </div>
+                                    <div class="feature-info-modal">
+                                        <span class="feature-value-modal" id="modalTopSpeed">180</span>
+                                        <span class="feature-label-modal">km/h</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Availability Info -->
+                            <div class="availability-info-modal-3d">
+                                <div class="availability-item-modal">
+                                    <i class="bi bi-calendar-event"></i>
+                                    <div class="availability-details-modal">
+                                        <span class="availability-label-modal">Available From</span>
+                                        <span class="availability-date-modal" id="modalAvailableFrom">01 Jan 2024</span>
+                                    </div>
+                                </div>
+                                <div class="availability-item-modal">
+                                    <i class="bi bi-calendar-check"></i>
+                                    <div class="availability-details-modal">
+                                        <span class="availability-label-modal">Available To</span>
+                                        <span class="availability-date-modal" id="modalAvailableTo">31 Dec 2024</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Premium Features -->
+                            <div class="premium-features-modal-3d">
+                                <h4 class="features-title-modal">Premium Features</h4>
+                                <div class="features-list-modal">
+                                    <div class="feature-badge-modal">
+                                        <i class="bi bi-shield-check"></i>
+                                        <span>Full Insurance Coverage</span>
+                                    </div>
+                                    <div class="feature-badge-modal">
+                                        <i class="bi bi-headset"></i>
+                                        <span>24/7 Support</span>
+                                    </div>
+                                    <div class="feature-badge-modal">
+                                        <i class="bi bi-fuel-pump"></i>
+                                        <span>Full Tank Included</span>
+                                    </div>
+                                    <div class="feature-badge-modal">
+                                        <i class="bi bi-geo-alt"></i>
+                                        <span>GPS Navigation</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer car-details-footer-3d">
+                <div class="footer-info">
+                    <small class="text-muted">
+                        <i class="bi bi-info-circle me-2"></i>
+                        All vehicles are fully insured and regularly maintained
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

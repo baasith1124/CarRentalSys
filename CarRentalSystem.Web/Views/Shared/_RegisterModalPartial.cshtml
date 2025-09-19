@@ -1,54 +1,144 @@
 ﻿@model CarRentalSystem.Web.ViewModels.Account.RegisterCustomerViewModel
 
 <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content rounded-4 shadow">
-            <div class="modal-header border-0">
-                <h5 class="modal-title fw-bold" id="registerModalLabel">Create Your Account</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content register-modal-3d">
+            <!-- Enhanced Modal Header with 3D Effects -->
+            <div class="modal-header register-header-3d">
+                <div class="header-content-3d">
+                    <div class="register-icon-3d">
+                        <i class="bi bi-person-plus-fill"></i>
+                        <div class="icon-glow-3d"></div>
+                    </div>
+                    <div class="header-text-3d">
+                        <h5 class="modal-title register-title-3d" id="registerModalLabel">
+                            <span class="title-gradient">Create Your Account</span>
+                        </h5>
+                        <p class="register-subtitle-3d">Join our premium car rental experience</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close-3d" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="bi bi-x-lg"></i>
+                </button>
             </div>
 
             <form id="ajaxRegisterForm" method="post">
                 @Html.AntiForgeryToken()
-                <div class="modal-body px-4">
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Full Name</label>
-                        <input asp-for="FullName" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Email</label>
-                        <input asp-for="Email" type="email" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Password</label>
-                        <input asp-for="Password" type="password" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Confirm Password</label>
-                        <input asp-for="ConfirmPassword" type="password" class="form-control" />
+                <div class="modal-body register-body-3d">
+                    <!-- Enhanced Form Fields with 3D Styling -->
+                    <div class="form-group-3d">
+                        <label class="form-label-3d required">
+                            <i class="bi bi-person-fill me-2"></i>Full Name
+                        </label>
+                        <div class="input-container-3d">
+                            <input asp-for="FullName" class="form-control-3d" placeholder="Enter your full name" id="RegisterFullName" />
+                            <div class="input-glow-3d"></div>
+                            <span class="input-icon-3d">
+                                <i class="bi bi-person"></i>
+                            </span>
+                        </div>
+                        <span asp-validation-for="FullName" class="validation-error-3d"></span>
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100 mt-2">Register</button>
-                    <div id="registerError" class="text-danger small mt-2"></div>
-
-                    <div class="text-center mt-3">
-                        <small class="text-muted">or</small>
+                    <div class="form-group-3d">
+                        <label class="form-label-3d required">
+                            <i class="bi bi-envelope-fill me-2"></i>Email Address
+                        </label>
+                        <div class="input-container-3d">
+                            <input asp-for="Email" type="email" class="form-control-3d" placeholder="Enter your email address" id="RegisterEmail" />
+                            <div class="input-glow-3d"></div>
+                            <span class="input-icon-3d">
+                                <i class="bi bi-envelope"></i>
+                            </span>
+                        </div>
+                        <span asp-validation-for="Email" class="validation-error-3d"></span>
                     </div>
 
-                    <div class="d-grid mt-3">
-                        <a class="btn btn-outline-danger" asp-controller="Account" asp-action="ExternalLogin" asp-route-provider="Google">
-                            <i class="bi bi-google me-2"></i> Register with Google
+                    <div class="form-group-3d">
+                        <label class="form-label-3d required">
+                            <i class="bi bi-lock-fill me-2"></i>Password
+                        </label>
+                        <div class="input-container-3d">
+                            <input asp-for="Password" type="password" class="form-control-3d" placeholder="Create a strong password" id="RegisterPassword" />
+                            <div class="input-glow-3d"></div>
+                            <span class="input-icon-3d">
+                                <i class="bi bi-lock"></i>
+                            </span>
+                            <button type="button" class="password-toggle-3d" onclick="togglePassword('Password')">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Password" class="validation-error-3d"></span>
+                    </div>
+
+                    <div class="form-group-3d">
+                        <label class="form-label-3d required">
+                            <i class="bi bi-shield-check me-2"></i>Confirm Password
+                        </label>
+                        <div class="input-container-3d">
+                            <input asp-for="ConfirmPassword" type="password" class="form-control-3d" placeholder="Confirm your password" id="RegisterConfirmPassword" />
+                            <div class="input-glow-3d"></div>
+                            <span class="input-icon-3d">
+                                <i class="bi bi-shield-check"></i>
+                            </span>
+                            <button type="button" class="password-toggle-3d" onclick="togglePassword('ConfirmPassword')">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="ConfirmPassword" class="validation-error-3d"></span>
+                    </div>
+
+                    <!-- Enhanced Register Button -->
+                    <div class="register-actions-3d">
+                        <button type="submit" class="btn-register-3d">
+                            <span class="btn-content-3d">
+                                <i class="bi bi-person-plus-fill me-2"></i>
+                                <span class="btn-text">Create Account</span>
+                            </span>
+                            <div class="btn-glow-3d"></div>
+                            <div class="btn-ripple-3d"></div>
+                        </button>
+                        
+                        <!-- Error Display -->
+                        <div id="registerError" class="error-display-3d"></div>
+                    </div>
+
+                    <!-- Enhanced Divider -->
+                    <div class="divider-3d">
+                        <div class="divider-line-3d"></div>
+                        <span class="divider-text-3d">or continue with</span>
+                        <div class="divider-line-3d"></div>
+                    </div>
+
+                    <!-- Enhanced Google Registration -->
+                    <div class="social-register-3d">
+                        <a href="/Account/ExternalLogin?provider=Google" class="btn-google-3d" onclick="handleGoogleLogin(event)">
+                            <div class="google-icon-3d">
+                                <i class="bi bi-google"></i>
+                            </div>
+                            <span class="google-text-3d">Register with Google</span>
+                            <div class="google-glow-3d"></div>
                         </a>
                     </div>
                 </div>
             </form>
 
-            <div class="modal-footer border-0 justify-content-center">
-                <small class="text-muted">Already have an account? <a asp-controller="Account" asp-action="Login">Login</a></small>
+            <!-- Enhanced Modal Footer -->
+            <div class="modal-footer register-footer-3d">
+                <div class="footer-content-3d">
+                    <p class="footer-text-3d">
+                        Already have an account? 
+                        <a href="#" class="login-link-3d" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <span class="link-text">Sign In</span>
+                            <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </p>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
 @* @section Scripts {
     <script src="~/js/register.js" asp-append-version="true"></script>
 } *@

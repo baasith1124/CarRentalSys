@@ -1,0 +1,607 @@
+/* EchoAdmin Chat Bubble Styles - 3D Theme Integration */
+.echo-admin-chat {
+    position: fixed !important;
+    bottom: 30px !important;
+    right: 30px !important;
+    z-index: 99999 !important;
+    font-family: var(--font-primary);
+    /* Ensure it's always floating and not affected by parent containers */
+    transform: translateZ(0);
+    will-change: transform;
+    /* Force it to stay in viewport */
+    top: auto !important;
+    left: auto !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+.echo-admin-toggle {
+    background: var(--gradient-primary);
+    color: var(--text-primary);
+    border: 2px solid var(--glass-border);
+    border-radius: 50px;
+    padding: 15px 20px;
+    cursor: pointer;
+    box-shadow: var(--glass-shadow-colored);
+    backdrop-filter: var(--glass-backdrop);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    min-width: 140px;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    /* Add a subtle pulse to indicate it's ready */
+    animation: echoAdminReadyPulse 3s infinite;
+}
+
+@keyframes echoAdminReadyPulse {
+    0%, 100% { 
+        box-shadow: var(--glass-shadow-colored);
+    }
+    50% { 
+        box-shadow: var(--glass-shadow-colored), 0 0 20px rgba(35, 35, 255, 0.4);
+    }
+}
+
+.echo-admin-toggle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.echo-admin-toggle:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 15px 40px rgba(35, 35, 255, 0.4);
+    border-color: var(--glass-border-light);
+}
+
+.echo-admin-toggle:hover::before {
+    left: 100%;
+}
+
+.echo-admin-toggle:active {
+    transform: translateY(-1px) scale(1.02);
+}
+
+.echo-admin-toggle i {
+    font-size: 18px;
+    animation: echoAdminPulse 2s infinite;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+}
+
+@keyframes echoAdminPulse {
+    0% { 
+        transform: scale(1) rotate(0deg);
+        filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+    }
+    50% { 
+        transform: scale(1.1) rotate(5deg);
+        filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.5));
+    }
+    100% { 
+        transform: scale(1) rotate(0deg);
+        filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+    }
+}
+
+.echo-admin-badge {
+    background: var(--glass-bg-light);
+    backdrop-filter: var(--glass-backdrop);
+    border: 1px solid var(--glass-border);
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-primary);
+    box-shadow: 0 2px 8px rgba(35, 35, 255, 0.2);
+}
+
+.echo-admin-window {
+    position: absolute !important;
+    bottom: 80px !important;
+    right: 0 !important;
+    width: 380px !important;
+    height: 500px !important;
+    background: var(--glass-bg-dark);
+    backdrop-filter: var(--glass-backdrop-strong);
+    border: 2px solid var(--glass-border);
+    border-radius: 20px;
+    box-shadow: var(--glass-shadow-colored), 0 20px 60px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: echoAdminSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Ensure it's not affected by parent positioning */
+    transform: translateZ(0);
+    z-index: 99998;
+}
+
+.echo-admin-window::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--gradient-glass);
+    border-radius: 18px;
+    z-index: -1;
+}
+
+@keyframes echoAdminSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+        filter: blur(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+.echo-admin-header {
+    background: var(--gradient-primary);
+    color: var(--text-primary);
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--glass-border);
+    position: relative;
+    overflow: hidden;
+}
+
+.echo-admin-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: echoAdminShimmer 3s infinite;
+}
+
+@keyframes echoAdminShimmer {
+    0% { left: -100%; }
+    50% { left: 100%; }
+    100% { left: 100%; }
+}
+
+.echo-admin-title {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.echo-admin-status {
+    background: var(--glass-bg-light);
+    backdrop-filter: var(--glass-backdrop);
+    border: 1px solid var(--glass-border);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    margin-left: 10px;
+    font-weight: 500;
+    color: var(--text-primary);
+    box-shadow: 0 2px 8px rgba(35, 35, 255, 0.2);
+    animation: echoAdminStatusPulse 2s infinite;
+}
+
+@keyframes echoAdminStatusPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.echo-admin-close {
+    background: var(--glass-bg-light);
+    backdrop-filter: var(--glass-backdrop);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(35, 35, 255, 0.2);
+}
+
+.echo-admin-close:hover {
+    background: var(--glass-bg);
+    transform: scale(1.1) rotate(90deg);
+    box-shadow: 0 4px 15px rgba(35, 35, 255, 0.3);
+}
+
+.echo-admin-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-backdrop);
+    position: relative;
+}
+
+.echo-admin-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.echo-admin-messages::-webkit-scrollbar-track {
+    background: var(--glass-bg-light);
+    border-radius: 3px;
+}
+
+.echo-admin-messages::-webkit-scrollbar-thumb {
+    background: var(--gradient-primary);
+    border-radius: 3px;
+}
+
+.echo-admin-messages::-webkit-scrollbar-thumb:hover {
+    background: var(--gradient-secondary);
+}
+
+.echo-admin-message {
+    display: flex;
+    margin-bottom: 15px;
+    align-items: flex-start;
+}
+
+.echo-admin-avatar {
+    width: 35px;
+    height: 35px;
+    background: var(--gradient-primary);
+    border: 2px solid var(--glass-border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    font-size: 16px;
+    margin-right: 12px;
+    flex-shrink: 0;
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: var(--glass-backdrop);
+    position: relative;
+    overflow: hidden;
+}
+
+.echo-admin-avatar::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: echoAdminAvatarShine 3s infinite;
+}
+
+@keyframes echoAdminAvatarShine {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.echo-admin-content {
+    flex: 1;
+    background: var(--glass-bg-light);
+    backdrop-filter: var(--glass-backdrop);
+    border: 1px solid var(--glass-border);
+    padding: 12px 16px;
+    border-radius: 18px;
+    box-shadow: var(--glass-shadow);
+    position: relative;
+    color: var(--text-primary);
+}
+
+.echo-admin-content::before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 12px;
+    width: 0;
+    height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 8px solid var(--glass-bg-light);
+}
+
+.echo-admin-text {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-primary);
+}
+
+.echo-admin-text ul {
+    margin: 8px 0;
+    padding-left: 20px;
+}
+
+.echo-admin-text li {
+    margin: 4px 0;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.echo-admin-text p {
+    margin: 8px 0 0 0;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* User message styles */
+.echo-admin-message.user-message {
+    flex-direction: row-reverse;
+}
+
+.echo-admin-message.user-message .echo-admin-avatar {
+    background: var(--gradient-success);
+    margin-right: 0;
+    margin-left: 12px;
+}
+
+.echo-admin-message.user-message .echo-admin-content {
+    background: var(--gradient-success);
+    color: var(--text-primary);
+    border-color: var(--glass-border-light);
+}
+
+.echo-admin-message.user-message .echo-admin-content::before {
+    left: auto;
+    right: -8px;
+    border-right: none;
+    border-left: 8px solid var(--primary-blue);
+}
+
+.echo-admin-input-container {
+    padding: 20px;
+    background: var(--glass-bg-dark);
+    backdrop-filter: var(--glass-backdrop);
+    border-top: 1px solid var(--glass-border);
+    position: relative;
+}
+
+.echo-admin-input-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--gradient-primary);
+}
+
+.echo-admin-input-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.echo-admin-input {
+    flex: 1;
+    background: var(--glass-bg-light);
+    backdrop-filter: var(--glass-backdrop);
+    border: 2px solid var(--glass-border);
+    border-radius: 25px;
+    padding: 12px 20px;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--text-primary);
+    box-shadow: var(--glass-shadow);
+}
+
+.echo-admin-input::placeholder {
+    color: var(--text-muted);
+}
+
+.echo-admin-input:focus {
+    border-color: var(--glass-border-light);
+    box-shadow: var(--glass-shadow-colored);
+    transform: scale(1.02);
+}
+
+.echo-admin-send {
+    background: var(--gradient-primary);
+    color: var(--text-primary);
+    border: 2px solid var(--glass-border);
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 16px;
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: var(--glass-backdrop);
+    position: relative;
+    overflow: hidden;
+}
+
+.echo-admin-send::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.echo-admin-send:hover {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: var(--glass-shadow-colored);
+    border-color: var(--glass-border-light);
+}
+
+.echo-admin-send:hover::before {
+    left: 100%;
+}
+
+.echo-admin-send:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Loading animation */
+.echo-admin-loading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-style: italic;
+}
+
+.echo-admin-loading i {
+    animation: echoAdminSpin 1s linear infinite;
+    color: var(--primary-blue);
+}
+
+@keyframes echoAdminSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Download button styles */
+.echo-admin-download-btn {
+    background: var(--gradient-success);
+    color: var(--text-primary);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-top: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: var(--glass-backdrop);
+    position: relative;
+    overflow: hidden;
+}
+
+.echo-admin-download-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.echo-admin-download-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: var(--glass-shadow-colored);
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.echo-admin-download-btn:hover::before {
+    left: 100%;
+}
+
+/* Chart button styles */
+.echo-admin-chart-btn {
+    background: var(--gradient-accent);
+    color: var(--text-primary);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-top: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: var(--glass-backdrop);
+    position: relative;
+    overflow: hidden;
+}
+
+.echo-admin-chart-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.echo-admin-chart-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: var(--glass-shadow-colored);
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.echo-admin-chart-btn:hover::before {
+    left: 100%;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .echo-admin-window {
+        width: calc(100vw - 40px);
+        right: -10px;
+        height: 400px;
+        bottom: 70px;
+    }
+    
+    .echo-admin-chat {
+        bottom: 20px;
+        right: 20px;
+    }
+    
+    .echo-admin-toggle {
+        padding: 12px 16px;
+        min-width: 120px;
+        font-size: 13px;
+    }
+    
+    .echo-admin-messages {
+        padding: 15px;
+    }
+    
+    .echo-admin-input-container {
+        padding: 15px;
+    }
+}
+
+/* Ensure it stays floating on all screen sizes */
+@media (max-width: 480px) {
+    .echo-admin-window {
+        width: calc(100vw - 20px);
+        right: -5px;
+        height: 350px;
+    }
+    
+    .echo-admin-chat {
+        bottom: 15px;
+        right: 15px;
+    }
+}

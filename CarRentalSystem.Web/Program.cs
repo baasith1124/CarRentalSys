@@ -58,6 +58,13 @@ namespace CarRentalSystem.Web
             builder.Services.Configure<StripeSettings>(
                 builder.Configuration.GetSection("Stripe"));
 
+            // Admin Assistant Services
+            builder.Services.AddScoped<CarRentalSystem.Application.Common.Interfaces.IAdminAssistantService, CarRentalSystem.Application.Features.AdminAssistant.AdminAssistantService>();
+            builder.Services.AddScoped<CarRentalSystem.Application.Common.Interfaces.IOpenRouterService, CarRentalSystem.Application.Features.AdminAssistant.OpenRouterService>();
+            builder.Services.AddScoped<CarRentalSystem.Application.Common.Interfaces.IReportGenerationService, CarRentalSystem.Application.Features.AdminAssistant.ReportGenerationService>();
+            builder.Services.AddScoped<CarRentalSystem.Application.Common.Interfaces.IChartGenerationService, CarRentalSystem.Application.Features.AdminAssistant.ChartGenerationService>();
+            builder.Services.AddHttpClient<CarRentalSystem.Application.Common.Interfaces.IOpenRouterService, CarRentalSystem.Application.Features.AdminAssistant.OpenRouterService>();
+
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 

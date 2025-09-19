@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿@using CarRentalSystem.Web.ViewModels.Account
+﻿﻿@using CarRentalSystem.Web.ViewModels.Account
 <!DOCTYPE html>
 <html lang="en" class="no-js">
 <head>
@@ -10,6 +10,15 @@
     <link href="~/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/modern-theme.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/3d-interactive-landing.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/register-modal.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/login-modal.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/google-places-autocomplete.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/interactive-statistics.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/interactive-how-it-works.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/interactive-premium-fleet.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/car-details-modal.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/interactive-testimonials.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/interactive-contact.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CarRentalSystem.Web.styles.css" asp-append-version="true" />
     @await RenderSectionAsync("Styles", required: false)
@@ -115,9 +124,9 @@
                         else
                         {
                             <li class="nav-item">
-                                <a class="btn btn-outline-light px-4 me-2 btn-3d-outline" asp-controller="Account" asp-action="Login">
-                                    <i class="bi bi-box-arrow-in-right me-2"></i>
-                                </a>
+                                <button class="btn btn-outline-light px-4 me-2 btn-3d-outline" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                                </button>
                             </li>
                             <li class="nav-item">
                                 <button class="btn btn-primary px-4 text-white btn-3d-primary" data-bs-toggle="modal" data-bs-target="#registerModal">
@@ -255,6 +264,9 @@
 
     @await Html.PartialAsync("_ToastPartial") 
     
+    @await Html.PartialAsync("_LoginModalPartial", new LoginViewModel())
+    @await Html.PartialAsync("_CarDetailsModalPartial", new CarRentalSystem.Web.ViewModels.Car.CarViewModel())
+    
     @await Html.PartialAsync("_RegisterModalPartial", new RegisterCustomerViewModel())
     @await Html.PartialAsync("_AuthModalPartial")
 
@@ -266,8 +278,18 @@
     <script src="~/js/toast.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/register.js" asp-append-version="true"></script>
+    <script src="~/js/register-modal.js" asp-append-version="true"></script>
     <script src="~/js/login-modal.js" asp-append-version="true"></script>
+    <script src="~/js/google-places-autocomplete.js" asp-append-version="true"></script>
+    <script src="~/js/datetime-validation.js" asp-append-version="true"></script>
+    <script src="~/js/interactive-statistics.js" asp-append-version="true"></script>
+    <script src="~/js/interactive-how-it-works.js" asp-append-version="true"></script>
+    <script src="~/js/interactive-premium-fleet.js" asp-append-version="true"></script>
+    <script src="~/js/car-details-modal.js" asp-append-version="true"></script>
+    <script src="~/js/interactive-testimonials.js" asp-append-version="true"></script>
+    <script src="~/js/interactive-contact.js" asp-append-version="true"></script>
     <script src="~/js/auth-modal.js" asp-append-version="true"></script>
+    
     
     <!-- 3D Interactive Landing Experience Scripts -->
     <script src="~/js/3d-interactive-landing.js" asp-append-version="true" onerror="console.warn('3D Interactive landing script failed to load')"></script>
@@ -275,6 +297,35 @@
 
     @await RenderSectionAsync("Scripts", required: false)
     
+    <!-- Handle TempData Messages -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            @if (TempData["Error"] != null)
+            {
+                <text>
+                showToast('@Html.Raw(TempData["Error"])', 'error');
+                </text>
+            }
+            @if (TempData["Success"] != null)
+            {
+                <text>
+                showToast('@Html.Raw(TempData["Success"])', 'success');
+                </text>
+            }
+            @if (TempData["Info"] != null)
+            {
+                <text>
+                showToast('@Html.Raw(TempData["Info"])', 'info');
+                </text>
+            }
+            @if (TempData["Warning"] != null)
+            {
+                <text>
+                showToast('@Html.Raw(TempData["Warning"])', 'warning');
+                </text>
+            }
+        });
+    </script>
 
 </body>
 </html>

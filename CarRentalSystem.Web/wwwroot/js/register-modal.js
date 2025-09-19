@@ -1,7 +1,7 @@
-// Login Modal JavaScript Functionality
+// Registration Modal JavaScript Functionality
 
-function toggleLoginPassword() {
-    const field = document.querySelector('#loginModal input[name="Password"]');
+function togglePassword(fieldId) {
+    const field = document.querySelector(`input[name="${fieldId}"]`);
     const toggle = field.parentElement.querySelector('.password-toggle-3d i');
     
     if (field.type === 'password') {
@@ -15,18 +15,18 @@ function toggleLoginPassword() {
 
 // Enhanced form validation with 3D effects
 document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('ajaxLoginForm');
+    const form = document.getElementById('ajaxRegisterForm');
     if (!form) return;
     
     const inputs = form.querySelectorAll('.form-control-3d');
     
     inputs.forEach(input => {
         input.addEventListener('blur', function() {
-            validateLoginField(this);
+            validateField(this);
         });
         
         input.addEventListener('input', function() {
-            clearLoginFieldError(this);
+            clearFieldError(this);
         });
     });
     
@@ -36,17 +36,17 @@ document.addEventListener('DOMContentLoaded', function() {
         
         let isValid = true;
         inputs.forEach(input => {
-            if (!validateLoginField(input)) {
+            if (!validateField(input)) {
                 isValid = false;
             }
         });
         
         if (isValid) {
-            submitLoginForm();
+            submitRegistrationForm();
         }
     });
     
-    function validateLoginField(field) {
+    function validateField(field) {
         const value = field.value.trim();
         const fieldName = field.name;
         let isValid = true;
@@ -62,13 +62,19 @@ document.addEventListener('DOMContentLoaded', function() {
         // Validation rules
         if (!value) {
             isValid = false;
-            errorMessage = `${getLoginFieldLabel(fieldName)} is required.`;
+            errorMessage = `${getFieldLabel(fieldName)} is required.`;
         } else if (fieldName === 'Email' && !isValidEmail(value)) {
             isValid = false;
             errorMessage = 'Please enter a valid email address.';
         } else if (fieldName === 'Password' && value.length < 6) {
             isValid = false;
             errorMessage = 'Password must be at least 6 characters long.';
+        } else if (fieldName === 'ConfirmPassword') {
+            const password = document.querySelector('input[name="Password"]').value;
+            if (value !== password) {
+                isValid = false;
+                errorMessage = 'Passwords do not match.';
+            }
         }
         
         if (!isValid) {
@@ -81,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return isValid;
     }
     
-    function clearLoginFieldError(field) {
+    function clearFieldError(field) {
         field.classList.remove('is-invalid');
         const errorElement = field.parentElement.querySelector('.validation-error-3d');
         if (errorElement) {
@@ -89,10 +95,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    function getLoginFieldLabel(fieldName) {
+    function getFieldLabel(fieldName) {
         const labels = {
+            'FullName': 'Full Name',
             'Email': 'Email',
-            'Password': 'Password'
+            'Password': 'Password',
+            'ConfirmPassword': 'Confirm Password'
         };
         return labels[fieldName] || fieldName;
     }
@@ -102,14 +110,14 @@ document.addEventListener('DOMContentLoaded', function() {
         return emailRegex.test(email);
     }
     
-    function submitLoginForm() {
+    function submitRegistrationForm() {
         const formData = new FormData(form);
-        const submitButton = form.querySelector('.btn-login-3d');
-        const errorDisplay = document.getElementById('loginError');
+        const submitButton = form.querySelector('.btn-register-3d');
+        const errorDisplay = document.getElementById('registerError');
         
         // Show loading state
         const originalText = submitButton.querySelector('.btn-text').textContent;
-        submitButton.querySelector('.btn-text').textContent = 'Signing In...';
+        submitButton.querySelector('.btn-text').textContent = 'Creating Account...';
         submitButton.disabled = true;
         
         // Clear previous errors
@@ -118,32 +126,34 @@ document.addEventListener('DOMContentLoaded', function() {
             errorDisplay.textContent = '';
         }
         
-        fetch('/Account/Login', {
+        fetch('/Account/RegisterCustomerAjax', {
             method: 'POST',
             body: formData,
             headers: {
                 'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
             }
         })
-        .then(response => {
-            if (response.ok) {
-                // Success - redirect to dashboard or home
-                window.location.href = '/Dashboard';
-            } else {
-                return response.text().then(text => {
-                    // Try to parse as JSON for error messages
-                    try {
-                        const data = JSON.parse(text);
-                        throw new Error(data.message || 'Login failed');
-                    } catch (e) {
-                        throw new Error('Invalid email or password');
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Success - show success message and close modal
+                showSuccessMessage();
+                setTimeout(() => {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
+                    if (modal) {
+                        modal.hide();
                     }
-                });
+                    // Redirect or show success page
+                    window.location.href = '/Account/Login?registered=true';
+                }, 2000);
+            } else {
+                // Show errors
+                showErrors(data.errors || ['Registration failed. Please try again.']);
             }
         })
         .catch(error => {
-            console.error('Login error:', error);
-            showLoginErrors([error.message || 'Login failed. Please try again.']);
+            console.error('Registration error:', error);
+            showErrors(['An error occurred. Please try again.']);
         })
         .finally(() => {
             // Reset button state
@@ -152,10 +162,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    function showLoginErrors(errors) {
-        const errorDisplay = document.getElementById('loginError');
+    function showErrors(errors) {
+        const errorDisplay = document.getElementById('registerError');
         if (errorDisplay) {
             errorDisplay.innerHTML = errors.map(error => `<div>${error}</div>`).join('');
+            errorDisplay.style.display = 'block';
+        }
+    }
+    
+    function showSuccessMessage() {
+        const errorDisplay = document.getElementById('registerError');
+        if (errorDisplay) {
+            errorDisplay.innerHTML = '<div style="color: #00FF88;"><i class="bi bi-check-circle me-2"></i>Account created successfully! Redirecting...</div>';
             errorDisplay.style.display = 'block';
         }
     }
@@ -163,11 +181,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Modal event handlers
 document.addEventListener('DOMContentLoaded', function() {
-    const loginModal = document.getElementById('loginModal');
-    if (loginModal) {
+    const registerModal = document.getElementById('registerModal');
+    if (registerModal) {
         // Reset form when modal is hidden
-        loginModal.addEventListener('hidden.bs.modal', function() {
-            const form = document.getElementById('ajaxLoginForm');
+        registerModal.addEventListener('hidden.bs.modal', function() {
+            const form = document.getElementById('ajaxRegisterForm');
             if (form) {
                 form.reset();
                 // Clear all validation errors
@@ -180,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     field.classList.remove('is-invalid');
                 });
                 // Hide error display
-                const errorDisplay = document.getElementById('loginError');
+                const errorDisplay = document.getElementById('registerError');
                 if (errorDisplay) {
                     errorDisplay.style.display = 'none';
                 }
@@ -188,8 +206,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Focus first input when modal is shown
-        loginModal.addEventListener('shown.bs.modal', function() {
-            const firstInput = loginModal.querySelector('.form-control-3d');
+        registerModal.addEventListener('shown.bs.modal', function() {
+            const firstInput = registerModal.querySelector('.form-control-3d');
             if (firstInput) {
                 firstInput.focus();
             }
@@ -197,45 +215,33 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Global function to show login modal
-function showLoginModal() {
-    const modal = new bootstrap.Modal(document.getElementById('loginModal'));
+// Global function to show register modal
+function showRegisterModal() {
+    const modal = new bootstrap.Modal(document.getElementById('registerModal'));
     modal.show();
 }
 
-// Global function to show register modal (for switching between modals)
-function showRegisterModal() {
-    const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
-    if (loginModal) {
-        loginModal.hide();
+// Global function to show login modal (for switching between modals)
+function showLoginModal() {
+    const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
+    if (registerModal) {
+        registerModal.hide();
     }
     
-    // Show register modal if it exists
-    const registerModal = document.getElementById('registerModal');
-    if (registerModal) {
-        const modal = new bootstrap.Modal(registerModal);
+    // Show login modal if it exists
+    const loginModal = document.getElementById('loginModal');
+    if (loginModal) {
+        const modal = new bootstrap.Modal(loginModal);
         modal.show();
     }
 }
 
-// Handle forgot password link
-document.addEventListener('DOMContentLoaded', function() {
-    const forgotLink = document.querySelector('.forgot-link-3d');
-    if (forgotLink) {
-        forgotLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            // You can implement forgot password functionality here
-            alert('Forgot password functionality will be implemented soon!');
-        });
-    }
-});
-
-// Handle Google login
+// Handle Google login (shared function)
 function handleGoogleLogin(event) {
     // Close the modal before redirecting to Google
-    const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
-    if (loginModal) {
-        loginModal.hide();
+    const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
+    if (registerModal) {
+        registerModal.hide();
     }
     
     // Show loading message

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="~/css/3d-interactive-landing.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin-3d.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/echo-admin.css" asp-append-version="true" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body class="admin-body-3d">
@@ -323,6 +324,221 @@
         });
     </script>
     
+    <!-- EchoAdmin Chat Bubble -->
+    <div id="echoAdminChat" class="echo-admin-chat">
+        <!-- Chat Toggle Button -->
+        <div id="echoAdminToggle" class="echo-admin-toggle">
+            <i class="bi bi-robot"></i>
+            <span class="echo-admin-badge">EchoAdmin</span>
+        </div>
+        
+        <!-- Chat Window -->
+        <div id="echoAdminWindow" class="echo-admin-window" style="display: none;">
+            <div class="echo-admin-header">
+                <div class="echo-admin-title">
+                    <i class="bi bi-robot me-2"></i>
+                    <span>EchoAdmin</span>
+                    <span class="echo-admin-status">Online</span>
+                </div>
+                <button id="echoAdminClose" class="echo-admin-close">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+            
+            <div class="echo-admin-messages" id="echoAdminMessages">
+                <div class="echo-admin-message">
+                    <div class="echo-admin-avatar">
+                        <i class="bi bi-robot"></i>
+                    </div>
+                    <div class="echo-admin-content">
+                        <div class="echo-admin-text">
+                            Hello! I'm EchoAdmin, your intelligent assistant. I can help you get information from the database. 
+                            I can only answer questions related to:
+                            <ul class="mt-2">
+                                <li>Customers (CustomerId, FullName, Email, Address, KYC Status)</li>
+                                <li>Bookings (BookingId, CustomerId, CarId, Dates, Status, Cost)</li>
+                                <li>Cars (CarId, Model, Type, Rate, Approval Status)</li>
+                                <li>Invoices (InvoiceId, PaymentId, Amount, Status)</li>
+                            </ul>
+                            <p class="mt-2">Try asking: "How many customers are KYC verified?" or "Export all bookings to Excel"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="echo-admin-input-container">
+                <div class="echo-admin-input-group">
+                    <input type="text" id="echoAdminInput" class="echo-admin-input" placeholder="Ask me about the database..." />
+                    <button id="echoAdminSend" class="echo-admin-send">
+                        <i class="bi bi-send"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EchoAdmin JavaScript -->
+    <script>
+        let echoAdminIsOpen = false;
+        let echoAdminIsLoading = false;
+        let echoAdminHasGreeted = false;
+
+        // Proactive greeting when admin panel loads
+        function showEchoAdminGreeting() {
+            if (!echoAdminHasGreeted) {
+                echoAdminHasGreeted = true;
+                // Show greeting after a short delay
+                setTimeout(() => {
+                    addEchoAdminMessage("Hi! How can I assist you today? I can help you with database queries, generate reports, and create charts. Try asking me about customers, bookings, cars, or invoices!", 'assistant');
+                }, 2000);
+            }
+        }
+
+        // Initialize greeting when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            showEchoAdminGreeting();
+        });
+
+        // Toggle chat window
+        document.getElementById('echoAdminToggle').addEventListener('click', function() {
+            const window = document.getElementById('echoAdminWindow');
+            if (echoAdminIsOpen) {
+                window.style.display = 'none';
+                echoAdminIsOpen = false;
+            } else {
+                window.style.display = 'flex';
+                echoAdminIsOpen = true;
+                // Focus on input when opening
+                setTimeout(() => {
+                    document.getElementById('echoAdminInput').focus();
+                }, 100);
+            }
+        });
+
+        // Close chat window
+        document.getElementById('echoAdminClose').addEventListener('click', function() {
+            document.getElementById('echoAdminWindow').style.display = 'none';
+            echoAdminIsOpen = false;
+        });
+
+        // Send message
+        document.getElementById('echoAdminSend').addEventListener('click', sendEchoAdminMessage);
+        document.getElementById('echoAdminInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !echoAdminIsLoading) {
+                sendEchoAdminMessage();
+            }
+        });
+
+        async function sendEchoAdminMessage() {
+            const input = document.getElementById('echoAdminInput');
+            const message = input.value.trim();
+            
+            if (!message || echoAdminIsLoading) return;
+            
+            echoAdminIsLoading = true;
+            input.value = '';
+            
+            // Add user message
+            addEchoAdminMessage(message, 'user');
+            
+            // Show loading
+            showEchoAdminLoading();
+            
+            try {
+                const response = await fetch('/AdminAssistant/ProcessQuery', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(message)
+                });
+                
+                const result = await response.json();
+                
+                // Hide loading
+                hideEchoAdminLoading();
+                
+                // Add assistant response
+                addEchoAdminMessage(result.message, 'assistant', result);
+                
+            } catch (error) {
+                hideEchoAdminLoading();
+                addEchoAdminMessage('Sorry, I encountered an error. Please try again.', 'assistant');
+                console.error('EchoAdmin Error:', error);
+            } finally {
+                echoAdminIsLoading = false;
+            }
+        }
+
+        function addEchoAdminMessage(content, sender, response = null) {
+            const messagesContainer = document.getElementById('echoAdminMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `echo-admin-message ${sender === 'user' ? 'user-message' : ''}`;
+            
+            let messageContent = `
+                <div class="echo-admin-avatar">
+                    <i class="bi bi-${sender === 'user' ? 'person' : 'robot'}"></i>
+                </div>
+                <div class="echo-admin-content">
+                    <div class="echo-admin-text">${content}</div>
+                </div>
+            `;
+            
+            // If it's a download response, add download button
+            if (response && response.responseType === 'download' && response.downloadUrl) {
+                messageContent += `
+                    <div class="echo-admin-content" style="margin-top: 8px;">
+                        <a href="${response.downloadUrl}" class="echo-admin-download-btn" download="${response.fileName || 'report'}">
+                            <i class="bi bi-download"></i> Download ${response.fileName || 'Report'}
+                        </a>
+                    </div>
+                `;
+            }
+            
+            // If it's a chart response, add chart download button
+            if (response && response.responseType === 'chart' && response.downloadUrl) {
+                messageContent += `
+                    <div class="echo-admin-content" style="margin-top: 8px;">
+                        <a href="${response.downloadUrl}" class="echo-admin-chart-btn" download="${response.fileName || 'chart'}">
+                            <i class="bi bi-chart-bar"></i> Download Chart
+                        </a>
+                    </div>
+                `;
+            }
+            
+            messageDiv.innerHTML = messageContent;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function showEchoAdminLoading() {
+            const messagesContainer = document.getElementById('echoAdminMessages');
+            const loadingDiv = document.createElement('div');
+            loadingDiv.id = 'echoAdminLoading';
+            loadingDiv.className = 'echo-admin-message';
+            loadingDiv.innerHTML = `
+                <div class="echo-admin-avatar">
+                    <i class="bi bi-robot"></i>
+                </div>
+                <div class="echo-admin-content">
+                    <div class="echo-admin-loading">
+                        <i class="bi bi-hourglass-split"></i>
+                        <span>Thinking...</span>
+                    </div>
+                </div>
+            `;
+            messagesContainer.appendChild(loadingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function hideEchoAdminLoading() {
+            const loadingDiv = document.getElementById('echoAdminLoading');
+            if (loadingDiv) {
+                loadingDiv.remove();
+            }
+        }
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
     @await RenderSectionAsync("Styles", required: false)
 </body>

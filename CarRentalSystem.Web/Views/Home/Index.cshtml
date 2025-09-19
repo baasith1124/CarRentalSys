@@ -104,30 +104,90 @@
                             <label class="form-label text-light fw-semibold">
                                 <i class="bi bi-geo-alt me-2"></i>Pickup Location
                             </label>
-                            <input type="text" name="PickupLocation" class="form-control form-control-3d" placeholder="Enter pickup location..." required />
+                            <div class="location-input-container">
+                                <input type="text" 
+                                       id="pickupLocation" 
+                                       name="PickupLocation" 
+                                       class="form-control form-control-3d location-input" 
+                                       placeholder="Enter pickup location in Sri Lanka..." 
+                                       autocomplete="off"
+                                       required />
+                                <div class="location-input-icon">
+                                    <i class="bi bi-geo-alt"></i>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-lg-3 col-md-6">
                             <label class="form-label text-light fw-semibold">
                                 <i class="bi bi-geo-alt-fill me-2"></i>Drop Location
                             </label>
-                            <input type="text" name="DropLocation" class="form-control form-control-3d" placeholder="Enter drop location..." required />
+                            <div class="location-input-container">
+                                <input type="text" 
+                                       id="dropLocation" 
+                                       name="DropLocation" 
+                                       class="form-control form-control-3d location-input" 
+                                       placeholder="Enter drop location in Sri Lanka..." 
+                                       autocomplete="off"
+                                       required />
+                                <div class="location-input-icon">
+                                    <i class="bi bi-geo-alt-fill"></i>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-lg-2 col-md-6">
-                            <label class="form-label text-light fw-semibold">
-                                <i class="bi bi-calendar-event me-2"></i>Pickup Date
-                            </label>
-                            <input type="datetime-local" name="PickupDate" class="form-control form-control-3d" required />
+                            <div class="datetime-field-wrapper">
+                                <label class="form-label text-light fw-semibold" 
+                                       data-bs-toggle="tooltip" 
+                                       data-bs-placement="top" 
+                                       title="Minimum 3 hours from now">
+                                    <i class="bi bi-calendar-event me-2"></i>Pickup Date
+                                </label>
+                                <div class="datetime-input-container">
+                                    <input type="datetime-local" 
+                                           id="pickupDateTime" 
+                                           name="PickupDate" 
+                                           class="form-control form-control-3d datetime-input" 
+                                           placeholder="Select pickup date & time"
+                                           data-bs-toggle="tooltip" 
+                                           data-bs-placement="top" 
+                                           title="Minimum 3 hours from now"
+                                           required />
+                                    <div class="datetime-input-icon">
+                                        <i class="bi bi-calendar-event"></i>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-lg-2 col-md-6">
-                            <label class="form-label text-light fw-semibold">
-                                <i class="bi bi-calendar-check me-2"></i>Drop Date
-                            </label>
-                            <input type="datetime-local" name="DropDate" class="form-control form-control-3d" required />
+                            <div class="datetime-field-wrapper">
+                                <label class="form-label text-light fw-semibold" 
+                                       data-bs-toggle="tooltip" 
+                                       data-bs-placement="top" 
+                                       title="At least 1 hour after pickup">
+                                    <i class="bi bi-calendar-check me-2"></i>Drop Date
+                                </label>
+                                <div class="datetime-input-container">
+                                    <input type="datetime-local" 
+                                           id="dropDateTime" 
+                                           name="DropDate" 
+                                           class="form-control form-control-3d datetime-input" 
+                                           placeholder="Select drop date & time"
+                                           data-bs-toggle="tooltip" 
+                                           data-bs-placement="top" 
+                                           title="At least 1 hour after pickup"
+                                           required />
+                                    <div class="datetime-input-icon">
+                                        <i class="bi bi-calendar-check"></i>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-lg-2 col-md-12">
-                            <button type="submit" class="btn-3d-interactive btn-primary-3d w-100">
-                                <i class="bi bi-search me-2"></i>Search
-                            </button>
+                            <div class="search-button-wrapper">
+                                <button type="submit" class="btn-3d-interactive btn-primary-3d w-100">
+                                    <i class="bi bi-search me-2"></i>Search
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -135,32 +195,66 @@
         </div>
     </section>
 
-    <!-- 3D Statistics Section -->
-    <section class="py-5">
+    <!-- 3D Interactive Statistics Section -->
+    <section class="py-5" id="statistics">
         <div class="container">
+            <div class="text-center mb-5 scroll-reveal-3d">
+                <h2 class="hero-subtitle-3d">Our Impact</h2>
+                <p class="hero-description-3d">
+                    Numbers that speak for our commitment to excellence
+                </p>
+            </div>
             <div class="stats-3d-container scroll-reveal-3d">
-                <div class="stat-item-3d">
-                    <div class="stat-number-3d">500+</div>
+                <div class="stat-item-3d interactive-stat" data-stat="500" data-suffix="+" data-delay="0">
+                    <div class="stat-glow-effect"></div>
+                    <div class="stat-number-3d counter-animate">0</div>
                     <div class="stat-label-3d">
-                        <i class="bi bi-people-fill me-2"></i>Happy Customers
+                        <div class="stat-icon-3d">
+                            <i class="bi bi-people-fill"></i>
+                        </div>
+                        <span>Happy Customers</span>
+                    </div>
+                    <div class="stat-description-3d">
+                        <p>Satisfied customers who trust us with their journeys</p>
                     </div>
                 </div>
-                <div class="stat-item-3d">
-                    <div class="stat-number-3d">50+</div>
+                <div class="stat-item-3d interactive-stat" data-stat="50" data-suffix="+" data-delay="200">
+                    <div class="stat-glow-effect"></div>
+                    <div class="stat-number-3d counter-animate">0</div>
                     <div class="stat-label-3d">
-                        <i class="bi bi-car-front-fill me-2"></i>Premium Cars
+                        <div class="stat-icon-3d">
+                            <i class="bi bi-car-front-fill"></i>
+                        </div>
+                        <span>Premium Cars</span>
+                    </div>
+                    <div class="stat-description-3d">
+                        <p>Luxury and economy vehicles in our fleet</p>
                     </div>
                 </div>
-                <div class="stat-item-3d">
-                    <div class="stat-number-3d">15+</div>
+                <div class="stat-item-3d interactive-stat" data-stat="15" data-suffix="+" data-delay="400">
+                    <div class="stat-glow-effect"></div>
+                    <div class="stat-number-3d counter-animate">0</div>
                     <div class="stat-label-3d">
-                        <i class="bi bi-geo-alt-fill me-2"></i>Cities Covered
+                        <div class="stat-icon-3d">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </div>
+                        <span>Cities Covered</span>
+                    </div>
+                    <div class="stat-description-3d">
+                        <p>Major cities across Sri Lanka served</p>
                     </div>
                 </div>
-                <div class="stat-item-3d">
-                    <div class="stat-number-3d">24/7</div>
+                <div class="stat-item-3d interactive-stat" data-stat="24" data-suffix="/7" data-delay="600">
+                    <div class="stat-glow-effect"></div>
+                    <div class="stat-number-3d counter-animate">0</div>
                     <div class="stat-label-3d">
-                        <i class="bi bi-headset me-2"></i>Customer Support
+                        <div class="stat-icon-3d">
+                            <i class="bi bi-headset"></i>
+                        </div>
+                        <span>Customer Support</span>
+                    </div>
+                    <div class="stat-description-3d">
+                        <p>Round-the-clock assistance for your peace of mind</p>
                     </div>
                 </div>
             </div>
@@ -179,7 +273,7 @@
 
             <div class="row g-4">
                 <div class="col-lg-3 col-md-6 scroll-reveal-3d">
-                    <div class="step-3d">
+                    <div class="step-3d interactive-step" data-step="1" data-interactive="true">
                         <div class="step-number">
                             <span>1</span>
                         </div>
@@ -190,11 +284,12 @@
                         <p class="step-description">
                             Browse our extensive fleet of premium vehicles and find the perfect car for your needs using our advanced search filters.
                         </p>
+                        <div class="step-glow-effect"></div>
                     </div>
                 </div>
                 
                 <div class="col-lg-3 col-md-6 scroll-reveal-3d">
-                    <div class="step-3d">
+                    <div class="step-3d interactive-step" data-step="2" data-interactive="true">
                         <div class="step-number">
                             <span>2</span>
                         </div>
@@ -205,11 +300,12 @@
                         <p class="step-description">
                             Choose your pickup and drop-off dates, select additional services, and complete your booking with our secure payment system.
                         </p>
+                        <div class="step-glow-effect"></div>
                     </div>
                 </div>
                 
                 <div class="col-lg-3 col-md-6 scroll-reveal-3d">
-                    <div class="step-3d">
+                    <div class="step-3d interactive-step" data-step="3" data-interactive="true">
                         <div class="step-number">
                             <span>3</span>
                         </div>
@@ -220,11 +316,12 @@
                         <p class="step-description">
                             Make secure payment using your preferred method and receive instant confirmation with all booking details.
                         </p>
+                        <div class="step-glow-effect"></div>
                     </div>
                 </div>
                 
                 <div class="col-lg-3 col-md-6 scroll-reveal-3d">
-                    <div class="step-3d">
+                    <div class="step-3d interactive-step" data-step="4" data-interactive="true">
                         <div class="step-number">
                             <span>4</span>
                         </div>
@@ -235,6 +332,7 @@
                         <p class="step-description">
                             Collect your vehicle from the designated location and enjoy your journey with full insurance coverage and 24/7 support.
                         </p>
+                        <div class="step-glow-effect"></div>
                     </div>
                 </div>
             </div>
@@ -257,23 +355,13 @@
                     @foreach (var car in Model)
                     {
                         <div class="col-lg-4 col-md-6 scroll-reveal-3d">
-                            <partial name="_CarCardPartial" model="car" />
+                            <div class="interactive-car-wrapper" data-car-id="@car.CarId">
+                                <partial name="_CarCardPartial" model="car" />
+                            </div>
                         </div>
                     }
                 </div>
                 
-                <!-- Enhanced View All Cars Button -->
-                <div class="text-center mt-5 scroll-reveal-3d">
-                    <a href="@Url.Action("Index", "Cars")" class="btn-3d-interactive btn-primary-3d btn-lg">
-                        <i class="bi bi-car-front-fill me-2"></i>
-                        <span>View All Vehicles</span>
-                        <i class="bi bi-arrow-right ms-2"></i>
-                    </a>
-                    <p class="text-muted mt-3">
-                        <i class="bi bi-shield-check me-2"></i>
-                        All vehicles are fully insured and regularly maintained
-                    </p>
-                </div>
             }
             else
             {
@@ -312,9 +400,13 @@
 
             <div class="row g-4">
                 <div class="col-lg-4 col-md-6 scroll-reveal-3d">
-                    <div class="testimonial-card-3d">
+                    <div class="testimonial-card-3d interactive-testimonial" data-testimonial="1">
+                        <div class="testimonial-glow-effect"></div>
                         <div class="testimonial-avatar">
-                            <i class="bi bi-person-fill"></i>
+                            <img src="~/images/testimonial1.jpg" alt="Sarah Johnson" class="testimonial-image" />
+                            <div class="avatar-overlay">
+                                <i class="bi bi-quote"></i>
+                            </div>
                         </div>
                         <div class="rating-stars">
                             <i class="bi bi-star-fill"></i>
@@ -328,13 +420,25 @@
                         </p>
                         <div class="testimonial-author">Sarah Johnson</div>
                         <div class="testimonial-role">Business Executive</div>
+                        <div class="testimonial-actions">
+                            <button class="testimonial-action-btn" title="Share Testimonial">
+                                <i class="bi bi-share"></i>
+                            </button>
+                            <button class="testimonial-action-btn" title="Like Testimonial">
+                                <i class="bi bi-heart"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="col-lg-4 col-md-6 scroll-reveal-3d">
-                    <div class="testimonial-card-3d">
+                    <div class="testimonial-card-3d interactive-testimonial" data-testimonial="2">
+                        <div class="testimonial-glow-effect"></div>
                         <div class="testimonial-avatar">
-                            <i class="bi bi-person-fill"></i>
+                            <img src="~/images/testimonial2.jpg" alt="Michael Chen" class="testimonial-image" />
+                            <div class="avatar-overlay">
+                                <i class="bi bi-quote"></i>
+                            </div>
                         </div>
                         <div class="rating-stars">
                             <i class="bi bi-star-fill"></i>
@@ -348,13 +452,25 @@
                         </p>
                         <div class="testimonial-author">Michael Chen</div>
                         <div class="testimonial-role">Travel Blogger</div>
+                        <div class="testimonial-actions">
+                            <button class="testimonial-action-btn" title="Share Testimonial">
+                                <i class="bi bi-share"></i>
+                            </button>
+                            <button class="testimonial-action-btn" title="Like Testimonial">
+                                <i class="bi bi-heart"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="col-lg-4 col-md-6 scroll-reveal-3d">
-                    <div class="testimonial-card-3d">
+                    <div class="testimonial-card-3d interactive-testimonial" data-testimonial="3">
+                        <div class="testimonial-glow-effect"></div>
                         <div class="testimonial-avatar">
-                            <i class="bi bi-person-fill"></i>
+                            <img src="~/images/testimonial3.jpg" alt="Emily Rodriguez" class="testimonial-image" />
+                            <div class="avatar-overlay">
+                                <i class="bi bi-quote"></i>
+                            </div>
                         </div>
                         <div class="rating-stars">
                             <i class="bi bi-star-fill"></i>
@@ -368,6 +484,14 @@
                         </p>
                         <div class="testimonial-author">Emily Rodriguez</div>
                         <div class="testimonial-role">Marketing Director</div>
+                        <div class="testimonial-actions">
+                            <button class="testimonial-action-btn" title="Share Testimonial">
+                                <i class="bi bi-share"></i>
+                            </button>
+                            <button class="testimonial-action-btn" title="Like Testimonial">
+                                <i class="bi bi-heart"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -375,47 +499,238 @@
     </section>
 
     <!-- Contact Section -->
-    <section class="py-5" id="contact">
+    <section class="contact-section-3d" id="contact">
         <div class="container">
             <div class="text-center mb-5 scroll-reveal-3d">
                 <h2 class="hero-subtitle-3d">Get in Touch</h2>
                 <p class="hero-description-3d">Have questions? We're here to help you get on the road</p>
             </div>
 
-            <div class="features-3d-grid scroll-reveal-3d">
-                <div class="card-3d-interactive">
-                    <div class="feature-icon-3d">
-                        <i class="bi bi-telephone-fill"></i>
+            <div class="contact-cards-grid scroll-reveal-3d">
+                <div class="contact-card-3d interactive-contact-card" data-contact="call">
+                    <div class="contact-glow-effect"></div>
+                    <div class="contact-icon-container">
+                        <div class="contact-icon-3d">
+                            <i class="bi bi-telephone-fill"></i>
+                        </div>
+                        <div class="icon-pulse-effect"></div>
                     </div>
-                    <h5 class="feature-title-3d">Call Us</h5>
-                    <p class="feature-description-3d">Speak directly with our customer service team</p>
-                    <a href="tel:+94771234567" class="btn-3d-interactive btn-secondary-3d">+94 77 123 4567</a>
+                    <h5 class="contact-title-3d">Call Us</h5>
+                    <p class="contact-description-3d">Speak directly with our customer service team</p>
+                    <div class="contact-actions">
+                        <a href="tel:+94771234567" class="btn-contact-3d btn-call-3d">
+                            <i class="bi bi-telephone me-2"></i>
+                            <span>+94 77 123 4567</span>
+                        </a>
+                        <button class="contact-action-btn" title="Copy Number">
+                            <i class="bi bi-clipboard"></i>
+                        </button>
+                    </div>
+                    <div class="contact-status">
+                        <span class="status-indicator available"></span>
+                        <span class="status-text">Available 24/7</span>
+                    </div>
                 </div>
                 
-                <div class="card-3d-interactive">
-                    <div class="feature-icon-3d">
-                        <i class="bi bi-envelope-fill"></i>
+                <div class="contact-card-3d interactive-contact-card" data-contact="email">
+                    <div class="contact-glow-effect"></div>
+                    <div class="contact-icon-container">
+                        <div class="contact-icon-3d">
+                            <i class="bi bi-envelope-fill"></i>
+                        </div>
+                        <div class="icon-pulse-effect"></div>
                     </div>
-                    <h5 class="feature-title-3d">Email Us</h5>
-                    <p class="feature-description-3d">Send us your queries and we'll respond quickly</p>
-                    <a href="mailto:support@carrentalsystem.com" class="btn-3d-interactive btn-secondary-3d">Email Us</a>
+                    <h5 class="contact-title-3d">Email Us</h5>
+                    <p class="contact-description-3d">Send us your queries and we'll respond quickly</p>
+                    <div class="contact-actions">
+                        <button class="btn-contact-3d btn-email-3d" onclick="openEmailPopup()">
+                            <i class="bi bi-envelope me-2"></i>
+                            <span>Email Us</span>
+                        </button>
+                        <button class="contact-action-btn" title="Copy Email">
+                            <i class="bi bi-clipboard"></i>
+                        </button>
+                    </div>
+                    <div class="contact-status">
+                        <span class="status-indicator available"></span>
+                        <span class="status-text">Response within 2 hours</span>
+                    </div>
                 </div>
                 
-                <div class="card-3d-interactive">
-                    <div class="feature-icon-3d">
-                        <i class="bi bi-chat-dots-fill"></i>
+                <div class="contact-card-3d interactive-contact-card" data-contact="chat">
+                    <div class="contact-glow-effect"></div>
+                    <div class="contact-icon-container">
+                        <div class="contact-icon-3d">
+                            <i class="bi bi-chat-dots-fill"></i>
+                        </div>
+                        <div class="icon-pulse-effect"></div>
                     </div>
-                    <h5 class="feature-title-3d">Live Chat</h5>
-                    <p class="feature-description-3d">Get instant support through our live chat</p>
-                    <button class="btn-3d-interactive btn-secondary-3d" onclick="openLiveChat()">Start Chat</button>
+                    <h5 class="contact-title-3d">Live Chat</h5>
+                    <p class="contact-description-3d">Get instant support through our live chat</p>
+                    <div class="contact-actions">
+                        <a href="https://wa.me/94777353481?text=Hello%20Car%20Rental%20System%2C%20I%20would%20like%20to%20get%20more%20information%20about%20your%20services." 
+                           class="btn-contact-3d btn-chat-3d" 
+                           target="_blank" 
+                           rel="noopener noreferrer">
+                            <i class="bi bi-whatsapp me-2"></i>
+                            <span>Start Chat</span>
+                        </a>
+                        <button class="contact-action-btn" title="Chat Info">
+                            <i class="bi bi-info-circle"></i>
+                        </button>
+                    </div>
+                    <div class="contact-status">
+                        <span class="status-indicator online"></span>
+                        <span class="status-text">Online now</span>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 </div>
 
+<!-- Email Popup Modal -->
+<div id="emailPopupModal" class="email-popup-modal" style="display: none;">
+    <div class="email-popup-overlay" onclick="closeEmailPopup()"></div>
+    <div class="email-popup-container">
+        <div class="email-popup-header">
+            <h3 class="email-popup-title">
+                <i class="bi bi-envelope-fill me-2"></i>
+                Send us a Message
+            </h3>
+            <button class="email-popup-close" onclick="closeEmailPopup()">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        
+        <form id="emailForm" class="email-popup-form" onsubmit="submitEmailForm(event)">
+            <div class="email-form-group">
+                <label for="senderName" class="email-form-label">
+                    <i class="bi bi-person-fill me-2"></i>
+                    Your Name
+                </label>
+                <input type="text" id="senderName" name="senderName" class="email-form-input" 
+                       placeholder="Enter your full name" required>
+            </div>
+            
+            <div class="email-form-group">
+                <label for="senderEmail" class="email-form-label">
+                    <i class="bi bi-envelope-fill me-2"></i>
+                    Your Email
+                </label>
+                <input type="email" id="senderEmail" name="senderEmail" class="email-form-input" 
+                       placeholder="Enter your email address" required>
+            </div>
+            
+            <div class="email-form-group">
+                <label for="messageSubject" class="email-form-label">
+                    <i class="bi bi-tag-fill me-2"></i>
+                    Subject
+                </label>
+                <input type="text" id="messageSubject" name="messageSubject" class="email-form-input" 
+                       placeholder="What's this about?" required>
+            </div>
+            
+            <div class="email-form-group">
+                <label for="messageContent" class="email-form-label">
+                    <i class="bi bi-chat-text-fill me-2"></i>
+                    Your Message
+                </label>
+                <textarea id="messageContent" name="messageContent" class="email-form-textarea" 
+                          placeholder="Tell us how we can help you..." rows="5" required></textarea>
+            </div>
+            
+            <div class="email-form-actions">
+                <button type="button" class="email-btn-cancel" onclick="closeEmailPopup()">
+                    <i class="bi bi-x-circle me-2"></i>
+                    Cancel
+                </button>
+                <button type="submit" class="email-btn-send" id="sendEmailBtn">
+                    <i class="bi bi-send-fill me-2"></i>
+                    <span class="btn-text">Send Message</span>
+                    <span class="btn-loading" style="display: none;">
+                        <i class="bi bi-hourglass-split me-2"></i>
+                        Sending...
+                    </span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
-function openLiveChat() {
-    alert('Live chat feature will be available soon!');
+function openEmailPopup() {
+    document.getElementById('emailPopupModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    
+    // Focus on first input
+    setTimeout(() => {
+        document.getElementById('senderName').focus();
+    }, 100);
+}
+
+function closeEmailPopup() {
+    document.getElementById('emailPopupModal').style.display = 'none';
+    document.body.style.overflow = '';
+    
+    // Reset form
+    document.getElementById('emailForm').reset();
+    
+    // Reset button state
+    const sendBtn = document.getElementById('sendEmailBtn');
+    sendBtn.querySelector('.btn-text').style.display = 'inline';
+    sendBtn.querySelector('.btn-loading').style.display = 'none';
+    sendBtn.disabled = false;
+}
+
+function submitEmailForm(event) {
+    event.preventDefault();
+    
+    const sendBtn = document.getElementById('sendEmailBtn');
+    const btnText = sendBtn.querySelector('.btn-text');
+    const btnLoading = sendBtn.querySelector('.btn-loading');
+    
+    // Show loading state
+    btnText.style.display = 'none';
+    btnLoading.style.display = 'inline';
+    sendBtn.disabled = true;
+    
+    // Get form data
+    const formData = new FormData(event.target);
+    const emailData = {
+        senderName: formData.get('senderName'),
+        senderEmail: formData.get('senderEmail'),
+        messageSubject: formData.get('messageSubject'),
+        messageContent: formData.get('messageContent')
+    };
+    
+    // Send email via AJAX
+    fetch('/Home/SendContactEmail', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+        },
+        body: JSON.stringify(emailData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('Message sent successfully! We\'ll get back to you soon.', 'success');
+            closeEmailPopup();
+        } else {
+            showToast(data.message || 'Failed to send message. Please try again.', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('Failed to send message. Please try again.', 'error');
+    })
+    .finally(() => {
+        // Reset button state
+        btnText.style.display = 'inline';
+        btnLoading.style.display = 'none';
+        sendBtn.disabled = false;
+    });
 }
 </script>

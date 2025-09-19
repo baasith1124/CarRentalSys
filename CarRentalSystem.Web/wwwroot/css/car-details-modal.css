@@ -1,0 +1,679 @@
+/* Car Details Modal 3D Theme */
+:root {
+    --modal-primary: #3B82F6;
+    --modal-secondary: #1E40AF;
+    --modal-accent: #60A5FA;
+    --modal-glow: rgba(59, 130, 246, 0.4);
+    --modal-shadow: rgba(0, 0, 0, 0.1);
+    --modal-glass: rgba(255, 255, 255, 0.05);
+    --modal-border: rgba(255, 255, 255, 0.1);
+    --modal-success: #10B981;
+    --modal-warning: #F59E0B;
+    --modal-danger: #EF4444;
+}
+
+/* Modal Backdrop */
+.modal-backdrop {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+}
+
+/* Modal Dialog */
+.modal-dialog {
+    max-width: 1200px;
+    margin: 1.75rem auto;
+}
+
+/* Modal Content */
+.car-details-modal-3d {
+    background: var(--modal-glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--modal-border);
+    border-radius: 24px;
+    box-shadow: 
+        0 25px 80px rgba(0, 0, 0, 0.4),
+        0 0 60px var(--modal-glow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    transform-style: preserve-3d;
+}
+
+/* Modal Header */
+.car-details-header-3d {
+    background: linear-gradient(135deg, 
+        rgba(59, 130, 246, 0.1) 0%, 
+        rgba(59, 130, 246, 0.05) 100%);
+    border-bottom: 1px solid var(--modal-border);
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.car-details-header-3d::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, var(--modal-glow) 0%, transparent 70%);
+    opacity: 0.3;
+    z-index: 0;
+}
+
+.header-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.car-details-title-3d {
+    color: #ffffff;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    text-shadow: 0 0 20px var(--modal-glow);
+}
+
+.car-details-title-3d i {
+    color: var(--modal-accent);
+    font-size: 2.2rem;
+}
+
+.car-badge-container {
+    position: relative;
+    z-index: 1;
+}
+
+.status-badge-modal-3d {
+    background: linear-gradient(135deg, var(--modal-success) 0%, #059669 100%);
+    color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-badge-modal-3d i {
+    color: #ffffff;
+    font-size: 1rem;
+}
+
+.btn-close-modal-3d {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 45px;
+    height: 45px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    z-index: 2;
+}
+
+.btn-close-modal-3d:hover {
+    background: var(--modal-danger);
+    color: white;
+    transform: scale(1.1) rotate(90deg);
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+    border-color: var(--modal-danger);
+}
+
+/* Modal Body */
+.car-details-body-3d {
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* Car Image Section */
+.car-image-section-3d {
+    position: relative;
+}
+
+.image-container-modal {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3));
+    height: 400px;
+}
+
+.car-image-modal-3d {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.5s ease;
+    filter: brightness(0.9) contrast(1.1);
+}
+
+.image-overlay-modal-3d {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, 
+        rgba(0, 0, 0, 0.1) 0%, 
+        rgba(59, 130, 246, 0.2) 50%, 
+        rgba(0, 0, 0, 0.3) 100%);
+    opacity: 0;
+    transition: all 0.4s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-container-modal:hover .image-overlay-modal-3d {
+    opacity: 1;
+}
+
+.image-actions {
+    display: flex;
+    gap: 12px;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.4s ease;
+}
+
+.image-container-modal:hover .image-actions {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.action-btn-modal {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--modal-primary);
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+.action-btn-modal:hover {
+    transform: scale(1.1) rotateY(15deg);
+    background: var(--modal-primary);
+    color: white;
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+}
+
+/* Car Gallery */
+.car-gallery-3d {
+    margin-top: 1rem;
+}
+
+.gallery-thumbnails {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding: 0.5rem 0;
+}
+
+.gallery-thumbnail {
+    width: 80px;
+    height: 60px;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.gallery-thumbnail:hover {
+    border-color: var(--modal-accent);
+    transform: scale(1.05);
+}
+
+.gallery-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Car Info Section */
+.car-info-section-3d {
+    padding-left: 2rem;
+}
+
+.car-basic-info-3d {
+    margin-bottom: 2rem;
+}
+
+.car-model-title-3d {
+    color: #ffffff;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.rating-display-modal {
+    margin-bottom: 1.5rem;
+}
+
+.stars-container-modal {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+
+.stars-filled-modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    color: #FCD34D;
+    transition: all 0.3s ease;
+}
+
+.stars-empty-modal {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.rating-info-modal {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Features Grid Modal */
+.features-grid-modal-3d {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.feature-item-modal {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+    min-height: 80px;
+}
+
+.feature-item-modal:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--modal-accent);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.2);
+}
+
+.feature-icon-modal {
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(135deg, var(--modal-primary), var(--modal-accent));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.feature-item-modal:hover .feature-icon-modal {
+    transform: scale(1.1) rotateY(10deg);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.feature-info-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex-grow: 1;
+}
+
+.feature-value-modal {
+    font-weight: 700;
+    color: #ffffff;
+    font-size: 1.1rem;
+    line-height: 1.2;
+}
+
+.feature-label-modal {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+}
+
+/* Availability Info Modal */
+.availability-info-modal-3d {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.availability-info-modal-3d:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--modal-accent);
+    transform: translateY(-2px);
+}
+
+.availability-item-modal {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.availability-item-modal:last-child {
+    margin-bottom: 0;
+}
+
+.availability-item-modal i {
+    color: var(--modal-accent);
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.availability-info-modal-3d:hover .availability-item-modal i {
+    color: var(--modal-primary);
+    transform: scale(1.1);
+}
+
+.availability-details-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.availability-label-modal {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.availability-date-modal {
+    font-size: 1rem;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* Premium Features Modal */
+.premium-features-modal-3d {
+    padding: 1.5rem;
+    background: linear-gradient(135deg, 
+        rgba(59, 130, 246, 0.1) 0%, 
+        rgba(59, 130, 246, 0.05) 100%);
+    border-radius: 15px;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    transition: all 0.3s ease;
+}
+
+.premium-features-modal-3d:hover {
+    background: linear-gradient(135deg, 
+        rgba(59, 130, 246, 0.15) 0%, 
+        rgba(59, 130, 246, 0.08) 100%);
+    border-color: var(--modal-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.2);
+}
+
+.features-title-modal {
+    color: #ffffff;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.features-list-modal {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+.feature-badge-modal {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.feature-badge-modal:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--modal-accent);
+    transform: translateY(-2px);
+}
+
+.feature-badge-modal i {
+    color: var(--modal-accent);
+    font-size: 1rem;
+}
+
+/* Modal Footer */
+.car-details-footer-3d {
+    background: linear-gradient(135deg, 
+        rgba(59, 130, 246, 0.05) 0%, 
+        rgba(59, 130, 246, 0.02) 100%);
+    border-top: 1px solid var(--modal-border);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.footer-actions {
+    display: none;
+}
+
+.btn-secondary-modal {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-secondary-modal:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.1);
+}
+
+
+.footer-info {
+    text-align: center;
+    width: 100%;
+}
+
+.footer-info small {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .modal-dialog {
+        max-width: 95%;
+        margin: 1rem auto;
+    }
+    
+    .car-details-body-3d {
+        padding: 1.5rem;
+    }
+    
+    .car-info-section-3d {
+        padding-left: 0;
+        margin-top: 2rem;
+    }
+    
+    .features-grid-modal-3d {
+        grid-template-columns: 1fr;
+    }
+    
+    .features-list-modal {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .car-details-header-3d {
+        padding: 1.5rem;
+    }
+    
+    .car-details-title-3d {
+        font-size: 1.5rem;
+    }
+    
+    .car-details-body-3d {
+        padding: 1rem;
+    }
+    
+    .image-container-modal {
+        height: 300px;
+    }
+    
+    .feature-item-modal {
+        padding: 1rem;
+        min-height: 70px;
+    }
+    
+    .feature-icon-modal {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+    
+    .btn-secondary-modal,
+}
+
+@media (max-width: 576px) {
+    .modal-dialog {
+        max-width: 100%;
+        margin: 0.5rem;
+    }
+    
+    .car-details-modal-3d {
+        border-radius: 16px;
+    }
+    
+    .car-details-header-3d {
+        padding: 1rem;
+    }
+    
+    .car-details-title-3d {
+        font-size: 1.3rem;
+    }
+    
+    .car-details-body-3d {
+        padding: 0.75rem;
+    }
+    
+    .image-container-modal {
+        height: 250px;
+    }
+    
+    .feature-item-modal {
+        padding: 0.75rem;
+        min-height: 60px;
+    }
+    
+    .feature-icon-modal {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+    
+    .car-details-footer-3d {
+        padding: 1rem;
+    }
+}
+
+/* Animation Classes */
+.car-details-modal-3d.show {
+    animation: modalSlideIn 0.4s ease-out;
+}
+
+@keyframes modalSlideIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(-50px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Loading State */
+.car-details-modal-3d.loading {
+    pointer-events: none;
+}
+
+.car-details-modal-3d.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.car-details-modal-3d.loading::before {
+    content: 'Loading...';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 600;
+    z-index: 1001;
+}

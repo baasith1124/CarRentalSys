@@ -20,13 +20,22 @@
                             <button class="action-btn share-btn" title="Share Vehicle" aria-label="Share Vehicle" data-anime="actionBtn">
                                 <i class="bi bi-share"></i>
                             </button>
-                            <a href="@Url.Action("Details", "Cars", new { id = Model.CarId })" 
-                               class="action-btn view-btn" 
-                               title="View Details" 
-                               aria-label="View Vehicle Details"
-                               data-anime="actionBtn">
+                            <button class="action-btn view-btn" 
+                                    title="View Details" 
+                                    aria-label="View Vehicle Details"
+                                    data-anime="actionBtn"
+                                    data-car-id="@Model.CarId"
+                                    data-car-name="@Html.Raw(Model.Name)"
+                                    data-car-model="@Html.Raw(Model.Model)"
+                                    data-car-image="@(Model.FullImagePath ?? "/images/cars/civic.png")"
+                                    data-car-seats="5"
+                                    data-car-transmission="Auto"
+                                    data-car-fuel="Petrol"
+                                    data-car-speed="180"
+                                    data-car-available-from="@Model.AvailableFrom.ToString("yyyy-MM-dd")"
+                                    data-car-available-to="@Model.AvailableTo.ToString("yyyy-MM-dd")">
                                 <i class="bi bi-eye"></i>
-                            </a>
+                            </button>
                         </div>
                         <div class="quick-info" data-anime="quickInfo">
                             <span class="quick-info-badge">Premium</span>
@@ -163,16 +172,25 @@
 
             <!-- Action Button -->
             <div class="car-actions" data-anime="carActions">
-                <a href="@Url.Action("Details", "Cars", new { id = Model.CarId })" 
-                   class="btn-view-details-3d"
-                   data-anime="viewDetailsBtn">
+                <button class="btn-view-details-3d"
+                        data-anime="viewDetailsBtn"
+                        data-car-id="@Model.CarId"
+                        data-car-name="@Html.Raw(Model.Name)"
+                        data-car-model="@Html.Raw(Model.Model)"
+                        data-car-image="@(Model.FullImagePath ?? "/images/cars/civic.png")"
+                        data-car-seats="5"
+                        data-car-transmission="Auto"
+                        data-car-fuel="Petrol"
+                        data-car-speed="180"
+                        data-car-available-from="@Model.AvailableFrom.ToString("yyyy-MM-dd")"
+                        data-car-available-to="@Model.AvailableTo.ToString("yyyy-MM-dd")">
                     <span class="btn-content">
                         <i class="bi bi-eye"></i>
                         <span class="btn-text">View Details</span>
                         <i class="bi bi-arrow-right btn-arrow"></i>
                     </span>
                     <div class="btn-background"></div>
-                </a>
+                </button>
                 
                 <!-- Quick Actions -->
                 <div class="quick-actions" data-anime="quickActions">

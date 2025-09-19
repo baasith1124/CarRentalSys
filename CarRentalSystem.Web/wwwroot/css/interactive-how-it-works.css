@@ -1,0 +1,438 @@
+/* Interactive How It Works Section */
+:root {
+    --step-primary: #3B82F6;
+    --step-secondary: #1E40AF;
+    --step-accent: #60A5FA;
+    --step-glow: rgba(59, 130, 246, 0.4);
+    --step-shadow: rgba(0, 0, 0, 0.1);
+    --step-glass: rgba(255, 255, 255, 0.05);
+    --step-border: rgba(255, 255, 255, 0.1);
+}
+
+/* How It Works Section Container */
+#how-it-works {
+    position: relative;
+    overflow: visible;
+    z-index: 1;
+}
+
+#how-it-works .container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Enhanced Step Cards */
+#how-it-works .step-3d {
+    position: relative;
+    background: var(--step-glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--step-border);
+    border-radius: 24px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    overflow: visible;
+    transform-style: preserve-3d;
+    z-index: 1;
+    box-shadow: 
+        0 8px 32px var(--step-shadow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Hover Effects */
+#how-it-works .step-3d:hover {
+    transform: translateY(-15px) rotateX(8deg) rotateY(5deg) scale(1.02);
+    box-shadow: 
+        0 25px 60px rgba(0, 0, 0, 0.2),
+        0 0 50px var(--step-glow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border-color: var(--step-accent);
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Step Number Enhancement */
+#how-it-works .step-number {
+    position: relative;
+    width: 90px;
+    height: 90px;
+    background: linear-gradient(135deg, var(--step-primary) 0%, var(--step-secondary) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #ffffff;
+    margin: 0 auto 1.5rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+        0 8px 25px rgba(59, 130, 246, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    z-index: 2;
+}
+
+/* Step Number Hover Effects */
+#how-it-works .step-3d:hover .step-number {
+    transform: scale(1.1) rotateY(15deg);
+    box-shadow: 
+        0 12px 35px rgba(59, 130, 246, 0.5),
+        0 0 30px var(--step-glow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    background: linear-gradient(135deg, var(--step-accent) 0%, var(--step-primary) 100%);
+}
+
+/* Step Number Animation */
+#how-it-works .step-number::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    background: linear-gradient(135deg, var(--step-primary), var(--step-accent));
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: -1;
+    filter: blur(10px);
+}
+
+#how-it-works .step-3d:hover .step-number::before {
+    opacity: 0.6;
+}
+
+/* Step Icon Enhancement */
+#how-it-works .step-icon {
+    font-size: 3.5rem;
+    color: var(--step-accent);
+    margin-bottom: 1.5rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    text-shadow: 0 0 20px currentColor;
+    position: relative;
+    z-index: 2;
+}
+
+/* Step Icon Hover Effects */
+#how-it-works .step-3d:hover .step-icon {
+    transform: scale(1.2) rotateY(15deg);
+    color: #ffffff;
+    text-shadow: 0 0 30px var(--step-glow);
+    filter: drop-shadow(0 0 10px var(--step-glow));
+}
+
+/* Step Title Enhancement */
+#how-it-works .step-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 1rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    z-index: 2;
+    line-height: 1.3;
+}
+
+/* Step Title Hover Effects */
+#how-it-works .step-3d:hover .step-title {
+    transform: translateY(-5px);
+    color: var(--step-accent);
+    text-shadow: 0 0 15px var(--step-glow);
+}
+
+/* Step Description Enhancement */
+#how-it-works .step-description {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    z-index: 2;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+
+/* Step Description Hover Effects */
+#how-it-works .step-3d:hover .step-description {
+    color: rgba(255, 255, 255, 0.95);
+    transform: translateY(-3px);
+}
+
+/* Glow Effect */
+#how-it-works .step-glow-effect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, var(--step-glow) 0%, transparent 70%);
+    border-radius: 24px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 0;
+    pointer-events: none;
+}
+
+#how-it-works .step-3d:hover .step-glow-effect {
+    opacity: 1;
+}
+
+/* Ripple Effect */
+#how-it-works .step-ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(59, 130, 246, 0.4);
+    transform: scale(0);
+    animation: stepRipple 0.6s linear;
+    pointer-events: none;
+    top: 50%;
+    left: 50%;
+    width: 120px;
+    height: 120px;
+    margin-left: -60px;
+    margin-top: -60px;
+    z-index: 1;
+}
+
+@keyframes stepRipple {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0;
+    }
+}
+
+/* Progress Line Between Steps */
+#how-it-works .step-progress-line {
+    position: absolute;
+    top: 50%;
+    right: -15px;
+    width: 30px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--step-primary), var(--step-accent));
+    border-radius: 2px;
+    transform: translateY(-50%);
+    opacity: 0.6;
+    transition: all 0.4s ease;
+    z-index: 1;
+}
+
+#how-it-works .step-3d:hover + .step-progress-line,
+#how-it-works .step-3d:hover ~ .step-progress-line {
+    opacity: 1;
+    box-shadow: 0 0 15px var(--step-glow);
+    transform: translateY(-50%) scaleY(2);
+}
+
+/* Step Tooltip */
+#how-it-works .step-tooltip {
+    position: absolute;
+    top: -80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.95);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--step-accent);
+    z-index: 1000;
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    white-space: nowrap;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    min-width: 200px;
+    text-align: center;
+}
+
+#how-it-works .step-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 8px solid transparent;
+    border-top-color: rgba(0, 0, 0, 0.95);
+}
+
+/* Step Tooltip Content */
+#how-it-works .step-tooltip-content h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+    color: var(--step-accent);
+}
+
+#how-it-works .step-tooltip-content p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Active Step State */
+#how-it-works .step-3d.active {
+    transform: translateY(-5px) scale(1.02);
+    border-color: var(--step-primary);
+    box-shadow: 
+        0 15px 40px rgba(0, 0, 0, 0.15),
+        0 0 30px var(--step-glow);
+}
+
+#how-it-works .step-3d.active .step-number {
+    background: linear-gradient(135deg, var(--step-accent) 0%, var(--step-primary) 100%);
+    box-shadow: 
+        0 8px 25px rgba(59, 130, 246, 0.4),
+        0 0 20px var(--step-glow);
+}
+
+/* Step Animation on Scroll */
+#how-it-works .step-3d.animate-in {
+    animation: stepSlideIn 0.8s ease-out forwards;
+}
+
+@keyframes stepSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(50px) rotateX(20deg);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) rotateX(0deg);
+    }
+}
+
+/* Staggered Animation Delays */
+#how-it-works .step-3d:nth-child(1) { animation-delay: 0.1s; }
+#how-it-works .step-3d:nth-child(2) { animation-delay: 0.2s; }
+#how-it-works .step-3d:nth-child(3) { animation-delay: 0.3s; }
+#how-it-works .step-3d:nth-child(4) { animation-delay: 0.4s; }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #how-it-works .step-3d {
+        padding: 2rem 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    #how-it-works .step-number {
+        width: 70px;
+        height: 70px;
+        font-size: 2rem;
+    }
+    
+    #how-it-works .step-icon {
+        font-size: 2.5rem;
+    }
+    
+    #how-it-works .step-title {
+        font-size: 1.4rem;
+    }
+    
+    #how-it-works .step-description {
+        font-size: 0.9rem;
+    }
+    
+    #how-it-works .step-progress-line {
+        display: none;
+    }
+}
+
+@media (max-width: 576px) {
+    #how-it-works .step-3d {
+        padding: 1.5rem 1rem;
+    }
+    
+    #how-it-works .step-number {
+        width: 60px;
+        height: 60px;
+        font-size: 1.8rem;
+    }
+    
+    #how-it-works .step-icon {
+        font-size: 2rem;
+    }
+    
+    #how-it-works .step-title {
+        font-size: 1.2rem;
+    }
+}
+
+/* Section Header Enhancement */
+#how-it-works .hero-subtitle-3d {
+    position: relative;
+    z-index: 2;
+}
+
+#how-it-works .hero-description-3d {
+    position: relative;
+    z-index: 2;
+}
+
+/* Floating Elements */
+#how-it-works .floating-element {
+    position: absolute;
+    opacity: 0.1;
+    animation: float 6s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+#how-it-works .floating-element:nth-child(odd) {
+    animation-direction: reverse;
+    animation-duration: 8s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-20px) rotate(180deg);
+    }
+}
+
+/* Enhanced Grid Layout */
+#how-it-works .row {
+    position: relative;
+    z-index: 1;
+}
+
+#how-it-works .col-lg-3 {
+    position: relative;
+    z-index: 1;
+}
+
+/* Step Counter Animation */
+#how-it-works .step-counter {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 30px;
+    height: 30px;
+    background: var(--step-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: white;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.3s ease;
+    z-index: 3;
+}
+
+#how-it-works .step-3d:hover .step-counter {
+    opacity: 1;
+    transform: scale(1);
+}

@@ -2,36 +2,124 @@
 
 @model LoginViewModel
 
-<form asp-controller="Account" asp-action="Login" method="post" id="loginForm">
-    <div class="mb-3">
-        <label asp-for="Email" class="form-label">Email Address</label>
-        <input asp-for="Email" class="form-control" placeholder="Enter your email" required />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content login-modal-3d">
+            <!-- Enhanced Modal Header with 3D Effects -->
+            <div class="modal-header login-header-3d">
+                <div class="header-content-3d">
+                    <div class="login-icon-3d">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        <div class="icon-glow-3d"></div>
+                    </div>
+                    <div class="header-text-3d">
+                        <h5 class="modal-title login-title-3d" id="loginModalLabel">
+                            <span class="title-gradient">Welcome Back</span>
+                        </h5>
+                        <p class="login-subtitle-3d">Sign in to continue your journey</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close-3d" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
 
-    <div class="mb-3">
-        <label asp-for="Password" class="form-label">Password</label>
-        <input asp-for="Password" class="form-control" placeholder="Enter your password" required />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
+            <form id="ajaxLoginForm" method="post" asp-controller="Account" asp-action="Login">
+                @Html.AntiForgeryToken()
+                <div class="modal-body login-body-3d">
+                    <!-- Error Display -->
+                    <div id="loginError" class="error-display-3d" style="display: none;"></div>
 
-    <div class="mb-3 form-check">
-        <input asp-for="RememberMe" class="form-check-input" />
-        <label asp-for="RememberMe" class="form-check-label">Remember me</label>
-    </div>
+                    <!-- Enhanced Form Fields with 3D Styling -->
+                    <div class="form-group-3d">
+                        <label class="form-label-3d required">
+                            <i class="bi bi-envelope-fill me-2"></i>Email Address
+                        </label>
+                        <div class="input-container-3d">
+                            <input asp-for="Email" type="email" class="form-control-3d" placeholder="Enter your email address" id="LoginEmail" />
+                            <div class="input-glow-3d"></div>
+                            <span class="input-icon-3d">
+                                <i class="bi bi-envelope"></i>
+                            </span>
+                        </div>
+                        <span asp-validation-for="Email" class="validation-error-3d"></span>
+                    </div>
 
-    <div class="d-grid">
-        <button type="submit" class="btn btn-primary">
-            <i class="bi bi-box-arrow-in-right me-2"></i>
-            Login
-        </button>
-    </div>
+                    <div class="form-group-3d">
+                        <label class="form-label-3d required">
+                            <i class="bi bi-lock-fill me-2"></i>Password
+                        </label>
+                        <div class="input-container-3d">
+                            <input asp-for="Password" type="password" class="form-control-3d" placeholder="Enter your password" id="LoginPassword" />
+                            <div class="input-glow-3d"></div>
+                            <span class="input-icon-3d">
+                                <i class="bi bi-lock"></i>
+                            </span>
+                            <button type="button" class="password-toggle-3d" onclick="toggleLoginPassword()">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Password" class="validation-error-3d"></span>
+                    </div>
 
-    <div class="text-center mt-3">
-        <small class="text-muted">
-            Don't have an account? 
-            <a href="#" id="switchToRegister" class="text-decoration-none">Register here</a>
-        </small>
+                    <div class="form-group-3d form-check-3d">
+                        <input asp-for="RememberMe" class="form-check-input-3d" id="LoginRememberMe" />
+                        <label asp-for="RememberMe" class="form-check-label-3d">
+                            <i class="bi bi-check-circle me-2"></i>Remember me
+                        </label>
+                    </div>
+
+                    <!-- Login Actions 3D -->
+                    <div class="login-actions-3d">
+                        <button type="submit" class="btn-login-3d">
+                            <div class="btn-content-3d">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>
+                                <span class="btn-text">Sign In</span>
+                            </div>
+                            <div class="btn-glow-3d"></div>
+                            <div class="btn-ripple-3d"></div>
+                        </button>
+                    </div>
+
+                    <!-- Divider 3D -->
+                    <div class="divider-3d">
+                        <div class="divider-line-3d"></div>
+                        <div class="divider-text-3d">or</div>
+                        <div class="divider-line-3d"></div>
+                    </div>
+
+                    <!-- Social Login 3D -->
+                    <div class="social-login-3d">
+                        <a href="/Account/ExternalLogin?provider=Google" class="btn-google-3d" onclick="handleGoogleLogin(event)">
+                            <div class="google-icon-3d">
+                                <i class="bi bi-google"></i>
+                            </div>
+                            <span class="google-text-3d">Continue with Google</span>
+                            <div class="google-glow-3d"></div>
+                        </a>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Modal Footer 3D -->
+            <div class="modal-footer login-footer-3d">
+                <div class="footer-content-3d">
+                    <p class="footer-text-3d">
+                        Don't have an account? 
+                        <a href="#" class="register-link-3d" onclick="showRegisterModal()">
+                            <span class="link-text">Sign up here</span>
+                            <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </p>
+                    <p class="footer-text-3d">
+                        <a href="#" class="forgot-link-3d">
+                            <i class="bi bi-question-circle me-1"></i>
+                            <span class="link-text">Forgot your password?</span>
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
-</form>
+</div>
 

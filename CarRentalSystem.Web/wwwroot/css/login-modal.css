@@ -1,0 +1,708 @@
+/* Login Modal 3D Styling */
+.login-modal-3d {
+    background: var(--glass-bg-dark);
+    border: 1px solid var(--glass-border-light);
+    border-radius: var(--radius-2xl);
+    backdrop-filter: var(--glass-backdrop-strong);
+    box-shadow: 
+        var(--shadow-3d-strong),
+        0 0 50px rgba(35, 35, 255, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transform-style: preserve-3d;
+    overflow: hidden;
+    position: relative;
+    animation: modalEntry 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.login-modal-3d::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 20%, rgba(35, 35, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Modal Header 3D */
+.login-header-3d {
+    background: var(--gradient-primary);
+    border: none;
+    padding: 2rem;
+    position: relative;
+    z-index: 2;
+    border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+    overflow: hidden;
+}
+
+.login-header-3d::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--gradient-secondary);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.login-header-3d:hover::before {
+    opacity: 1;
+}
+
+.header-content-3d {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex: 1;
+}
+
+.login-icon-3d {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    animation: iconFloat 3s ease-in-out infinite;
+}
+
+.login-icon-3d i {
+    position: relative;
+    z-index: 2;
+}
+
+.icon-glow-3d {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: glowPulse 2s ease-in-out infinite;
+    z-index: 1;
+}
+
+.header-text-3d {
+    flex: 1;
+}
+
+.login-title-3d {
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0 0 0.5rem 0;
+    color: white;
+    font-family: var(--font-heading);
+}
+
+.title-gradient {
+    background: linear-gradient(135deg, #FFFFFF 0%, #E0E7FF 50%, #FFFFFF 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientShift 3s ease-in-out infinite;
+}
+
+.login-subtitle-3d {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+    font-weight: 500;
+}
+
+.btn-close-3d {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.btn-close-3d:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1) rotate(90deg);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+/* Modal Body 3D */
+.login-body-3d {
+    padding: 2.5rem;
+    position: relative;
+    z-index: 2;
+    background: var(--glass-bg-light);
+}
+
+.form-group-3d {
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.form-label-3d {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+    font-family: var(--font-primary);
+}
+
+.form-label-3d.required::after {
+    content: '*';
+    color: #FF6B6B;
+    margin-left: 4px;
+    font-weight: 700;
+}
+
+.input-container-3d {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.form-control-3d {
+    width: 100%;
+    background: var(--glass-bg);
+    border: 2px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1rem 1rem 3rem;
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-weight: 500;
+    backdrop-filter: var(--glass-backdrop);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: var(--font-primary);
+    min-height: 56px;
+}
+
+.form-control-3d:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--primary-blue-light);
+    box-shadow: 
+        0 0 0 3px rgba(35, 35, 255, 0.2),
+        var(--shadow-glow);
+    color: var(--text-primary);
+    outline: none;
+    transform: translateY(-2px);
+}
+
+.form-control-3d:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: var(--glass-border-light);
+    transform: translateY(-1px);
+}
+
+.form-control-3d::placeholder {
+    color: var(--text-muted);
+    font-weight: 400;
+    opacity: 0.8;
+}
+
+.input-glow-3d {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--gradient-primary);
+    border-radius: var(--radius-lg);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+    filter: blur(10px);
+}
+
+.form-control-3d:focus + .input-glow-3d {
+    opacity: 0.3;
+}
+
+.input-icon-3d {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-blue-light);
+    font-size: 1.2rem;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.form-control-3d:focus ~ .input-icon-3d {
+    color: var(--primary-blue-light);
+    transform: translateY(-50%) scale(1.1);
+    text-shadow: 0 0 10px currentColor;
+}
+
+.password-toggle-3d {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 2;
+    padding: 0.5rem;
+    border-radius: 50%;
+}
+
+.password-toggle-3d:hover {
+    color: var(--primary-blue-light);
+    background: rgba(35, 35, 255, 0.1);
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* Form Check 3D */
+.form-check-3d {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+}
+
+.form-check-input-3d {
+    width: 20px;
+    height: 20px;
+    background: var(--glass-bg);
+    border: 2px solid var(--glass-border);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.form-check-input-3d:checked {
+    background: var(--primary-blue-light);
+    border-color: var(--primary-blue-light);
+    box-shadow: 0 0 10px rgba(35, 35, 255, 0.3);
+}
+
+.form-check-input-3d:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.form-check-label-3d {
+    color: var(--text-primary);
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-family: var(--font-primary);
+}
+
+.validation-error-3d {
+    display: block;
+    color: #FF6B6B;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    font-weight: 500;
+    animation: errorShake 0.5s ease-in-out;
+}
+
+/* Login Actions 3D */
+.login-actions-3d {
+    margin: 2.5rem 0;
+    text-align: center;
+}
+
+.btn-login-3d {
+    position: relative;
+    background: var(--gradient-primary);
+    border: none;
+    border-radius: var(--radius-xl);
+    padding: 1.25rem 3rem;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: var(--shadow-3d), var(--shadow-glow);
+    min-width: 280px;
+    cursor: pointer;
+}
+
+.btn-login-3d::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-secondary);
+    transition: left 0.5s ease;
+    z-index: 1;
+}
+
+.btn-login-3d:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: var(--shadow-3d-hover), var(--shadow-glow-hover);
+}
+
+.btn-login-3d:hover::before {
+    left: 0;
+}
+
+.btn-login-3d:active {
+    transform: translateY(-2px) scale(1.01);
+    transition: all 0.1s ease;
+}
+
+.btn-content-3d {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.btn-glow-3d {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+.btn-login-3d:hover .btn-glow-3d {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-ripple-3d {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+}
+
+.btn-login-3d:hover .btn-ripple-3d {
+    opacity: 1;
+}
+
+.error-display-3d {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(255, 107, 107, 0.1);
+    border: 1px solid rgba(255, 107, 107, 0.3);
+    border-radius: var(--radius-md);
+    color: #FF6B6B;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: none;
+    animation: errorSlideIn 0.3s ease-out;
+}
+
+/* Divider 3D */
+.divider-3d {
+    display: flex;
+    align-items: center;
+    margin: 2rem 0;
+    gap: 1rem;
+}
+
+.divider-line-3d {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
+}
+
+.divider-text-3d {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0 1rem;
+}
+
+/* Social Login 3D */
+.social-login-3d {
+    margin-bottom: 1.5rem;
+}
+
+.btn-google-3d {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+    background: var(--glass-bg);
+    border: 2px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    padding: 1rem 2rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: var(--glass-backdrop);
+}
+
+.btn-google-3d:hover {
+    background: var(--glass-bg-light);
+    border-color: var(--primary-blue-light);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-3d), var(--shadow-glow);
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.google-icon-3d {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #4285F4, #34A853, #FBBC05, #EA4335);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    box-shadow: var(--shadow-3d);
+}
+
+.google-text-3d {
+    font-family: var(--font-primary);
+    font-weight: 600;
+}
+
+.google-glow-3d {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(66, 133, 244, 0.2), transparent);
+    transition: left 0.5s ease;
+    z-index: 1;
+}
+
+.btn-google-3d:hover .google-glow-3d {
+    left: 100%;
+}
+
+/* Modal Footer 3D */
+.login-footer-3d {
+    background: var(--glass-bg);
+    border: none;
+    padding: 1.5rem 2.5rem;
+    border-radius: 0 0 var(--radius-2xl) var(--radius-2xl);
+    position: relative;
+    z-index: 2;
+}
+
+.footer-content-3d {
+    text-align: center;
+    width: 100%;
+}
+
+.footer-text-3d {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin: 0.5rem 0;
+    font-weight: 500;
+}
+
+.register-link-3d,
+.forgot-link-3d {
+    color: var(--primary-blue-light);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    position: relative;
+}
+
+.register-link-3d:hover,
+.forgot-link-3d:hover {
+    color: var(--primary-blue-light);
+    text-decoration: none;
+    transform: translateX(3px);
+}
+
+.register-link-3d:hover .link-text,
+.forgot-link-3d:hover .link-text {
+    text-shadow: 0 0 10px currentColor;
+}
+
+.register-link-3d:hover i,
+.forgot-link-3d:hover i {
+    transform: translateX(3px);
+}
+
+/* Animations */
+@keyframes modalEntry {
+    0% {
+        opacity: 0;
+        transform: translateY(-50px) rotateX(15deg) scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) rotateX(0deg) scale(1);
+    }
+}
+
+@keyframes iconFloat {
+    0%, 100% {
+        transform: translateY(0) rotateY(0deg);
+    }
+    50% {
+        transform: translateY(-5px) rotateY(10deg);
+    }
+}
+
+@keyframes glowPulse {
+    0%, 100% {
+        opacity: 0.3;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+}
+
+@keyframes gradientShift {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+@keyframes errorShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+@keyframes errorSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .login-modal-3d {
+        margin: 1rem;
+        border-radius: var(--radius-xl);
+    }
+    
+    .login-header-3d {
+        padding: 1.5rem;
+    }
+    
+    .header-content-3d {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .login-icon-3d {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+    
+    .login-title-3d {
+        font-size: 1.5rem;
+    }
+    
+    .login-body-3d {
+        padding: 1.5rem;
+    }
+    
+    .btn-login-3d {
+        min-width: auto;
+        width: 100%;
+        padding: 1rem 2rem;
+    }
+    
+    .login-footer-3d {
+        padding: 1rem 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-modal-3d {
+        margin: 0.5rem;
+    }
+    
+    .login-header-3d {
+        padding: 1rem;
+    }
+    
+    .login-body-3d {
+        padding: 1rem;
+    }
+    
+    .form-control-3d {
+        padding: 0.875rem 0.875rem 0.875rem 2.5rem;
+        min-height: 48px;
+    }
+    
+    .input-icon-3d {
+        left: 0.875rem;
+        font-size: 1rem;
+    }
+    
+    .password-toggle-3d {
+        right: 0.875rem;
+        font-size: 1rem;
+    }
+}
