@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Diagnostics;
 using System.Net;
+using FluentValidation;
 
 namespace CarRentalSystem.Web.Middleware
 {
@@ -29,15 +30,38 @@ namespace CarRentalSystem.Web.Middleware
 
         private static async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            context.Response.ContentType = "application/json";
+            var response = new object();
+            var statusCode = HttpStatusCode.InternalServerError;
 
-            var response = new
+            // Handle FluentValidation exceptions
+            if (exception is ValidationException validationException)
             {
-                StatusCode = context.Response.StatusCode,
-                Message = "An internal server error occurred.",
-                Details = exception.Message // Remove in production
-            };
+                statusCode = HttpStatusCode.BadRequest;
+                response = new
+                {
+                    StatusCode = (int)statusCode,
+                    Message = "Validation failed.",
+                    Errors = validationException.Errors.Select(e => new
+                    {
+                        PropertyName = e.PropertyName,
+                        ErrorMessage = e.ErrorMessage,
+                        AttemptedValue = e.AttemptedValue
+                    })
+                };
+            }
+            else
+            {
+                // Handle other exceptions
+                response = new
+                {
+                    StatusCode = (int)statusCode,
+                    Message = "An internal server error occurred.",
+                    Details = exception.Message // Remove in production
+                };
+            }
+
+            context.Response.StatusCode = (int)statusCode;
+            context.Response.ContentType = "application/json";
 
             // For AJAX requests, return JSON
             if (context.Request.Headers["X-Requested-With"] == "XMLHttpRequest")

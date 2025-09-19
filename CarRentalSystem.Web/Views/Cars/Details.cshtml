@@ -162,9 +162,9 @@
                     }
                     else
                     {
-                        <button type="button" class="btn btn-primary btn-lg flex-fill" onclick="showLoginModal()">
+                        <button type="button" class="btn btn-primary btn-lg flex-fill" onclick="showLoginModal('@Model.CarId')">
                             <i class="bi bi-calendar-plus me-2"></i>
-                            Login to Book
+                            Book Now
                         </button>
                     }
                     <a href="javascript:history.back()" class="btn btn-outline-primary btn-lg">
@@ -219,7 +219,7 @@
                                                 }
                                                 else
                                                 {
-                                                    <button type="button" class="btn btn-primary btn-lg w-100" onclick="showLoginModal()">
+                                                    <button type="button" class="btn btn-primary btn-lg w-100" onclick="showLoginModal('@Model.CarId')">
                                                         <i class="bi bi-lock me-2"></i>
                                                         Login to Book
                                                     </button>
@@ -287,7 +287,7 @@
                                     }
                                     else
                                     {
-                                        <button type="button" class="btn btn-success btn-lg w-100" onclick="showLoginModal()">
+                                        <button type="button" class="btn btn-success btn-lg w-100" onclick="showLoginModal('@Model.CarId')">
                                             <i class="bi bi-lock me-2"></i>
                                             Login to Continue
                                         </button>
@@ -304,10 +304,7 @@
 
 @section Scripts {
     <script>
-        function showLoginModal() {
-            var authModal = new bootstrap.Modal(document.getElementById('authModal'));
-            authModal.show();
-        }
+        // showLoginModal function is now handled globally in login-modal.js
         
         function toggleCustomForm() {
             const customForm = document.getElementById('custom-booking-form');

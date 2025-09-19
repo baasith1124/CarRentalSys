@@ -38,10 +38,40 @@
                                 </div>
                                 <div class="col-6">
                                     <div class="detail-item">
-                                        <small class="text-muted">Status</small>
+                                        <small class="text-muted">Booking Status</small>
                                         <div class="fw-semibold text-success">
-                                            <i class="bi bi-check-circle"></i> Completed
+                                            <i class="bi bi-check-circle"></i> @(ViewBag.BookingStatus ?? "Confirmed")
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Booking Details -->
+                        <div class="booking-details mb-4">
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <div class="detail-item">
+                                        <small class="text-muted">Car</small>
+                                        <div class="fw-semibold">@ViewBag.CarName</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="detail-item">
+                                        <small class="text-muted">Total Cost</small>
+                                        <div class="fw-semibold text-primary">$@ViewBag.TotalCost.ToString("N2")</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="detail-item">
+                                        <small class="text-muted">Pickup Date</small>
+                                        <div class="fw-semibold">@ViewBag.PickupDate.ToString("MMM dd, yyyy")</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="detail-item">
+                                        <small class="text-muted">Return Date</small>
+                                        <div class="fw-semibold">@ViewBag.ReturnDate.ToString("MMM dd, yyyy")</div>
                                     </div>
                                 </div>
                             </div>
@@ -71,6 +101,10 @@
                             <a asp-controller="Dashboard" asp-action="Bookings" class="btn btn-primary me-3">
                                 <i class="bi bi-calendar-check"></i>
                                 View My Bookings
+                            </a>
+                            <a asp-controller="Invoice" asp-action="Download" asp-route-paymentId="@ViewBag.PaymentId" class="btn btn-success me-3">
+                                <i class="bi bi-download"></i>
+                                Download Receipt
                             </a>
                             <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">
                                 <i class="bi bi-house"></i>

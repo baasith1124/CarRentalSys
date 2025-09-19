@@ -179,11 +179,7 @@
 @section Scripts {
     <script src="~/js/3d-interactive-landing.js" asp-append-version="true"></script>
     <script>
-        // Show login modal function for Book Now buttons
-        function showLoginModal() {
-            var authModal = new bootstrap.Modal(document.getElementById('authModal'));
-            authModal.show();
-        }
+        // showLoginModal function is now handled globally in login-modal.js
         
         function clearFilters() {
             const form = document.querySelector('.filter-form');

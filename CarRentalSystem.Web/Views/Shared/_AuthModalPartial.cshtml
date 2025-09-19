@@ -1,4 +1,4 @@
-﻿﻿@using CarRentalSystem.Web.ViewModels.Account
+﻿@using CarRentalSystem.Web.ViewModels.Account
 <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-3 shadow">
@@ -18,8 +18,7 @@
                 </div>
 
                 <div id="registerFormContainer" class="auth-form d-none">
-                    @Html.Partial("_RegisterModalPartial", new RegisterCustomerViewModel())
-                    <!-- Already created -->
+                    <p class="text-center text-muted">Registration form will be shown here</p>
                 </div>
             </div>
         </div>

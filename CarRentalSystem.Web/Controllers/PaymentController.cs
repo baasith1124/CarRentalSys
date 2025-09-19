@@ -2,6 +2,8 @@ using AutoMapper;
 using CarRentalSystem.Application.Features.Payments.Commands.CreatePayment;
 using CarRentalSystem.Application.Features.Invoices.Commands.CreateInvoice;
 using CarRentalSystem.Application.Features.Bookings.Queries.GetBookingById;
+using CarRentalSystem.Application.Features.Payments.Queries.GetPaymentById;
+using CarRentalSystem.Application.Common.Interfaces;
 using CarRentalSystem.Web.ViewModels.Payment;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -18,12 +20,14 @@ namespace CarRentalSystem.Web.Controllers
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
+        private readonly IBookingRepository _bookingRepository;
 
-        public PaymentController(IMediator mediator, IMapper mapper, IConfiguration configuration)
+        public PaymentController(IMediator mediator, IMapper mapper, IConfiguration configuration, IBookingRepository bookingRepository)
         {
             _mediator = mediator;
             _mapper = mapper;
             _configuration = configuration;
+            _bookingRepository = bookingRepository;
             
             // Initialize Stripe
             StripeConfiguration.ApiKey = _configuration["Stripe:SecretKey"];
@@ -122,6 +126,19 @@ namespace CarRentalSystem.Web.Controllers
 
                     var paymentId = await _mediator.Send(createPaymentCommand);
 
+                    // Update booking status to "Confirmed" and payment status to "Paid"
+                    var confirmedStatusId = await _bookingRepository.GetBookingStatusIdByNameAsync("Confirmed", CancellationToken.None);
+                    var paidStatusId = await _bookingRepository.GetPaymentStatusIdByNameAsync("Paid", CancellationToken.None);
+                    
+                    var updateBookingStatusCommand = new CarRentalSystem.Application.Features.Bookings.Commands.UpdateBookingStatus.UpdateBookingStatusCommand
+                    {
+                        BookingId = request.BookingId,
+                        BookingStatusId = confirmedStatusId,
+                        PaymentStatusId = paidStatusId
+                    };
+
+                    await _mediator.Send(updateBookingStatusCommand);
+
                     // Create invoice
                     var createInvoiceCommand = new CreateInvoiceCommand
                     {
@@ -148,21 +165,53 @@ namespace CarRentalSystem.Web.Controllers
         [Route("Success/{paymentId}")]
         public async Task<IActionResult> PaymentSuccess(Guid paymentId)
         {
-            ViewBag.PaymentId = paymentId;
-            
-            // Try to get the booking ID for this payment
             try
             {
-                // You might need to implement a query to get booking by payment ID
-                // For now, we'll use ViewBag to pass the payment ID
+                // Get payment details
+                var payment = await _mediator.Send(new GetPaymentByIdQuery(paymentId));
+                
+                if (payment == null)
+                {
+                    TempData["Error"] = "Payment not found.";
+                    return RedirectToAction("Index", "Home");
+                }
+
+                // Get booking details
+                var booking = await _mediator.Send(new GetBookingByIdQuery { BookingId = payment.BookingId });
+                
+                if (booking == null)
+                {
+                    TempData["Error"] = "Booking not found.";
+                    return RedirectToAction("Index", "Home");
+                }
+
+                // Verify that the booking belongs to the current user
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (userId == null || booking.CustomerId != Guid.Parse(userId))
+                {
+                    TempData["Error"] = "You can only view your own bookings.";
+                    return RedirectToAction("Index", "Home");
+                }
+
+                // Pass data to view
+                ViewBag.PaymentId = paymentId;
+                ViewBag.BookingId = booking.BookingId;
+                ViewBag.BookingStatus = booking.BookingStatus;
+                ViewBag.PaymentStatus = booking.PaymentStatus;
+                ViewBag.CarName = booking.CarName;
+                ViewBag.CustomerName = booking.CustomerName;
+                ViewBag.PickupDate = booking.PickupDate;
+                ViewBag.ReturnDate = booking.ReturnDate;
+                ViewBag.TotalCost = booking.TotalCost;
                 ViewBag.ShowBookingLink = true;
+                
+                return View();
             }
-            catch
+            catch (Exception ex)
             {
-                ViewBag.ShowBookingLink = false;
+                TempData["Error"] = "Error loading payment details.";
+                return RedirectToAction("Index", "Home");
             }
-            
-            return View();
         }
 
         [HttpGet]
@@ -171,6 +220,7 @@ namespace CarRentalSystem.Web.Controllers
         {
             return View();
         }
+
     }
 
     public class CreatePaymentIntentRequest
@@ -186,3 +236,4 @@ namespace CarRentalSystem.Web.Controllers
         public decimal Amount { get; set; }
     }
 }
+

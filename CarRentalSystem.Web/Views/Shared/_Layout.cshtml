@@ -1,4 +1,5 @@
-﻿﻿@using CarRentalSystem.Web.ViewModels.Account
+﻿@using CarRentalSystem.Web.ViewModels.Account
+@using CarRentalSystem.Web.ViewModels.KYC
 <!DOCTYPE html>
 <html lang="en" class="no-js">
 <head>
@@ -333,6 +334,7 @@
     @await Html.PartialAsync("_CarDetailsModalPartial", new CarRentalSystem.Web.ViewModels.Car.CarViewModel())
     
     @await Html.PartialAsync("_RegisterModalPartial", new RegisterCustomerViewModel())
+    @await Html.PartialAsync("_KYCUploadModalPartial", new KYCUploadViewModel())
     @await Html.PartialAsync("_AuthModalPartial")
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -354,6 +356,7 @@
     <script src="~/js/interactive-testimonials.js" asp-append-version="true"></script>
     <script src="~/js/interactive-contact.js" asp-append-version="true"></script>
     <script src="~/js/auth-modal.js" asp-append-version="true"></script>
+    <script src="~/js/kyc-upload-modal.js" asp-append-version="true"></script>
     
     
     <!-- 3D Interactive Landing Experience Scripts -->

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Required" xml:space="preserve">
+    <value>{PropertyName} is required.</value>
+  </data>
+  <data name="EmailInvalid" xml:space="preserve">
+    <value>Invalid email address format.</value>
+  </data>
+  <data name="EmailRequired" xml:space="preserve">
+    <value>Email is required.</value>
+  </data>
+  <data name="EmailMaxLength" xml:space="preserve">
+    <value>Email cannot exceed {MaxLength} characters.</value>
+  </data>
+  <data name="NameRequired" xml:space="preserve">
+    <value>Full name is required.</value>
+  </data>
+  <data name="NameMaxLength" xml:space="preserve">
+    <value>Full name cannot exceed {MaxLength} characters.</value>
+  </data>
+  <data name="NameFormat" xml:space="preserve">
+    <value>Full name can only contain letters and spaces.</value>
+  </data>
+  <data name="NICMaxLength" xml:space="preserve">
+    <value>NIC cannot exceed {MaxLength} characters.</value>
+  </data>
+  <data name="NICFormat" xml:space="preserve">
+    <value>Invalid NIC format.</value>
+  </data>
+  <data name="AddressMaxLength" xml:space="preserve">
+    <value>Address cannot exceed {MaxLength} characters.</value>
+  </data>
+  <data name="CarNameRequired" xml:space="preserve">
+    <value>Car name is required.</value>
+  </data>
+  <data name="CarNameMaxLength" xml:space="preserve">
+    <value>Car name cannot exceed {MaxLength} characters.</value>
+  </data>
+  <data name="CarModelRequired" xml:space="preserve">
+    <value>Car model is required.</value>
+  </data>
+  <data name="CarModelMaxLength" xml:space="preserve">
+    <value>Car model cannot exceed {MaxLength} characters.</value>
+  </data>
+  <data name="YearMin" xml:space="preserve">
+    <value>Year must be greater than {MinYear}.</value>
+  </data>
+  <data name="YearMax" xml:space="preserve">
+    <value>Year cannot be more than one year in the future.</value>
+  </data>
+  <data name="RatePerDayMin" xml:space="preserve">
+    <value>Rate per day must be greater than 0.</value>
+  </data>
+  <data name="AvailableFromRequired" xml:space="preserve">
+    <value>Available from date is required.</value>
+  </data>
+  <data name="AvailableToRequired" xml:space="preserve">
+    <value>Available to date is required.</value>
+  </data>
+  <data name="DateFromBeforeTo" xml:space="preserve">
+    <value>Available from date must be before available to date.</value>
+  </data>
+  <data name="DateToAfterFrom" xml:space="preserve">
+    <value>Available to date must be after available from date.</value>
+  </data>
+  <data name="OwnerIdRequired" xml:space="preserve">
+    <value>Owner ID is required.</value>
+  </data>
+  <data name="DescriptionMaxLength" xml:space="preserve">
+    <value>Description cannot exceed {MaxLength} characters.</value>
+  </data>
+  <data name="FeaturesMaxLength" xml:space="preserve">
+    <value>Features cannot exceed {MaxLength} characters.</value>
+  </data>
+  <data name="CarIdRequired" xml:space="preserve">
+    <value>Car ID is required.</value>
+  </data>
+  <data name="CustomerIdRequired" xml:space="preserve">
+    <value>Customer ID is required.</value>
+  </data>
+  <data name="PickupDateRequired" xml:space="preserve">
+    <value>Pickup date is required.</value>
+  </data>
+  <data name="PickupDatePast" xml:space="preserve">
+    <value>Pickup date cannot be in the past.</value>
+  </data>
+  <data name="PickupDateBeforeReturn" xml:space="preserve">
+    <value>Pickup date must be before return date.</value>
+  </data>
+  <data name="ReturnDateRequired" xml:space="preserve">
+    <value>Return date is required.</value>
+  </data>
+  <data name="ReturnDateAfterPickup" xml:space="preserve">
+    <value>Return date must be after pickup date.</value>
+  </data>
+  <data name="BookingMinDuration" xml:space="preserve">
+    <value>Booking must be at least 30 minutes long.</value>
+  </data>
+  <data name="TotalCostMin" xml:space="preserve">
+    <value>Total cost must be greater than 0.</value>
+  </data>
+  <data name="CarApprovalStatusIdRequired" xml:space="preserve">
+    <value>Car approval status ID is required.</value>
+  </data>
+  <data name="ProfileImagePathMaxLength" xml:space="preserve">
+    <value>Profile image path cannot exceed {MaxLength} characters.</value>
+  </data>
+  <data name="CarNotAvailable" xml:space="preserve">
+    <value>This car is already booked for the selected period.</value>
+  </data>
+</root>

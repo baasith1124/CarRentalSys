@@ -1,0 +1,245 @@
+@model CarRentalSystem.Application.Features.Customers.Commands.UpdateCustomer.UpdateCustomerCommand
+
+@{
+    ViewData["Title"] = "Edit Customer";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-dashboard-3d page-transition">
+    <!-- Enhanced 3D Header -->
+    <div class="dashboard-header-3d">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="dashboard-title-3d text-gradient">
+                    <div class="title-icon-3d">
+                        <i class="bi bi-person-gear"></i>
+                        <div class="icon-glow-3d"></div>
+                    </div>
+                    Edit Customer
+                </h1>
+                <p class="dashboard-subtitle-3d">Update customer information with enhanced validation</p>
+            </div>
+            <div class="dashboard-actions-3d">
+                <a href="@Url.Action("Customers")" class="btn-3d-interactive btn-secondary-3d hover-lift">
+                    <i class="bi bi-arrow-left"></i>
+                    <span>Back to Customers</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Edit Customer Form -->
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="card-3d-interactive hover-lift">
+                <div class="card-header-3d">
+                    <h5 class="card-title-3d mb-0 text-gradient">
+                        <div class="title-icon-3d">
+                            <i class="bi bi-person-gear"></i>
+                            <div class="icon-glow-3d"></div>
+                        </div>
+                        Customer Information
+                    </h5>
+                </div>
+                <div class="card-body-3d">
+                    <form asp-action="EditCustomer" asp-route-customerId="@Model.CustomerId" method="post" enctype="multipart/form-data" id="editCustomerForm">
+                        <input asp-for="CustomerId" type="hidden" />
+                        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="FullName" class="form-label">Full Name *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                        <input asp-for="FullName" class="form-control focus-glow" placeholder="Enter full name" required />
+                                    </div>
+                                    <span asp-validation-for="FullName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="Email" class="form-label">Email Address *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                        <input asp-for="Email" type="email" class="form-control focus-glow" placeholder="Enter email address" required />
+                                    </div>
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="NIC" class="form-label">NIC Number</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                                        <input asp-for="NIC" class="form-control focus-glow" placeholder="Enter NIC number" />
+                                    </div>
+                                    <span asp-validation-for="NIC" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="ProfileImagePath" class="form-label">Profile Image URL</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-image"></i></span>
+                                        <input asp-for="ProfileImagePath" type="url" class="form-control focus-glow" placeholder="Enter image URL" />
+                                    </div>
+                                    <span asp-validation-for="ProfileImagePath" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="Address" class="form-label">Address</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                                        <textarea asp-for="Address" class="form-control focus-glow" rows="3" placeholder="Enter address"></textarea>
+                                    </div>
+                                    <span asp-validation-for="Address" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions mt-4">
+                            <button type="submit" class="btn-3d-interactive btn-primary-3d hover-lift">
+                                <i class="bi bi-check-lg"></i>
+                                <span>Update Customer</span>
+                            </button>
+                            <a href="@Url.Action("Customers")" class="btn-3d-interactive btn-secondary-3d ms-2 hover-lift">
+                                <i class="bi bi-x-lg"></i>
+                                <span>Cancel</span>
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Enhanced form validation and interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('editCustomerForm');
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const inputs = form.querySelectorAll('input, textarea');
+            
+            // Add real-time validation
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    validateField(this);
+                });
+                
+                input.addEventListener('input', function() {
+                    clearFieldError(this);
+                });
+            });
+            
+            // Enhanced form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Validate all fields
+                let isValid = true;
+                inputs.forEach(input => {
+                    if (!validateField(input)) {
+                        isValid = false;
+                    }
+                });
+                
+                if (isValid) {
+                    // Show loading state
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Updating...';
+                    
+                    // Show notification
+                    showNotification('Updating customer...', 'info', 3000);
+                    
+                    // Submit form after delay for better UX
+                    setTimeout(() => {
+                        form.submit();
+                    }, 1000);
+                } else {
+                    showNotification('Please fix the validation errors before submitting', 'error', 5000);
+                }
+            });
+        });
+        
+        // Validate individual field
+        function validateField(field) {
+            const value = field.value.trim();
+            const type = field.type;
+            const required = field.hasAttribute('required');
+            
+            // Clear previous validation
+            clearFieldError(field);
+            
+            if (required && !value) {
+                showFieldError(field, 'This field is required');
+                return false;
+            }
+            
+            if (value) {
+                let isValid = true;
+                let errorMessage = '';
+                
+                switch (type) {
+                    case 'email':
+                        if (value.indexOf('@@') === -1 || value.indexOf('.') === -1) {
+                            isValid = false;
+                            errorMessage = 'Please enter a valid email address';
+                        }
+                        break;
+                    case 'url':
+                        if (!value.startsWith('http://') && !value.startsWith('https://')) {
+                            isValid = false;
+                            errorMessage = 'Please enter a valid URL';
+                        }
+                        break;
+                }
+                
+                // Special validation for NIC
+                if (field.name === 'NIC' && value) {
+                    if (!/^[0-9]{9}[vVxX]?$|^[0-9]{12}$/.test(value)) {
+                        isValid = false;
+                        errorMessage = 'Please enter a valid NIC number';
+                    }
+                }
+                
+                if (!isValid) {
+                    showFieldError(field, errorMessage);
+                }
+                
+                return isValid;
+            }
+            
+            return true;
+        }
+        
+        // Show field error
+        function showFieldError(field, message) {
+            field.classList.add('is-invalid');
+            
+            // Remove existing error message
+            const existingError = field.parentElement.querySelector('.invalid-feedback');
+            if (existingError) {
+                existingError.remove();
+            }
+            
+            // Add new error message
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'invalid-feedback';
+            errorDiv.textContent = message;
+            field.parentElement.appendChild(errorDiv);
+        }
+        
+        // Clear field error
+        function clearFieldError(field) {
+            field.classList.remove('is-invalid');
+            const errorDiv = field.parentElement.querySelector('.invalid-feedback');
+            if (errorDiv) {
+                errorDiv.remove();
+            }
+        }
+    </script>
+}

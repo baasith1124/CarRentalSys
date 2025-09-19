@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Required" xml:space="preserve">
+    <value>{PropertyName} අවශ්‍යයි.</value>
+  </data>
+  <data name="EmailInvalid" xml:space="preserve">
+    <value>වලංගු නොවන ඊමේල් ලිපින ආකෘතිය.</value>
+  </data>
+  <data name="EmailRequired" xml:space="preserve">
+    <value>ඊමේල් අවශ්‍යයි.</value>
+  </data>
+  <data name="EmailMaxLength" xml:space="preserve">
+    <value>ඊමේල් {MaxLength} අකුරු ඉක්මවිය නොහැක.</value>
+  </data>
+  <data name="NameRequired" xml:space="preserve">
+    <value>සම්පූර්ණ නම අවශ්‍යයි.</value>
+  </data>
+  <data name="NameMaxLength" xml:space="preserve">
+    <value>සම්පූර්ණ නම {MaxLength} අකුරු ඉක්මවිය නොහැක.</value>
+  </data>
+  <data name="NameFormat" xml:space="preserve">
+    <value>සම්පූර්ණ නම අකුරු සහ හිස් තැන් පමණක් අඩංගු විය හැක.</value>
+  </data>
+  <data name="NICMaxLength" xml:space="preserve">
+    <value>ජාතික හැඳුනුම්පත් අංකය {MaxLength} අකුරු ඉක්මවිය නොහැක.</value>
+  </data>
+  <data name="NICFormat" xml:space="preserve">
+    <value>වලංගු නොවන ජාතික හැඳුනුම්පත් අංක ආකෘතිය.</value>
+  </data>
+  <data name="AddressMaxLength" xml:space="preserve">
+    <value>ලිපිනය {MaxLength} අකුරු ඉක්මවිය නොහැක.</value>
+  </data>
+  <data name="CarNameRequired" xml:space="preserve">
+    <value>මෝටර් රථ නම අවශ්‍යයි.</value>
+  </data>
+  <data name="CarNameMaxLength" xml:space="preserve">
+    <value>මෝටර් රථ නම {MaxLength} අකුරු ඉක්මවිය නොහැක.</value>
+  </data>
+  <data name="CarModelRequired" xml:space="preserve">
+    <value>මෝටර් රථ ආකෘතිය අවශ්‍යයි.</value>
+  </data>
+  <data name="CarModelMaxLength" xml:space="preserve">
+    <value>මෝටර් රථ ආකෘතිය {MaxLength} අකුරු ඉක්මවිය නොහැක.</value>
+  </data>
+  <data name="YearMin" xml:space="preserve">
+    <value>වර්ෂය {MinYear} ට වඩා වැඩි විය යුතුය.</value>
+  </data>
+  <data name="YearMax" xml:space="preserve">
+    <value>වර්ෂය අනාගත වර්ෂයකට වඩා වැඩි විය නොහැක.</value>
+  </data>
+  <data name="RatePerDayMin" xml:space="preserve">
+    <value>දිනකට ගණන් 0 ට වඩා වැඩි විය යුතුය.</value>
+  </data>
+  <data name="AvailableFromRequired" xml:space="preserve">
+    <value>ලබා ගත හැකි දිනය අවශ්‍යයි.</value>
+  </data>
+  <data name="AvailableToRequired" xml:space="preserve">
+    <value>ලබා ගත හැකි දිනය අවශ්‍යයි.</value>
+  </data>
+  <data name="DateFromBeforeTo" xml:space="preserve">
+    <value>ලබා ගත හැකි දිනය අවසන් දිනයට පෙර විය යුතුය.</value>
+  </data>
+  <data name="DateToAfterFrom" xml:space="preserve">
+    <value>ලබා ගත හැකි අවසන් දිනය ආරම්භක දිනයට පසු විය යුතුය.</value>
+  </data>
+  <data name="OwnerIdRequired" xml:space="preserve">
+    <value>හිමිකරු හැඳුනුම්පත අවශ්‍යයි.</value>
+  </data>
+  <data name="DescriptionMaxLength" xml:space="preserve">
+    <value>විස්තරය {MaxLength} අකුරු ඉක්මවිය නොහැක.</value>
+  </data>
+  <data name="FeaturesMaxLength" xml:space="preserve">
+    <value>විශේෂාංග {MaxLength} අකුරු ඉක්මවිය නොහැක.</value>
+  </data>
+  <data name="CarIdRequired" xml:space="preserve">
+    <value>මෝටර් රථ හැඳුනුම්පත අවශ්‍යයි.</value>
+  </data>
+  <data name="CustomerIdRequired" xml:space="preserve">
+    <value>පාරිභෝගික හැඳුනුම්පත අවශ්‍යයි.</value>
+  </data>
+  <data name="PickupDateRequired" xml:space="preserve">
+    <value>අරගෙන යන දිනය අවශ්‍යයි.</value>
+  </data>
+  <data name="PickupDatePast" xml:space="preserve">
+    <value>අරගෙන යන දිනය අතීතයේ විය නොහැක.</value>
+  </data>
+  <data name="PickupDateBeforeReturn" xml:space="preserve">
+    <value>අරගෙන යන දිනය ආපසු ලබා දෙන දිනයට පෙර විය යුතුය.</value>
+  </data>
+  <data name="ReturnDateRequired" xml:space="preserve">
+    <value>ආපසු ලබා දෙන දිනය අවශ්‍යයි.</value>
+  </data>
+  <data name="ReturnDateAfterPickup" xml:space="preserve">
+    <value>ආපසු ලබා දෙන දිනය අරගෙන යන දිනයට පසු විය යුතුය.</value>
+  </data>
+  <data name="BookingMinDuration" xml:space="preserve">
+    <value>කොට්ඨාශය අවම වශයෙන් මිනිත්තු 30 ක් විය යුතුය.</value>
+  </data>
+  <data name="TotalCostMin" xml:space="preserve">
+    <value>මුළු පිරිවැය 0 ට වඩා වැඩි විය යුතුය.</value>
+  </data>
+  <data name="CarApprovalStatusIdRequired" xml:space="preserve">
+    <value>මෝටර් රථ අනුමත තත්ව හැඳුනුම්පත අවශ්‍යයි.</value>
+  </data>
+  <data name="ProfileImagePathMaxLength" xml:space="preserve">
+    <value>පැතිකඩ රූපයේ මාර්ගය {MaxLength} අකුරු ඉක්මවිය නොහැක.</value>
+  </data>
+  <data name="CarNotAvailable" xml:space="preserve">
+    <value>මෙම මෝටර් රථය දැනටමත් තෝරාගත් කාලය සඳහා වෙන් කර ඇත.</value>
+  </data>
+</root>

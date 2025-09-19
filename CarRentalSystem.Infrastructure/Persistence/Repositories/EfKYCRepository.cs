@@ -20,9 +20,24 @@ namespace CarRentalSystem.Infrastructure.Persistence.Repositories
 
         public async Task<Guid> UploadKYCAsync(KYCUpload kyc, CancellationToken cancellationToken)
         {
-            await _context.KYCUploads.AddAsync(kyc, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
-            return kyc.KYCId;
+            try
+            {
+                Console.WriteLine($"EfKYCRepository: Adding KYC record for user {kyc.UserId}, type {kyc.DocumentType}, path {kyc.FilePath}");
+                await _context.KYCUploads.AddAsync(kyc, cancellationToken);
+                Console.WriteLine("EfKYCRepository: KYC record added to context");
+                
+                var saveResult = await _context.SaveChangesAsync(cancellationToken);
+                Console.WriteLine($"EfKYCRepository: Save changes result: {saveResult}");
+                Console.WriteLine($"EfKYCRepository: KYC record saved with ID: {kyc.KYCId}");
+                
+                return kyc.KYCId;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"EfKYCRepository: Error saving KYC record: {ex.Message}");
+                Console.WriteLine($"EfKYCRepository: Stack trace: {ex.StackTrace}");
+                throw;
+            }
         }
 
         public async Task<List<KYCUpload>> GetKYCByUserIdAsync(Guid userId, CancellationToken cancellationToken)

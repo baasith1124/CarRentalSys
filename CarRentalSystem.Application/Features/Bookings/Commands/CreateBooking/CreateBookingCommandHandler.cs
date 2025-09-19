@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿using CarRentalSystem.Application.Common.Interfaces;
+﻿﻿﻿﻿﻿﻿using CarRentalSystem.Application.Common.Interfaces;
 using CarRentalSystem.Domain.Entities;
 using MediatR;
 using System;
@@ -22,15 +22,7 @@ namespace CarRentalSystem.Application.Features.Bookings.Commands.CreateBooking
 
         public async Task<Guid> Handle(CreateBookingCommand request, CancellationToken cancellationToken)
         {
-            if (request.PickupDate < DateTime.UtcNow)
-                throw new ArgumentException("Pickup date cannot be in the past.");
-
-            if (request.PickupDate >= request.ReturnDate)
-                throw new ArgumentException("Return date must be after pickup date.");
-
-            if ((request.ReturnDate - request.PickupDate).TotalMinutes < 30)
-                throw new ArgumentException("Booking must be at least 30 minutes long.");
-
+            // Business logic validation - check car availability
             bool isAvailable = await _bookingRepository.IsCarAvailableAsync(request.CarId, request.PickupDate, request.ReturnDate, cancellationToken);
 
             if (!isAvailable)

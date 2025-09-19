@@ -5,24 +5,32 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="admin-dashboard-3d">
+<div class="admin-dashboard-3d page-transition">
     <!-- Enhanced 3D Header -->
     <div class="dashboard-header-3d">
         <div class="d-flex justify-content-between align-items-center">
             <div>
-                <h1 class="dashboard-title-3d">
+                <h1 class="dashboard-title-3d text-gradient">
                     <div class="title-icon-3d">
                         <i class="bi bi-people"></i>
                         <div class="icon-glow-3d"></div>
                     </div>
                     Customer Management
                 </h1>
-                <p class="dashboard-subtitle-3d">Manage and monitor customer accounts</p>
+                <p class="dashboard-subtitle-3d">Manage and monitor customer accounts with enhanced interactivity</p>
             </div>
             <div class="dashboard-actions-3d">
-                <button class="btn-3d-interactive btn-primary-3d" onclick="refreshCustomers()">
+                <a href="@Url.Action("CreateCustomer")" class="btn-3d-interactive btn-success-3d hover-lift">
+                    <i class="bi bi-person-plus"></i>
+                    <span>Add Customer</span>
+                </a>
+                <button class="btn-3d-interactive btn-primary-3d hover-lift" onclick="refreshCustomers()">
                     <i class="bi bi-arrow-clockwise"></i>
                     <span>Refresh</span>
+                </button>
+                <button class="btn-3d-interactive btn-info-3d hover-lift" onclick="exportCustomers()">
+                    <i class="bi bi-download"></i>
+                    <span>Export</span>
                 </button>
             </div>
         </div>
@@ -88,22 +96,25 @@
         </div>
     </div>
 
-    <!-- Search and Filter -->
+    <!-- Enhanced Search and Filter -->
     <div class="row g-4 mb-4">
         <div class="col-12">
-            <div class="card-3d-interactive">
+            <div class="card-3d-interactive hover-lift">
                 <div class="card-body-3d">
                     <div class="row g-3">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="searchInput" class="form-label">Search Customers</label>
-                                <input type="text" id="searchInput" class="form-control" placeholder="Search by name, email, or NIC...">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                    <input type="text" id="searchInput" class="form-control focus-glow" placeholder="Search by name, email, or NIC...">
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="statusFilter" class="form-label">KYC Status</label>
-                                <select id="statusFilter" class="form-select">
+                                <select id="statusFilter" class="form-select focus-glow">
                                     <option value="">All Customers</option>
                                     <option value="verified">KYC Verified</option>
                                     <option value="pending">Pending Verification</option>
@@ -113,7 +124,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="sortBy" class="form-label">Sort By</label>
-                                <select id="sortBy" class="form-select">
+                                <select id="sortBy" class="form-select focus-glow">
                                     <option value="name">Name (A-Z)</option>
                                     <option value="email">Email</option>
                                     <option value="kyc">KYC Status</option>
@@ -123,7 +134,7 @@
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label class="form-label">&nbsp;</label>
-                                <button type="button" class="btn btn-outline-primary w-100" onclick="applyFilters()">
+                                <button type="button" class="btn-3d-interactive btn-primary-3d w-100" onclick="applyFilters()">
                                     <i class="bi bi-funnel"></i> Filter
                                 </button>
                             </div>
@@ -134,12 +145,12 @@
         </div>
     </div>
 
-    <!-- Customers Table -->
+    <!-- Enhanced Customers Table -->
     <div class="row g-4">
         <div class="col-12">
-            <div class="card-3d-interactive">
+            <div class="card-3d-interactive hover-lift">
                 <div class="card-header-3d d-flex justify-content-between align-items-center">
-                    <h5 class="card-title-3d mb-0">
+                    <h5 class="card-title-3d mb-0 text-gradient">
                         <div class="title-icon-3d">
                             <i class="bi bi-table"></i>
                             <div class="icon-glow-3d"></div>
@@ -148,26 +159,35 @@
                     </h5>
                     <div class="header-actions">
                         <span class="badge bg-primary" id="customerCount">@Model.Count customers</span>
+                        <div class="btn-group ms-2">
+                            <button class="btn btn-outline-secondary btn-sm" onclick="toggleView('table')" id="tableViewBtn">
+                                <i class="bi bi-table"></i>
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm" onclick="toggleView('grid')" id="gridViewBtn">
+                                <i class="bi bi-grid-3x3-gap"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body-3d">
                     @if (Model.Any())
                     {
-                        <div class="table-responsive">
-                            <table class="table table-hover" id="customersTable">
+                        <!-- Table View -->
+                        <div class="table-responsive" id="tableView">
+                            <table class="table table-hover data-table" id="customersTable">
                                 <thead class="table-dark">
                                     <tr>
-                                        <th>Customer</th>
-                                        <th>Contact Info</th>
-                                        <th>KYC Status</th>
-                                        <th>Profile</th>
+                                        <th data-sort="1">Customer</th>
+                                        <th data-sort="2">Contact Info</th>
+                                        <th data-sort="3">KYC Status</th>
+                                        <th data-sort="4">Profile</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach (var customer in Model)
                                     {
-                                        <tr class="customer-row" data-customer-id="@customer.Id">
+                                        <tr class="customer-row searchable-item" data-customer-id="@customer.Id">
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <div class="customer-avatar me-3">
@@ -234,24 +254,119 @@
                                             </td>
                                             <td>
                                                 <div class="btn-group" role="group">
-                                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="viewCustomerDetails('@customer.Id')" title="View Details">
+                                                    <a href="@Url.Action("EditCustomer", new { customerId = customer.Id })" class="btn btn-outline-primary btn-sm hover-lift" title="Edit Customer">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
+                                                    <button type="button" class="btn btn-outline-info btn-sm hover-lift" onclick="viewCustomerDetails('@customer.Id')" title="View Details">
                                                         <i class="bi bi-eye"></i>
                                                     </button>
-                                                    <button type="button" class="btn btn-outline-info btn-sm" onclick="viewCustomerBookings('@customer.Id')" title="View Bookings">
+                                                    <button type="button" class="btn btn-outline-success btn-sm hover-lift" onclick="viewCustomerBookings('@customer.Id')" title="View Bookings">
                                                         <i class="bi bi-calendar-check"></i>
                                                     </button>
                                                     @if (!customer.IsKycVerified)
                                                     {
-                                                        <button type="button" class="btn btn-outline-warning btn-sm" onclick="viewKYCStatus('@customer.Id')" title="Check KYC">
+                                                        <button type="button" class="btn btn-outline-warning btn-sm hover-lift" onclick="viewKYCStatus('@customer.Id')" title="Check KYC">
                                                             <i class="bi bi-file-earmark-check"></i>
                                                         </button>
                                                     }
+                                                    <button type="button" class="btn btn-outline-danger btn-sm hover-lift" onclick="deleteCustomer('@customer.Id', '@customer.FullName')" title="Delete Customer">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
                                     }
                                 </tbody>
                             </table>
+                        </div>
+                        
+                        <!-- Grid View -->
+                        <div class="row g-3" id="gridView" style="display: none;">
+                            @foreach (var customer in Model)
+                            {
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="card-3d-interactive customer-card hover-lift searchable-item" data-customer-id="@customer.Id">
+                                        <div class="card-body-3d">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <div class="customer-avatar me-3">
+                                                    @if (!string.IsNullOrEmpty(customer.ProfileImagePath))
+                                                    {
+                                                        <img src="@customer.ProfileImagePath" alt="@customer.FullName" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                        <div class="avatar-placeholder" style="display:none; width: 50px; height: 50px; background: #6c757d; border-radius: 50%; align-items: center; justify-content: center; color: white;">
+                                                            <i class="bi bi-person"></i>
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="avatar-placeholder" style="width: 50px; height: 50px; background: #6c757d; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">
+                                                            <i class="bi bi-person"></i>
+                                                        </div>
+                                                    }
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-0">@customer.FullName</h6>
+                                                    <small class="text-muted">ID: @customer.Id.ToString().Substring(0, 8)</small>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <p class="mb-1"><strong>Email:</strong> @customer.Email</p>
+                                                @if (!string.IsNullOrEmpty(customer.NIC))
+                                                {
+                                                    <p class="mb-1"><strong>NIC:</strong> @customer.NIC</p>
+                                                }
+                                                @if (!string.IsNullOrEmpty(customer.Address))
+                                                {
+                                                    <p class="mb-1"><strong>Address:</strong> @customer.Address</p>
+                                                }
+                                            </div>
+                                            
+                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                @if (customer.IsKycVerified)
+                                                {
+                                                    <span class="badge bg-success">
+                                                        <i class="bi bi-shield-check"></i> Verified
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-warning">
+                                                        <i class="bi bi-clock-history"></i> Pending
+                                                    </span>
+                                                }
+                                                
+                                                @if (!string.IsNullOrEmpty(customer.ProfileImagePath))
+                                                {
+                                                    <span class="badge bg-info">
+                                                        <i class="bi bi-image"></i> Complete
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-secondary">
+                                                        <i class="bi bi-image"></i> Incomplete
+                                                    </span>
+                                                }
+                                            </div>
+                                            
+                                            <div class="btn-group w-100" role="group">
+                                                <a href="@Url.Action("EditCustomer", new { customerId = customer.Id })" class="btn btn-outline-primary btn-sm" title="Edit">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-outline-info btn-sm" onclick="viewCustomerDetails('@customer.Id')" title="View">
+                                                    <i class="bi bi-eye"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-outline-success btn-sm" onclick="viewCustomerBookings('@customer.Id')" title="Bookings">
+                                                    <i class="bi bi-calendar-check"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-outline-danger btn-sm" onclick="deleteCustomer('@customer.Id', '@customer.FullName')" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
                         </div>
                     }
                     else
@@ -261,6 +376,10 @@
                                 <i class="bi bi-people display-1 text-muted"></i>
                                 <h4 class="mt-3">No Customers Found</h4>
                                 <p class="text-muted">No customers have registered yet.</p>
+                                <a href="@Url.Action("CreateCustomer")" class="btn-3d-interactive btn-success-3d mt-3">
+                                    <i class="bi bi-person-plus"></i>
+                                    <span>Add First Customer</span>
+                                </a>
                             </div>
                         </div>
                     }
@@ -304,70 +423,294 @@
     </div>
 </div>
 
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteCustomerModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-exclamation-triangle text-danger"></i> Confirm Delete
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete customer <strong id="deleteCustomerName"></strong>?</p>
+                <p class="text-danger"><small>This action cannot be undone.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteCustomerForm" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Delete Customer
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
-        // Search and filter functionality
+        // Enhanced search and filter functionality
         function applyFilters() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const statusFilter = document.getElementById('statusFilter').value;
             const sortBy = document.getElementById('sortBy').value;
             
-            const rows = document.querySelectorAll('.customer-row');
+            const items = document.querySelectorAll('.searchable-item');
             let visibleCount = 0;
             
-            rows.forEach(row => {
-                const name = row.querySelector('h6').textContent.toLowerCase();
-                const email = row.querySelector('strong').textContent.toLowerCase();
-                const nic = row.querySelector('small')?.textContent.toLowerCase() || '';
-                const kycStatus = row.querySelector('.badge').textContent.toLowerCase();
+            items.forEach(item => {
+                const name = item.querySelector('h6').textContent.toLowerCase();
+                const email = item.querySelector('strong')?.textContent.toLowerCase() || '';
+                const nic = item.querySelector('small')?.textContent.toLowerCase() || '';
+                const kycStatus = item.querySelector('.badge').textContent.toLowerCase();
                 
-                let showRow = true;
+                let showItem = true;
                 
                 // Search filter
                 if (searchTerm && !name.includes(searchTerm) && !email.includes(searchTerm) && !nic.includes(searchTerm)) {
-                    showRow = false;
+                    showItem = false;
                 }
                 
                 // Status filter
                 if (statusFilter === 'verified' && !kycStatus.includes('verified')) {
-                    showRow = false;
+                    showItem = false;
                 } else if (statusFilter === 'pending' && !kycStatus.includes('pending')) {
-                    showRow = false;
+                    showItem = false;
                 }
                 
-                row.style.display = showRow ? '' : 'none';
-                if (showRow) visibleCount++;
+                // Animate visibility
+                if (showItem) {
+                    item.style.display = '';
+                    item.style.opacity = '1';
+                    item.style.transform = 'scale(1)';
+                    visibleCount++;
+                } else {
+                    item.style.opacity = '0';
+                    item.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        item.style.display = 'none';
+                    }, 300);
+                }
             });
             
             document.getElementById('customerCount').textContent = `${visibleCount} customers`;
+            
+            // Show notification
+            if (searchTerm || statusFilter) {
+                showNotification(`Found ${visibleCount} customers matching your criteria`, 'info', 3000);
+            }
         }
         
-        // View customer details
+        // Toggle between table and grid view
+        function toggleView(viewType) {
+            const tableView = document.getElementById('tableView');
+            const gridView = document.getElementById('gridView');
+            const tableBtn = document.getElementById('tableViewBtn');
+            const gridBtn = document.getElementById('gridViewBtn');
+            
+            if (viewType === 'table') {
+                tableView.style.display = '';
+                gridView.style.display = 'none';
+                tableBtn.classList.add('active');
+                gridBtn.classList.remove('active');
+                showNotification('Switched to table view', 'info', 2000);
+            } else {
+                tableView.style.display = 'none';
+                gridView.style.display = '';
+                tableBtn.classList.remove('active');
+                gridBtn.classList.add('active');
+                showNotification('Switched to grid view', 'info', 2000);
+            }
+        }
+        
+        // Enhanced view customer details
         function viewCustomerDetails(customerId) {
-            // For now, show a simple alert. In a real implementation, you'd load customer details via AJAX
-            alert(`View details for customer: ${customerId}`);
+            // Show loading state
+            showNotification('Loading customer details...', 'info', 2000);
+            
+            // Simulate API call
+            setTimeout(() => {
+                const modal = new bootstrap.Modal(document.getElementById('customerDetailsModal'));
+                document.getElementById('customerDetailsContent').innerHTML = `
+                    <div class="text-center">
+                        <div class="loading-spinner mb-3"></div>
+                        <p>Loading customer details...</p>
+                    </div>
+                `;
+                modal.show();
+                
+                // Simulate loading customer data
+                setTimeout(() => {
+                    document.getElementById('customerDetailsContent').innerHTML = `
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Customer Information</h6>
+                                <p><strong>ID:</strong> ${customerId}</p>
+                                <p><strong>Name:</strong> John Doe</p>
+                                <p><strong>Email:</strong> john.doe@example.com</p>
+                                <p><strong>NIC:</strong> 123456789V</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Account Status</h6>
+                                <p><strong>KYC Status:</strong> <span class="badge bg-success">Verified</span></p>
+                                <p><strong>Registration Date:</strong> 2024-01-15</p>
+                                <p><strong>Last Login:</strong> 2024-01-20</p>
+                                <p><strong>Total Bookings:</strong> 5</p>
+                            </div>
+                        </div>
+                    `;
+                }, 1500);
+            }, 500);
         }
         
-        // View customer bookings
+        // Enhanced view customer bookings
         function viewCustomerBookings(customerId) {
-            // For now, show a simple alert. In a real implementation, you'd load customer bookings via AJAX
-            alert(`View bookings for customer: ${customerId}`);
+            showNotification('Loading customer bookings...', 'info', 2000);
+            
+            setTimeout(() => {
+                const modal = new bootstrap.Modal(document.getElementById('customerBookingsModal'));
+                document.getElementById('customerBookingsContent').innerHTML = `
+                    <div class="text-center">
+                        <div class="loading-spinner mb-3"></div>
+                        <p>Loading booking history...</p>
+                    </div>
+                `;
+                modal.show();
+                
+                setTimeout(() => {
+                    document.getElementById('customerBookingsContent').innerHTML = `
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Booking ID</th>
+                                        <th>Car</th>
+                                        <th>Dates</th>
+                                        <th>Status</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>BK001</td>
+                                        <td>Toyota Camry</td>
+                                        <td>2024-01-15 to 2024-01-20</td>
+                                        <td><span class="badge bg-success">Completed</span></td>
+                                        <td>$250.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>BK002</td>
+                                        <td>Honda Civic</td>
+                                        <td>2024-01-25 to 2024-01-30</td>
+                                        <td><span class="badge bg-warning">Active</span></td>
+                                        <td>$200.00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                }, 1500);
+            }, 500);
         }
         
         // View KYC status
         function viewKYCStatus(customerId) {
-            // Redirect to KYC management page
-            window.location.href = '/Admin/KYC';
+            showNotification('Redirecting to KYC management...', 'info', 2000);
+            setTimeout(() => {
+                window.location.href = '/Admin/KYC';
+            }, 1000);
         }
         
-        // Refresh customers
+        // Enhanced delete customer
+        function deleteCustomer(customerId, customerName) {
+            document.getElementById('deleteCustomerName').textContent = customerName;
+            document.getElementById('deleteCustomerForm').action = '/Admin/Customers/Delete/' + customerId;
+            
+            const modal = new bootstrap.Modal(document.getElementById('deleteCustomerModal'));
+            modal.show();
+        }
+        
+        // Enhanced refresh customers
         function refreshCustomers() {
-            location.reload();
+            showNotification('Refreshing customer data...', 'info', 2000);
+            
+            // Add loading animation to refresh button
+            const refreshBtn = event.target.closest('button');
+            const originalContent = refreshBtn.innerHTML;
+            refreshBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Refreshing...';
+            refreshBtn.disabled = true;
+            
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
         }
         
-        // Initialize search on input
-        document.getElementById('searchInput').addEventListener('input', applyFilters);
-        document.getElementById('statusFilter').addEventListener('change', applyFilters);
-        document.getElementById('sortBy').addEventListener('change', applyFilters);
+        // Export customers functionality
+        function exportCustomers() {
+            showNotification('Preparing customer export...', 'info', 2000);
+            
+            // Simulate export process
+            setTimeout(() => {
+                showNotification('Customer data exported successfully!', 'success', 3000);
+                
+                // Create and download CSV
+                const csvContent = generateCustomerCSV();
+                const blob = new Blob([csvContent], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'customers_export.csv';
+                a.click();
+                window.URL.revokeObjectURL(url);
+            }, 2000);
+        }
+        
+        // Generate CSV content
+        function generateCustomerCSV() {
+            const customers = document.querySelectorAll('.customer-row');
+            let csv = 'Name,Email,NIC,Address,KYC Status,Profile Complete\n';
+            
+            customers.forEach(row => {
+                const name = row.querySelector('h6').textContent;
+                const email = row.querySelector('strong').textContent;
+                const nic = row.querySelector('small')?.textContent || '';
+                const address = row.querySelectorAll('strong')[1]?.textContent || '';
+                const kycStatus = row.querySelector('.badge').textContent;
+                const profileComplete = row.querySelectorAll('.badge')[1]?.textContent || '';
+                
+                csv += `"${name}","${email}","${nic}","${address}","${kycStatus}","${profileComplete}"\n`;
+            });
+            
+            return csv;
+        }
+        
+        // Initialize enhanced functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize search on input with debouncing
+            let searchTimeout;
+            document.getElementById('searchInput').addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(applyFilters, 300);
+            });
+            
+            document.getElementById('statusFilter').addEventListener('change', applyFilters);
+            document.getElementById('sortBy').addEventListener('change', applyFilters);
+            
+            // Initialize data tables
+            if (typeof initializeDataTables === 'function') {
+                initializeDataTables();
+            }
+            
+            // Add page transition effect
+            document.body.classList.add('page-transition');
+            
+            // Initialize tooltips
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
     </script>
 }

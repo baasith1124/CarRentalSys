@@ -206,8 +206,9 @@
                     else
                     {
                         <button type="button" class="btn-book-now-3d" 
-                                onclick="showLoginModal()"
-                                data-anime="bookNowBtn">
+                                onclick="showLoginModal('@Model.CarId')"
+                                data-anime="bookNowBtn"
+                                data-car-id="@Model.CarId">
                             <span class="btn-content">
                                 <i class="bi bi-calendar-plus"></i>
                                 <span class="btn-text">Book Now</span>

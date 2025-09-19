@@ -197,9 +197,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Global function to show login modal
-function showLoginModal() {
-    const modal = new bootstrap.Modal(document.getElementById('loginModal'));
+// Global variable to store car ID for booking context
+window.selectedCarId = null;
+
+// Global function to show registration modal (changed from login modal for better UX)
+function showLoginModal(carId = null) {
+    // Store car ID for booking context
+    window.selectedCarId = carId;
+    
+    // Show registration modal directly for better conversion
+    const modal = new bootstrap.Modal(document.getElementById('registerModal'));
     modal.show();
 }
 

@@ -7,13 +7,16 @@ using CarRentalSystem.Infrastructure.Identity;
 using CarRentalSystem.Infrastructure.Persistence;
 using CarRentalSystem.Infrastructure.Persistence.Seeders;
 using CarRentalSystem.Web.Middleware;
+using CarRentalSystem.Web.Filters;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Serilog;
 using Serilog.Events;
+using System.Globalization;
 
 
 namespace CarRentalSystem.Web
@@ -39,10 +42,40 @@ namespace CarRentalSystem.Web
                 builder.Host.UseSerilog();
 
                 // Add services to the container.
-                builder.Services.AddControllersWithViews();
+                builder.Services.AddControllersWithViews(options =>
+                {
+                    options.Filters.Add<ValidationExceptionFilter>();
+                });
                 builder.Services.AddRazorPages();
+
+                // Add localization services
+                builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+                builder.Services.Configure<RequestLocalizationOptions>(options =>
+                {
+                    var supportedCultures = new[]
+                    {
+                        new CultureInfo("en-US"),
+                        new CultureInfo("si-LK"), // Sinhala
+                        new CultureInfo("ta-LK")  // Tamil
+                    };
+
+                    options.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("en-US");
+                    options.SupportedCultures = supportedCultures;
+                    options.SupportedUICultures = supportedCultures;
+
+                    options.RequestCultureProviders.Clear();
+                    options.RequestCultureProviders.Add(new Microsoft.AspNetCore.Localization.QueryStringRequestCultureProvider());
+                    options.RequestCultureProviders.Add(new Microsoft.AspNetCore.Localization.CookieRequestCultureProvider());
+                    options.RequestCultureProviders.Add(new Microsoft.AspNetCore.Localization.AcceptLanguageHeaderRequestCultureProvider());
+                });
                 builder.Services.AddMediatR(typeof(AssemblyReference).Assembly);//from application layer
                 builder.Services.AddValidatorsFromAssembly(typeof(AssemblyReference).Assembly);//from application layer
+                
+                // Add Validation Behavior for automatic validation
+                builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CarRentalSystem.Application.Behaviors.ValidationBehavior<,>));
+                
+                // Register localization service
+                builder.Services.AddScoped<CarRentalSystem.Application.Common.Interfaces.ILocalizationService, CarRentalSystem.Web.Services.LocalizationService>();
                 builder.Services.AddAutoMapper(typeof(Program).Assembly, typeof(AssemblyReference).Assembly);//from application&Web layer
 
 
@@ -156,6 +189,7 @@ namespace CarRentalSystem.Web
 
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseRequestLocalization();
             app.UseSession();
             app.UseAuthentication();
             app.UseAuthorization();

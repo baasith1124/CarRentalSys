@@ -137,14 +137,14 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.success) {
                 // Success - show success message and close modal
-                showSuccessMessage();
+                showSuccessMessage('Account created successfully! You can now book cars.');
                 setTimeout(() => {
                     const modal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
                     if (modal) {
                         modal.hide();
                     }
-                    // Redirect or show success page
-                    window.location.href = '/Account/Login?registered=true';
+                    // Stay on current page and refresh to show logged-in state
+                    window.location.reload();
                 }, 2000);
             } else {
                 // Show errors
@@ -170,10 +170,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    function showSuccessMessage() {
+    function showSuccessMessage(message = 'Account created successfully! Redirecting...') {
         const errorDisplay = document.getElementById('registerError');
         if (errorDisplay) {
-            errorDisplay.innerHTML = '<div style="color: #00FF88;"><i class="bi bi-check-circle me-2"></i>Account created successfully! Redirecting...</div>';
+            errorDisplay.innerHTML = `<div style="color: #00FF88;"><i class="bi bi-check-circle me-2"></i>${message}</div>`;
             errorDisplay.style.display = 'block';
         }
     }

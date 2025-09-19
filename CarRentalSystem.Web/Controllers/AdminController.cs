@@ -23,6 +23,9 @@ using CarRentalSystem.Application.Features.Customers.Queries.GetCustomerKPIData;
 using CarRentalSystem.Application.Features.Cars.Queries.GetCarKPIData;
 using CarRentalSystem.Application.Features.Customers.Queries.GetAllCustomers;
 using CarRentalSystem.Application.Features.Customers.Queries.GetCustomerById;
+using CarRentalSystem.Application.Features.Customers.Commands.CreateCustomer;
+using CarRentalSystem.Application.Features.Customers.Commands.UpdateCustomer;
+using CarRentalSystem.Application.Features.Customers.Commands.DeleteCustomer;
 using CarRentalSystem.Application.Features.Cars.Queries.GetCarById;
 using CarRentalSystem.Application.Features.Cars.Queries.GetMyCars;
 using CarRentalSystem.Application.Features.Bookings.Queries.GetBookingsByCarOwner;
@@ -377,6 +380,128 @@ namespace CarRentalSystem.Web.Controllers
         {
             var customers = await _mediator.Send(new GetAllCustomersQuery());
             return View(customers);
+        }
+
+        [HttpGet]
+        [Route("Customers/Create")]
+        public IActionResult CreateCustomer()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Route("Customers/Create")]
+        public async Task<IActionResult> CreateCustomer(CreateCustomerCommand command)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(command);
+            }
+
+            try
+            {
+                var customerId = await _mediator.Send(command);
+                TempData["Success"] = "Customer created successfully!";
+                return RedirectToAction("Customers");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error creating customer: " + ex.Message;
+                return View(command);
+            }
+        }
+
+        [HttpGet]
+        [Route("Customers/Edit/{customerId}")]
+        public async Task<IActionResult> EditCustomer(Guid customerId)
+        {
+            try
+            {
+                var customer = await _mediator.Send(new GetCustomerByIdQuery(customerId));
+                if (customer == null)
+                {
+                    TempData["Error"] = "Customer not found.";
+                    return RedirectToAction("Customers");
+                }
+
+                var command = new UpdateCustomerCommand
+                {
+                    CustomerId = customer.Id,
+                    FullName = customer.FullName,
+                    Email = customer.Email,
+                    ProfileImagePath = customer.ProfileImagePath,
+                    NIC = customer.NIC,
+                    Address = customer.Address
+                };
+
+                return View(command);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error loading customer: " + ex.Message;
+                return RedirectToAction("Customers");
+            }
+        }
+
+        [HttpPost]
+        [Route("Customers/Edit/{customerId}")]
+        public async Task<IActionResult> EditCustomer(Guid customerId, UpdateCustomerCommand command)
+        {
+            if (customerId != command.CustomerId)
+            {
+                TempData["Error"] = "Customer ID mismatch.";
+                return RedirectToAction("Customers");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(command);
+            }
+
+            try
+            {
+                var result = await _mediator.Send(command);
+                if (result)
+                {
+                    TempData["Success"] = "Customer updated successfully!";
+                }
+                else
+                {
+                    TempData["Error"] = "Failed to update customer.";
+                }
+                return RedirectToAction("Customers");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error updating customer: " + ex.Message;
+                return View(command);
+            }
+        }
+
+        [HttpPost]
+        [Route("Customers/Delete/{customerId}")]
+        public async Task<IActionResult> DeleteCustomer(Guid customerId)
+        {
+            try
+            {
+                var command = new DeleteCustomerCommand { CustomerId = customerId };
+                var result = await _mediator.Send(command);
+                
+                if (result)
+                {
+                    TempData["Success"] = "Customer deleted successfully!";
+                }
+                else
+                {
+                    TempData["Error"] = "Failed to delete customer.";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error deleting customer: " + ex.Message;
+            }
+
+            return RedirectToAction("Customers");
         }
 
         #region Enhanced Car Management

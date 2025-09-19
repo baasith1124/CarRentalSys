@@ -1,0 +1,556 @@
+@model CarRentalSystem.Web.ViewModels.KYC.KYCUploadViewModel
+
+<div class="modal fade" id="kycUploadModal" tabindex="-1" aria-labelledby="kycUploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content kyc-modal-3d">
+            <!-- Enhanced Modal Header with 3D Effects -->
+            <div class="modal-header kyc-header-3d">
+                <div class="header-content-3d">
+                    <div class="kyc-icon-3d">
+                        <i class="bi bi-shield-check-fill"></i>
+                        <div class="icon-glow-3d"></div>
+                    </div>
+                    <div class="header-text-3d">
+                        <h5 class="modal-title kyc-title-3d" id="kycUploadModalLabel">
+                            <span class="title-gradient">KYC Verification</span>
+                        </h5>
+                        <p class="kyc-subtitle-3d">Upload your identity documents to complete verification</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close-3d" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            <form id="kycUploadForm" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <div class="modal-body kyc-body-3d">
+                    <!-- Document Type Selection -->
+                    <div class="form-group-3d mb-4">
+                        <label class="form-label-3d required">
+                            <i class="bi bi-card-text me-2"></i>Document Type
+                        </label>
+                        <div class="document-type-selector-3d">
+                            <div class="document-option-3d">
+                                <input type="radio" id="documentTypeNIC" name="DocumentType" value="NIC" class="document-radio-3d" required>
+                                <label for="documentTypeNIC" class="document-label-3d">
+                                    <div class="document-icon-3d">
+                                        <i class="bi bi-person-badge"></i>
+                                    </div>
+                                    <div class="document-info-3d">
+                                        <span class="document-name-3d">National ID Card</span>
+                                        <span class="document-desc-3d">Sri Lankan National Identity Card</span>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="document-option-3d">
+                                <input type="radio" id="documentTypePassport" name="DocumentType" value="Passport" class="document-radio-3d" required>
+                                <label for="documentTypePassport" class="document-label-3d">
+                                    <div class="document-icon-3d">
+                                        <i class="bi bi-passport"></i>
+                                    </div>
+                                    <div class="document-info-3d">
+                                        <span class="document-name-3d">Passport</span>
+                                        <span class="document-desc-3d">International Passport</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <span class="validation-error-3d" id="documentTypeError"></span>
+                    </div>
+
+                    <!-- File Upload Area -->
+                    <div class="form-group-3d mb-4">
+                        <label class="form-label-3d required">
+                            <i class="bi bi-cloud-upload me-2"></i>Upload Document
+                        </label>
+                        <div class="file-upload-container-3d">
+                            <div class="file-upload-area-3d" id="fileUploadArea">
+                                <div class="upload-icon-3d">
+                                    <i class="bi bi-cloud-upload"></i>
+                                </div>
+                                <div class="upload-text-3d">
+                                    <h6 class="upload-title-3d">Drop your document here</h6>
+                                    <p class="upload-subtitle-3d">or click to browse files</p>
+                                    <small class="upload-info-3d">Supported formats: JPG, PNG, PDF (Max 5MB)</small>
+                                </div>
+                                <input type="file" id="documentFile" name="Document" class="file-input-3d" 
+                                       accept=".jpg,.jpeg,.png,.pdf" required style="display: none;">
+                            </div>
+                            <div class="file-preview-3d d-none" id="filePreview">
+                                <div class="preview-content-3d">
+                                    <div class="preview-icon-3d">
+                                        <i class="bi bi-file-earmark-image"></i>
+                                    </div>
+                                    <div class="preview-info-3d">
+                                        <span class="preview-name-3d" id="previewFileName"></span>
+                                        <span class="preview-size-3d" id="previewFileSize"></span>
+                                    </div>
+                                    <button type="button" class="remove-file-3d" id="removeFile">
+                                        <i class="bi bi-x"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="validation-error-3d" id="documentFileError"></span>
+                    </div>
+
+                    <!-- Upload Guidelines -->
+                    <div class="upload-guidelines-3d">
+                        <h6 class="guidelines-title-3d">
+                            <i class="bi bi-info-circle me-2"></i>Upload Guidelines
+                        </h6>
+                        <ul class="guidelines-list-3d">
+                            <li>Ensure the document is clear and readable</li>
+                            <li>All text should be visible and not cut off</li>
+                            <li>Document should be in good condition</li>
+                            <li>File size should not exceed 5MB</li>
+                        </ul>
+                    </div>
+
+                    <!-- Upload Button -->
+                    <div class="upload-actions-3d">
+                        <button type="submit" class="btn-upload-3d w-100" disabled>
+                            <span class="btn-content-3d">
+                                <i class="bi bi-shield-check me-2"></i>
+                                <span class="btn-text">Upload & Verify</span>
+                            </span>
+                            <div class="btn-glow-3d"></div>
+                            <div class="btn-ripple-3d"></div>
+                        </button>
+                        
+                        <!-- Error Display -->
+                        <div id="kycUploadError" class="error-display-3d"></div>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Enhanced Modal Footer -->
+            <div class="modal-footer kyc-footer-3d">
+                <div class="footer-content-3d">
+                    <p class="footer-text-3d">
+                        <i class="bi bi-shield-lock me-2"></i>
+                        Your documents are encrypted and secure. We'll verify them within 24 hours.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* KYC Modal 3D Styles */
+.kyc-modal-3d {
+    background: var(--glass-bg-dark);
+    border: 1px solid var(--glass-border-light);
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-3d-strong);
+    backdrop-filter: var(--glass-backdrop-strong);
+    overflow: hidden;
+}
+
+.kyc-header-3d {
+    background: linear-gradient(135deg, rgba(52, 144, 220, 0.1) 0%, rgba(155, 89, 182, 0.1) 100%);
+    border-bottom: 1px solid var(--glass-border-light);
+    padding: 2rem;
+}
+
+.header-content-3d {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.kyc-icon-3d {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #3490dc, #9b59b6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+    box-shadow: var(--shadow-3d-medium);
+}
+
+.icon-glow-3d {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    background: linear-gradient(135deg, #3490dc, #9b59b6);
+    border-radius: 50%;
+    opacity: 0.3;
+    filter: blur(10px);
+    z-index: -1;
+}
+
+.kyc-title-3d {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    background: linear-gradient(135deg, #3490dc, #9b59b6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.kyc-subtitle-3d {
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0.5rem 0 0 0;
+    font-size: 0.9rem;
+}
+
+.btn-close-3d {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.2rem;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.btn-close-3d:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.kyc-body-3d {
+    padding: 2rem;
+}
+
+.document-type-selector-3d {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.document-option-3d {
+    position: relative;
+}
+
+.document-radio-3d {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.document-label-3d {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: var(--glass-bg-light);
+    border: 2px solid var(--glass-border-light);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.document-label-3d::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.document-label-3d:hover::before {
+    left: 100%;
+}
+
+.document-label-3d:hover {
+    border-color: #3490dc;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-3d-medium);
+}
+
+.document-radio-3d:checked + .document-label-3d {
+    border-color: #3490dc;
+    background: linear-gradient(135deg, rgba(52, 144, 220, 0.1), rgba(155, 89, 182, 0.1));
+    box-shadow: var(--shadow-3d-medium);
+}
+
+.document-icon-3d {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #3490dc, #9b59b6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.document-info-3d {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.document-name-3d {
+    font-weight: 600;
+    color: white;
+    font-size: 1rem;
+}
+
+.document-desc-3d {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.8rem;
+}
+
+.file-upload-container-3d {
+    margin-top: 1rem;
+}
+
+.file-upload-area-3d {
+    border: 2px dashed var(--glass-border-light);
+    border-radius: var(--radius-lg);
+    padding: 3rem 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    background: var(--glass-bg-light);
+}
+
+.file-upload-area-3d:hover {
+    border-color: #3490dc;
+    background: linear-gradient(135deg, rgba(52, 144, 220, 0.05), rgba(155, 89, 182, 0.05));
+}
+
+.file-upload-area-3d.dragover {
+    border-color: #3490dc;
+    background: linear-gradient(135deg, rgba(52, 144, 220, 0.2), rgba(155, 89, 182, 0.2));
+    transform: scale(1.02);
+    box-shadow: 0 0 20px rgba(52, 144, 220, 0.5);
+}
+
+.file-upload-area-3d.dragover .upload-icon-3d {
+    color: #3490dc;
+    transform: scale(1.2);
+}
+
+.file-upload-area-3d.dragover .upload-title-3d {
+    color: #3490dc;
+}
+
+.file-input-3d {
+    display: none;
+}
+
+.upload-icon-3d {
+    font-size: 3rem;
+    color: #3490dc;
+    margin-bottom: 1rem;
+}
+
+.upload-title-3d {
+    color: white;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.upload-subtitle-3d {
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 1rem;
+}
+
+.upload-info-3d {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.file-preview-3d {
+    border: 2px solid var(--glass-border-light);
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+    background: var(--glass-bg-light);
+    margin-top: 1rem;
+}
+
+.preview-content-3d {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.preview-icon-3d {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #3490dc, #9b59b6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.preview-info-3d {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.preview-name-3d {
+    color: white;
+    font-weight: 600;
+}
+
+.preview-size-3d {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.8rem;
+}
+
+.remove-file-3d {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.2rem;
+    padding: 0.5rem;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.remove-file-3d:hover {
+    background: rgba(255, 107, 107, 0.2);
+    color: #ff6b6b;
+}
+
+.upload-guidelines-3d {
+    background: var(--glass-bg-light);
+    border: 1px solid var(--glass-border-light);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.guidelines-title-3d {
+    color: white;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.guidelines-list-3d {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.guidelines-list-3d li {
+    color: rgba(255, 255, 255, 0.8);
+    padding: 0.5rem 0;
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.guidelines-list-3d li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: #3490dc;
+    font-weight: bold;
+}
+
+.upload-actions-3d {
+    margin-top: 2rem;
+}
+
+.btn-upload-3d {
+    background: linear-gradient(135deg, #3490dc, #9b59b6);
+    border: none;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    font-size: 1rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-3d-medium);
+}
+
+.btn-upload-3d:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-3d-strong);
+}
+
+.btn-upload-3d:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    background: linear-gradient(135deg, #6c757d, #495057);
+    box-shadow: none;
+}
+
+.btn-upload-3d:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-glow-3d {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-upload-3d:hover .btn-glow-3d {
+    left: 100%;
+}
+
+.kyc-footer-3d {
+    background: var(--glass-bg-light);
+    border-top: 1px solid var(--glass-border-light);
+    padding: 1.5rem 2rem;
+}
+
+.footer-text-3d {
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+}
+
+.error-display-3d {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(255, 107, 107, 0.1);
+    border: 1px solid rgba(255, 107, 107, 0.3);
+    border-radius: var(--radius-lg);
+    color: #ff6b6b;
+    display: none;
+}
+
+.validation-error-3d {
+    color: #ff6b6b;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    display: block;
+}
+
+.form-label-3d.required::after {
+    content: ' *';
+    color: #ff6b6b;
+}
+</style>
