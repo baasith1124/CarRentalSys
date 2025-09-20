@@ -1,0 +1,1330 @@
+/* Enhanced 3D Car Management Styles */
+/* ===================================== */
+
+/* Car Management Container */
+.car-management-3d {
+    position: relative;
+    z-index: 1;
+    min-width: 320px;
+    overflow-x: auto;
+}
+
+/* Global zoom-friendly adjustments */
+.car-management-3d * {
+    box-sizing: border-box;
+}
+
+/* Ensure proper scaling at all zoom levels */
+.car-management-3d .row {
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+}
+
+.car-management-3d .row > * {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+/* Enhanced 3D Header */
+.header-content-3d {
+    position: relative;
+}
+
+.page-title-3d {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    font-weight: 700;
+    background: var(--text-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.25rem;
+    transform: translateZ(20px);
+    text-shadow: 0 0 20px rgba(35, 35, 255, 0.3);
+}
+
+.title-icon-3d {
+    font-size: 1.5rem;
+    margin-right: 0.5rem;
+    color: var(--primary-blue);
+    filter: drop-shadow(0 0 8px rgba(35, 35, 255, 0.5));
+    animation: iconPulse 3s ease-in-out infinite;
+}
+
+.text-muted-3d {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    transform: translateZ(15px);
+    margin-bottom: 0.75rem;
+}
+
+.header-actions-3d {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+/* Enhanced 3D Buttons */
+.btn-3d-interactive {
+    position: relative;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+    overflow: hidden;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.btn-3d-interactive::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+    z-index: -1;
+}
+
+.btn-3d-interactive:hover::before {
+    transform: translateX(100%);
+}
+
+.btn-success-3d {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+}
+
+.btn-success-3d:hover {
+    transform: translateY(-2px) translateZ(10px);
+    box-shadow: 0 12px 35px rgba(40, 167, 69, 0.4);
+    color: white;
+}
+
+.btn-primary-3d {
+    background: var(--gradient-primary);
+    color: white;
+    box-shadow: 0 8px 25px rgba(35, 35, 255, 0.3);
+}
+
+.btn-primary-3d:hover {
+    transform: translateY(-2px) translateZ(10px);
+    box-shadow: 0 12px 35px rgba(35, 35, 255, 0.4);
+    color: white;
+}
+
+.btn-secondary-3d {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    color: white;
+    box-shadow: 0 8px 25px rgba(108, 117, 125, 0.3);
+}
+
+.btn-secondary-3d:hover {
+    transform: translateY(-2px) translateZ(10px);
+    box-shadow: 0 12px 35px rgba(108, 117, 125, 0.4);
+    color: white;
+}
+
+.btn-warning-3d {
+    background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+    color: #212529;
+    box-shadow: 0 8px 25px rgba(255, 193, 7, 0.3);
+}
+
+.btn-warning-3d:hover {
+    transform: translateY(-2px) translateZ(10px);
+    box-shadow: 0 12px 35px rgba(255, 193, 7, 0.4);
+    color: #212529;
+}
+
+.btn-danger-3d {
+    background: linear-gradient(135deg, #dc3545 0%, #e83e8c 100%);
+    color: white;
+    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
+}
+
+.btn-danger-3d:hover {
+    transform: translateY(-2px) translateZ(10px);
+    box-shadow: 0 12px 35px rgba(220, 53, 69, 0.4);
+    color: white;
+}
+
+/* Enhanced 3D Stats Cards */
+.stats-card-3d {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+    box-shadow: var(--glass-shadow);
+}
+
+.stats-card-3d::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.stats-card-3d:hover {
+    transform: translateY(-8px) translateZ(20px);
+    box-shadow: 0 20px 60px rgba(35, 35, 255, 0.2);
+}
+
+.stats-card-3d:hover::before {
+    opacity: 1;
+}
+
+.stats-pending-3d {
+    border-left: 4px solid #ffc107;
+}
+
+.stats-approved-3d {
+    border-left: 4px solid #28a745;
+}
+
+.stats-rejected-3d {
+    border-left: 4px solid #dc3545;
+}
+
+.stats-icon-3d {
+    position: relative;
+    width: 45px;
+    height: 45px;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--glass-bg-light);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
+}
+
+.stats-icon-3d i {
+    font-size: 1.3rem;
+    color: var(--text-primary);
+    z-index: 2;
+}
+
+.stats-glow-3d {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(35, 35, 255, 0.2) 0%, transparent 70%);
+    animation: statsGlow 3s ease-in-out infinite;
+}
+
+.stats-content-3d {
+    position: relative;
+    z-index: 2;
+}
+
+.stats-number-3d {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+    font-family: var(--font-heading);
+}
+
+.stats-label-3d {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+}
+
+.stats-progress-3d {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.stats-progress-bar-3d {
+    height: 100%;
+    background: var(--gradient-primary);
+    border-radius: 2px;
+    transition: width 1s ease-in-out;
+    box-shadow: 0 0 10px rgba(35, 35, 255, 0.5);
+}
+
+/* Enhanced 3D Tabs */
+.tabs-container-3d {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.nav-tabs-3d {
+    border: none;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.nav-item-3d {
+    flex: 1;
+}
+
+.nav-link-3d {
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 1rem 1.5rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-link-3d::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--gradient-primary);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: var(--radius-md);
+}
+
+.nav-link-3d.active::before,
+.nav-link-3d:hover::before {
+    opacity: 1;
+}
+
+.nav-link-3d.active,
+.nav-link-3d:hover {
+    color: white;
+    transform: translateY(-2px);
+}
+
+.tab-icon-3d {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+}
+
+.tab-text-3d {
+    position: relative;
+    z-index: 2;
+    font-weight: 600;
+}
+
+.tab-badge-3d {
+    position: relative;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--text-primary);
+    padding: 0.25rem 0.5rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-left: auto;
+}
+
+.nav-link-3d.active .tab-badge-3d,
+.nav-link-3d:hover .tab-badge-3d {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Enhanced 3D Cards */
+.card-3d-interactive {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--glass-shadow);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+    overflow: hidden;
+}
+
+.card-3d-interactive:hover {
+    transform: translateY(-4px) translateZ(10px);
+    box-shadow: 0 20px 60px rgba(35, 35, 255, 0.2);
+}
+
+.card-header-3d {
+    background: var(--glass-bg-light);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 1.5rem;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+.card-title-3d {
+    color: var(--text-primary);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.card-body-3d {
+    padding: 1.25rem;
+}
+
+/* Enhanced 3D Tables */
+.table-3d {
+    background: transparent;
+    color: var(--text-primary);
+    width: 100%;
+    table-layout: auto;
+    min-width: 800px;
+}
+
+.table-3d thead th {
+    background: var(--glass-bg-light);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
+    border: none;
+    color: var(--text-primary);
+    font-weight: 600;
+    padding: 1rem;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    white-space: nowrap;
+    min-width: 120px;
+}
+
+.table-3d tbody tr {
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.car-row-3d {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    margin-bottom: 0.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: table-row;
+}
+
+.car-row-3d:hover,
+.car-row-hover-3d {
+    transform: translateY(-2px) translateZ(5px);
+    box-shadow: 0 10px 30px rgba(35, 35, 255, 0.1);
+    border-color: var(--primary-blue);
+}
+
+.car-row-3d td {
+    border: none;
+    padding: 1rem;
+    vertical-align: middle;
+    white-space: nowrap;
+    min-width: 120px;
+}
+
+.car-row-3d td:first-child {
+    min-width: 300px;
+    white-space: normal;
+}
+
+.car-row-3d td:last-child {
+    min-width: 200px;
+    white-space: nowrap;
+}
+
+/* Enhanced 3D Car Info */
+.car-info-3d {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.car-image-3d {
+    position: relative;
+    width: 65px;
+    height: 50px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--glass-bg-light);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
+}
+
+.car-thumbnail-3d {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.3s ease;
+    border-radius: var(--radius-md);
+}
+
+.car-image-overlay-3d {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(35, 35, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: var(--radius-md);
+}
+
+.car-image-3d:hover .car-image-overlay-3d {
+    opacity: 1;
+}
+
+.car-image-overlay-3d i {
+    color: white;
+    font-size: 1.5rem;
+}
+
+.car-details-3d {
+    flex: 1;
+}
+
+.car-name-3d {
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-family: var(--font-heading);
+}
+
+.car-specs-3d {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+}
+
+.spec-badge-3d {
+    background: var(--glass-bg-light);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
+    color: var(--text-primary);
+    padding: 0.25rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border: 1px solid var(--glass-border);
+}
+
+.car-description-3d {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Enhanced 3D Owner Info */
+.owner-info-3d {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.owner-avatar-3d {
+    width: 40px;
+    height: 40px;
+    background: var(--glass-bg-light);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--glass-border);
+}
+
+.owner-avatar-3d i {
+    color: var(--primary-blue);
+    font-size: 1.2rem;
+}
+
+.owner-details-3d {
+    flex: 1;
+}
+
+.owner-name-3d {
+    color: var(--text-primary);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.owner-email-3d {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* Enhanced 3D Rate Container */
+.rate-container-3d {
+    text-align: center;
+}
+
+.rate-badge-3d {
+    background: var(--gradient-success);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-lg);
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.rate-label-3d {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+/* Enhanced 3D Availability Info */
+.availability-info-3d {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.availability-date-3d {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.availability-date-3d i {
+    color: var(--primary-blue);
+    font-size: 0.9rem;
+}
+
+/* Enhanced 3D Action Buttons */
+.action-buttons-3d {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.action-buttons-3d .btn-3d-interactive {
+    padding: 0.5rem;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+}
+
+/* Enhanced 3D Search and Filter */
+.search-filter-section-3d {
+    position: relative;
+}
+
+.form-label-3d {
+    color: var(--text-primary);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.form-control-3d,
+.form-select-3d {
+    background: var(--glass-bg-light);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control-3d:focus,
+.form-select-3d:focus {
+    background: var(--glass-bg);
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 0.2rem rgba(35, 35, 255, 0.25);
+    color: var(--text-primary);
+}
+
+.search-input-3d {
+    position: relative;
+}
+
+.search-icon-3d {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+/* Enhanced 3D Empty State */
+.empty-state-3d {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-primary);
+}
+
+.empty-icon-3d {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--glass-bg-light);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
+    border-radius: 50%;
+    border: 1px solid var(--glass-border);
+}
+
+.empty-icon-3d i {
+    font-size: 2.5rem;
+    color: var(--primary-blue);
+    z-index: 2;
+}
+
+.empty-glow-3d {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(35, 35, 255, 0.2) 0%, transparent 70%);
+    animation: emptyGlow 3s ease-in-out infinite;
+}
+
+.empty-title-3d {
+    color: var(--text-primary);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.empty-description-3d {
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+}
+
+/* Enhanced 3D Modal */
+.modal-3d {
+    background: transparent;
+    border: none;
+}
+
+.modal-header-3d {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
+    border-bottom: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+.modal-title-3d {
+    color: var(--text-primary);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.modal-body-3d {
+    background: var(--glass-bg-light);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
+    border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+    color: var(--text-primary);
+}
+
+.btn-close-3d {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    padding: 0.5rem;
+    border-radius: var(--radius-md);
+    transition: all 0.3s ease;
+}
+
+.btn-close-3d:hover {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+}
+
+/* Loading and Error States */
+.loading-state-3d,
+.error-state-3d {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-primary);
+}
+
+.loading-spinner-3d {
+    font-size: 2rem;
+    color: var(--primary-blue);
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+.error-state-3d i {
+    font-size: 2rem;
+    color: #dc3545;
+    margin-bottom: 1rem;
+}
+
+/* Ripple Effect */
+.ripple-effect-3d {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(0);
+    animation: ripple 0.6s linear;
+    pointer-events: none;
+}
+
+/* Image States */
+.image-loaded-3d {
+    opacity: 1;
+    transform: scale(1);
+    transition: all 0.3s ease;
+}
+
+.image-error-3d {
+    opacity: 0.5;
+    filter: grayscale(100%);
+}
+
+/* Animations */
+@keyframes iconPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+@keyframes statsGlow {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.1); }
+}
+
+@keyframes emptyGlow {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.2); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes ripple {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* Zoom Level Adjustments */
+@media (max-width: 3200px) {
+    /* Large zoom out (25% zoom) adjustments */
+    .car-management-3d {
+        min-height: 100vh;
+    }
+    
+    .page-title-3d {
+        font-size: clamp(1.5rem, 3vw, 2.5rem);
+        margin-bottom: 0.25rem;
+    }
+    
+    .text-muted-3d {
+        font-size: clamp(0.8rem, 1.5vw, 1.1rem);
+        margin-bottom: 0.5rem;
+    }
+    
+    .stats-card-3d {
+        padding: clamp(1rem, 2vw, 2rem);
+        margin-bottom: 0.5rem;
+    }
+    
+    .stats-number-3d {
+        font-size: clamp(1.5rem, 3vw, 2.5rem);
+    }
+    
+    .stats-label-3d {
+        font-size: clamp(0.7rem, 1.2vw, 1rem);
+    }
+    
+    .stats-icon-3d {
+        width: clamp(40px, 8vw, 60px);
+        height: clamp(40px, 8vw, 60px);
+        margin-bottom: 0.5rem;
+    }
+    
+    .stats-icon-3d i {
+        font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+    }
+    
+    .btn-3d-interactive {
+        padding: clamp(0.5rem, 1vw, 0.75rem) clamp(1rem, 2vw, 1.5rem);
+        font-size: clamp(0.8rem, 1.5vw, 0.95rem);
+        gap: clamp(0.25rem, 0.5vw, 0.5rem);
+    }
+    
+    .nav-link-3d {
+        padding: clamp(0.75rem, 1.5vw, 1rem) clamp(1rem, 2vw, 1.5rem);
+        font-size: clamp(0.8rem, 1.5vw, 1rem);
+    }
+    
+    .tab-badge-3d {
+        padding: clamp(0.15rem, 0.3vw, 0.25rem) clamp(0.3rem, 0.6vw, 0.5rem);
+        font-size: clamp(0.6rem, 1.2vw, 0.8rem);
+    }
+    
+    .card-body-3d {
+        padding: clamp(1rem, 2vw, 2rem);
+    }
+    
+    .card-header-3d {
+        padding: clamp(1rem, 2vw, 1.5rem);
+    }
+    
+    .car-info-3d {
+        gap: clamp(0.5rem, 1vw, 1rem);
+    }
+    
+    .car-image-3d {
+        width: clamp(60px, 12vw, 80px);
+        height: clamp(45px, 9vw, 60px);
+        flex-shrink: 0;
+    }
+    
+    .car-thumbnail-3d {
+        object-fit: cover;
+        border-radius: var(--radius-md);
+    }
+    
+    .car-name-3d {
+        font-size: clamp(0.9rem, 1.8vw, 1rem);
+        margin-bottom: 0.25rem;
+    }
+    
+    .car-specs-3d {
+        gap: clamp(0.25rem, 0.5vw, 0.5rem);
+        margin-bottom: 0.25rem;
+    }
+    
+    .spec-badge-3d {
+        padding: clamp(0.15rem, 0.3vw, 0.25rem) clamp(0.4rem, 0.8vw, 0.75rem);
+        font-size: clamp(0.6rem, 1.2vw, 0.8rem);
+    }
+    
+    .car-description-3d {
+        font-size: clamp(0.7rem, 1.4vw, 0.9rem);
+        line-height: 1.3;
+    }
+    
+    .owner-info-3d {
+        gap: clamp(0.5rem, 1vw, 0.75rem);
+    }
+    
+    .owner-avatar-3d {
+        width: clamp(30px, 6vw, 40px);
+        height: clamp(30px, 6vw, 40px);
+        flex-shrink: 0;
+    }
+    
+    .owner-avatar-3d i {
+        font-size: clamp(1rem, 2vw, 1.2rem);
+    }
+    
+    .owner-name-3d {
+        font-size: clamp(0.8rem, 1.6vw, 0.9rem);
+    }
+    
+    .owner-email-3d {
+        font-size: clamp(0.7rem, 1.4vw, 0.9rem);
+    }
+    
+    .rate-badge-3d {
+        padding: clamp(0.3rem, 0.6vw, 0.5rem) clamp(0.6rem, 1.2vw, 1rem);
+        font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+    }
+    
+    .rate-label-3d {
+        font-size: clamp(0.6rem, 1.2vw, 0.8rem);
+    }
+    
+    .availability-date-3d {
+        font-size: clamp(0.7rem, 1.4vw, 0.9rem);
+        gap: clamp(0.3rem, 0.6vw, 0.5rem);
+    }
+    
+    .action-buttons-3d {
+        gap: clamp(0.25rem, 0.5vw, 0.5rem);
+        flex-wrap: wrap;
+    }
+    
+    .action-buttons-3d .btn-3d-interactive {
+        padding: clamp(0.3rem, 0.6vw, 0.5rem);
+        width: clamp(28px, 5.6vw, 36px);
+        height: clamp(28px, 5.6vw, 36px);
+        font-size: clamp(0.7rem, 1.4vw, 0.9rem);
+    }
+    
+    .form-control-3d,
+    .form-select-3d {
+        padding: clamp(0.5rem, 1vw, 0.75rem) clamp(0.75rem, 1.5vw, 1rem);
+        font-size: clamp(0.8rem, 1.6vw, 1rem);
+    }
+    
+    .form-label-3d {
+        font-size: clamp(0.8rem, 1.6vw, 1rem);
+        margin-bottom: 0.25rem;
+    }
+    
+    .quick-action-card-3d {
+        padding: clamp(1rem, 2vw, 1.5rem);
+        gap: clamp(0.75rem, 1.5vw, 1rem);
+    }
+    
+    .quick-action-icon-3d {
+        width: clamp(35px, 7vw, 50px);
+        height: clamp(35px, 7vw, 50px);
+        font-size: clamp(1.2rem, 2.4vw, 1.5rem);
+    }
+    
+    .quick-action-content-3d h6 {
+        font-size: clamp(0.8rem, 1.6vw, 1rem);
+        margin-bottom: 0.15rem;
+    }
+    
+    .quick-action-content-3d small {
+        font-size: clamp(0.7rem, 1.4vw, 0.85rem);
+    }
+    
+    .table-3d thead th {
+        padding: clamp(0.75rem, 1.5vw, 1rem);
+        font-size: clamp(0.8rem, 1.6vw, 1rem);
+    }
+    
+    .car-row-3d td {
+        padding: clamp(1rem, 2vw, 1.5rem);
+    }
+    
+    .empty-state-3d {
+        padding: clamp(2rem, 4vw, 4rem) clamp(1rem, 2vw, 2rem);
+    }
+    
+    .empty-icon-3d {
+        width: clamp(60px, 12vw, 80px);
+        height: clamp(60px, 12vw, 80px);
+        margin-bottom: clamp(1rem, 2vw, 2rem);
+    }
+    
+    .empty-icon-3d i {
+        font-size: clamp(2rem, 4vw, 2.5rem);
+    }
+    
+    .empty-title-3d {
+        font-size: clamp(1.2rem, 2.4vw, 1.5rem);
+        margin-bottom: 0.75rem;
+    }
+    
+    .empty-description-3d {
+        font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+        margin-bottom: 1.5rem;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .page-title-3d {
+        font-size: 1.5rem;
+    }
+    
+    .stats-card-3d {
+        padding: 1rem;
+    }
+    
+    .stats-number-3d {
+        font-size: 1.8rem;
+    }
+    
+    .car-info-3d {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .car-image-3d {
+        width: 60px;
+        height: 45px;
+    }
+    
+    .action-buttons-3d {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .action-buttons-3d .btn-3d-interactive {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .quick-actions-panel-3d .row {
+        flex-direction: column;
+    }
+    
+    .quick-action-card-3d {
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* Quick Actions Panel */
+.quick-actions-panel-3d {
+    position: relative;
+}
+
+.quick-action-card-3d {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    box-shadow: var(--glass-shadow);
+}
+
+.quick-action-card-3d:hover {
+    transform: translateY(-4px) translateZ(10px);
+    box-shadow: 0 15px 40px rgba(35, 35, 255, 0.2);
+    border-color: var(--primary-blue);
+}
+
+.quick-action-icon-3d {
+    width: 40px;
+    height: 40px;
+    background: var(--gradient-primary);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 15px rgba(35, 35, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.quick-action-card-3d:hover .quick-action-icon-3d {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(35, 35, 255, 0.4);
+}
+
+.quick-action-content-3d {
+    flex: 1;
+}
+
+.quick-action-content-3d h6 {
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    font-family: var(--font-heading);
+}
+
+.quick-action-content-3d small {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+/* Tab Content Enhancements */
+.tab-content-3d {
+    position: relative;
+}
+
+.tab-pane-3d {
+    transition: all 0.3s ease;
+}
+
+.tab-content-loaded {
+    animation: tabContentLoad 0.5s ease-out;
+}
+
+@keyframes tabContentLoad {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Car Row Hover Effects */
+.car-row-hover-3d {
+    background: var(--glass-bg-light) !important;
+    border-color: var(--primary-blue) !important;
+    box-shadow: 0 15px 40px rgba(35, 35, 255, 0.15) !important;
+}
+
+/* Loading States */
+.loading-state-3d {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+    color: var(--text-primary);
+}
+
+.loading-spinner-3d {
+    font-size: 2rem;
+    color: var(--primary-blue);
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+.loading-state-3d p {
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* Error States */
+.error-state-3d {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+    color: var(--text-primary);
+}
+
+.error-state-3d i {
+    font-size: 2rem;
+    color: #dc3545;
+    margin-bottom: 1rem;
+}
+
+.error-state-3d p {
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* Ultra-wide and high-resolution displays (25% zoom scenarios) */
+@media (min-width: 3840px) {
+    .car-management-3d {
+        max-width: 3840px;
+        margin: 0 auto;
+    }
+    
+    .page-title-3d {
+        font-size: 3rem;
+    }
+    
+    .stats-card-3d {
+        padding: 3rem;
+    }
+    
+    .stats-number-3d {
+        font-size: 4rem;
+    }
+    
+    .btn-3d-interactive {
+        padding: 1rem 2rem;
+        font-size: 1.2rem;
+    }
+    
+    .table-3d {
+        font-size: 1.1rem;
+    }
+    
+    .car-thumbnail-3d {
+        width: 120px;
+        height: 90px;
+    }
+    
+    .quick-action-card-3d {
+        padding: 2rem;
+    }
+    
+    .quick-action-icon-3d {
+        width: 80px;
+        height: 80px;
+        font-size: 2.5rem;
+    }
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+    .stats-card-3d,
+    .card-3d-interactive,
+    .quick-action-card-3d {
+        background: rgba(35, 35, 255, 0.05);
+        border-color: rgba(35, 35, 255, 0.1);
+    }
+    
+    .form-control-3d,
+    .form-select-3d {
+        background: rgba(35, 35, 255, 0.05);
+        border-color: rgba(35, 35, 255, 0.1);
+    }
+}

@@ -20,7 +20,8 @@ namespace CarRentalSystem.Application.Features.Cars.Commands.RegisterCar
 
         public async Task<Guid> Handle(RegisterCarCommand request, CancellationToken cancellationToken)
         {
-            var pendingStatusId = await _carRepository.GetPendingApprovalStatusIdAsync(cancellationToken);
+            // Use resilient lookup that creates the status if missing
+            var pendingStatusId = await _carRepository.GetStatusIdByNameAsync("Pending", cancellationToken);
 
             var car = new Car
             {
@@ -40,7 +41,15 @@ namespace CarRentalSystem.Application.Features.Cars.Commands.RegisterCar
                 CarApprovalStatusId = pendingStatusId
             };
 
-            return await _carRepository.AddCarAsync(car, cancellationToken);
+            // Debug: Log the car being created
+            Console.WriteLine($"Creating car: {car.Name} {car.Model} for owner {car.OwnerId}");
+
+            var carId = await _carRepository.AddCarAsync(car, cancellationToken);
+            
+            // Debug: Log successful creation
+            Console.WriteLine($"Car created successfully with ID: {carId}");
+            
+            return carId;
         }
     }
 }

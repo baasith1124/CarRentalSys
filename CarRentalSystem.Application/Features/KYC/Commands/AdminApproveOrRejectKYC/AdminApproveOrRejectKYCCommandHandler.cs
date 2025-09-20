@@ -1,4 +1,5 @@
 ﻿using CarRentalSystem.Application.Common.Interfaces;
+using CarRentalSystem.Domain.Entities;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -57,7 +58,19 @@ namespace CarRentalSystem.Application.Features.KYC.Commands.AdminApproveOrReject
                 // Send email notification for KYC approval
                 try
                 {
-                    var customer = await _customerRepository.GetCustomerByIdAsync(kyc.UserId, cancellationToken);
+                    // Try to find customer by CustomerId first, then by UserId
+                    Customer? customer = null;
+                    if (kyc.CustomerId.HasValue)
+                    {
+                        customer = await _customerRepository.GetCustomerByIdAsync(kyc.CustomerId.Value, cancellationToken);
+                    }
+                    
+                    // If not found by CustomerId, try to find by UserId (fallback)
+                    if (customer == null)
+                    {
+                        customer = await _customerRepository.GetCustomerByIdAsync(kyc.UserId, cancellationToken);
+                    }
+                    
                     if (customer != null && !string.IsNullOrEmpty(customer.Email))
                     {
                         var subject = "KYC Verification Approved - Car Rental System";

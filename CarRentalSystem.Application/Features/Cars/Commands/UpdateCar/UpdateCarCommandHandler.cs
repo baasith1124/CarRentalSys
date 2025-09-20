@@ -24,12 +24,19 @@ namespace CarRentalSystem.Application.Features.Cars.Commands.UpdateCar
             var car = await _carRepository.GetCarByIdAsync(request.CarId, cancellationToken);
             if (car == null) return false;
 
+            // Update all car properties
             car.Name = request.Name;
             car.Model = request.Model;
             car.ImagePath = request.ImagePath;
             car.AvailableFrom = request.AvailableFrom;
             car.AvailableTo = request.AvailableTo;
             car.CarApprovalStatusId = request.CarApprovalStatusId;
+            car.Description = request.Description;
+            car.Features = request.Features;
+            car.Year = request.Year;
+            car.Transmission = request.Transmission;
+            car.FuelType = request.FuelType;
+            car.RatePerDay = request.RatePerDay;
 
             // You can handle document changes or file saving via a separate service if needed
 

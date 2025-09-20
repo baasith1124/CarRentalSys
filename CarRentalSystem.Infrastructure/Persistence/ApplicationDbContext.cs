@@ -115,6 +115,12 @@ namespace CarRentalSystem.Infrastructure.Persistence
                 .HasForeignKey(k => k.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<KYCUpload>()
+                .HasOne(k => k.Customer)
+                .WithMany(c => c.KYCUploads)
+                .HasForeignKey(k => k.CustomerId)
+                .OnDelete(DeleteBehavior.SetNull);
+
             modelBuilder.Entity<Notification>()
                 .HasOne<ApplicationUser>()
                 .WithMany(u => u.Notifications)

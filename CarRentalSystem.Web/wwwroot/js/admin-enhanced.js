@@ -440,9 +440,12 @@ function enhanceFormSubmission(form) {
     });
 }
 
-// Initialize all forms
+// Initialize all forms (except logout forms)
 document.querySelectorAll('form').forEach(form => {
-    enhanceFormSubmission(form);
+    // Skip logout forms to allow normal submission
+    if (!form.action.includes('Logout') && !form.querySelector('button[type="submit"]')?.textContent.includes('Logout')) {
+        enhanceFormSubmission(form);
+    }
 });
 
 // Enhanced Data Tables

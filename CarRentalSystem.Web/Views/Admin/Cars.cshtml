@@ -160,9 +160,11 @@
                                                     <button type="button" class="btn btn-outline-primary btn-sm" onclick="viewCarDetails('@car.CarId')" title="View Details">
                                                         <i class="bi bi-eye"></i>
                                                     </button>
-                                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="confirmDelete('@car.CarId', '@car.Name')" title="Delete">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
+                                                    <form asp-action="DeleteCar" asp-route-carId="@car.CarId" method="post" class="d-inline">
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to delete this car? This action cannot be undone.')" title="Delete">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </form>
                                                 </div>
                                             </td>
                                         </tr>
@@ -241,9 +243,11 @@
                                                     <button type="button" class="btn btn-outline-primary btn-sm" onclick="viewCarDetails('@car.CarId')" title="View Details">
                                                         <i class="bi bi-eye"></i>
                                                     </button>
-                                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="confirmDelete('@car.CarId', '@car.Name')" title="Delete">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
+                                                    <form asp-action="DeleteCar" asp-route-carId="@car.CarId" method="post" class="d-inline">
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to delete this car? This action cannot be undone.')" title="Delete">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </form>
                                                 </div>
                                             </td>
                                         </tr>
@@ -322,9 +326,11 @@
                                                     <button type="button" class="btn btn-outline-primary btn-sm" onclick="viewCarDetails('@car.CarId')" title="View Details">
                                                         <i class="bi bi-eye"></i>
                                                     </button>
-                                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="confirmDelete('@car.CarId', '@car.Name')" title="Delete">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
+                                                    <form asp-action="DeleteCar" asp-route-carId="@car.CarId" method="post" class="d-inline">
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to delete this car? This action cannot be undone.')" title="Delete">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </form>
                                                 </div>
                                             </td>
                                         </tr>
@@ -384,15 +390,6 @@
                 });
         }
 
-        function confirmDelete(carId, carName) {
-            if (confirm(`Are you sure you want to delete "${carName}"? This action cannot be undone.`)) {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = `/Admin/Cars/Delete/${carId}`;
-                document.body.appendChild(form);
-                form.submit();
-            }
-        }
 
         // Initialize tab functionality
         document.addEventListener('DOMContentLoaded', function() {

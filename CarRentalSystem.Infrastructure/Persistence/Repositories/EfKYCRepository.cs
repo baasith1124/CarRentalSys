@@ -76,8 +76,17 @@ namespace CarRentalSystem.Infrastructure.Persistence.Repositories
                 return true;
             }
             
+            // Validate status value
+            if (string.IsNullOrEmpty(status) || !new[] { "Pending", "Approved", "Rejected" }.Contains(status))
+            {
+                Console.WriteLine($"EfKYCRepository: Invalid status '{status}' for KYC {kycId}");
+                return false;
+            }
+            
             kyc.Status = status;
-            _context.Entry(kyc).State = EntityState.Modified;
+            
+            // Use Update instead of setting EntityState to avoid conflicts
+            _context.KYCUploads.Update(kyc);
             Console.WriteLine($"EfKYCRepository: Marked KYC {kycId} as modified");
             
             try
@@ -100,6 +109,9 @@ namespace CarRentalSystem.Infrastructure.Persistence.Repositories
             {
                 Console.WriteLine($"EfKYCRepository: Error saving KYC status update: {ex.Message}");
                 Console.WriteLine($"EfKYCRepository: Stack trace: {ex.StackTrace}");
+                
+                // Log additional context for debugging
+                Console.WriteLine($"EfKYCRepository: KYC details - ID: {kyc.KYCId}, UserId: {kyc.UserId}, CustomerId: {kyc.CustomerId}, DocumentType: {kyc.DocumentType}");
                 return false;
             }
         }

@@ -12,12 +12,16 @@ namespace CarRentalSystem.Domain.Entities
         [Key]
         public Guid KYCId { get; set; }
         public Guid UserId { get; set; }
+        public Guid? CustomerId { get; set; } // Add CustomerId for proper relationship
         //public ApplicationUser User { get; set; }
 
         public string DocumentType { get; set; } = null!; // NIC, Passport, Selfie
         public string FilePath { get; set; } = null!;
         public string Status { get; set; } = "Pending";
         public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
+        
+        // Navigation properties
+        public Customer? Customer { get; set; }
     }
 
 }

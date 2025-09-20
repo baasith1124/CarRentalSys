@@ -132,10 +132,9 @@
                 </div>
                 <div class="nav-item-3d">
                     <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline w-100">
+                        @Html.AntiForgeryToken()
                         <button type="submit" class="nav-link-3d logout-btn-3d w-100 text-start">
-                            <div class="nav-icon-3d">
-                                <i class="bi bi-box-arrow-right"></i>
-                            </div>
+                            <i class="bi bi-box-arrow-right me-2"></i>
                             <span>Logout</span>
                         </button>
                     </form>
@@ -182,6 +181,7 @@
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
                                         <button type="submit" class="dropdown-item">
                                             <i class="bi bi-box-arrow-right me-2"></i>Logout
                                         </button>

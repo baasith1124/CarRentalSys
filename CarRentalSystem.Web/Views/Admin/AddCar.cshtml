@@ -34,6 +34,7 @@
                 </div>
                 <div class="card-body-3d">
                     <form asp-controller="Admin" asp-action="AddCar" method="post" enctype="multipart/form-data" id="addCarForm">
+                        @Html.AntiForgeryToken()
                         <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
                         <div class="row g-3">
                             <!-- Basic Information -->
@@ -97,7 +98,7 @@
                                     {
                                         @foreach (var owner in Model.AvailableOwners)
                                         {
-                                            <option value="@owner.Id">@owner.Name (@owner.Email)</option>
+                                            <option value="@owner.Id" selected="@(owner.Id == Model.OwnerId)">@owner.Name (@owner.Email)</option>
                                         }
                                     }
                                     else
@@ -226,36 +227,35 @@
             console.log('Form initialized with default dates');
         });
 
-        // Form validation and debugging
-        document.getElementById('addCarForm').addEventListener('submit', function(e) {
-            const availableFrom = new Date(document.getElementById('AvailableFrom').value);
-            const availableTo = new Date(document.getElementById('AvailableTo').value);
+        // Form validation
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('addCarForm');
+            console.log('Form found:', form);
+            console.log('Form action URL:', form.action);
             
-            // Debug: Log all form values
-            console.log('Form submission values:');
-            console.log('Name:', document.querySelector('input[name="Name"]').value);
-            console.log('Model:', document.querySelector('input[name="Model"]').value);
-            console.log('Year:', document.querySelector('input[name="Year"]').value);
-            console.log('Transmission:', document.querySelector('select[name="Transmission"]').value);
-            console.log('FuelType:', document.querySelector('select[name="FuelType"]').value);
-            console.log('RatePerDay:', document.querySelector('input[name="RatePerDay"]').value);
-            console.log('Description:', document.querySelector('textarea[name="Description"]').value);
-            console.log('Features:', document.querySelector('textarea[name="Features"]').value);
-            console.log('OwnerId:', document.querySelector('select[name="OwnerId"]').value);
-            console.log('AvailableFrom:', document.getElementById('AvailableFrom').value);
-            console.log('AvailableTo:', document.getElementById('AvailableTo').value);
-            
-            // Debug: Log form data
-            const formData = new FormData(this);
-            console.log('FormData contents:');
-            for (let [key, value] of formData.entries()) {
-                console.log(key + ': ' + value);
-            }
-            
-            if (availableTo <= availableFrom) {
-                e.preventDefault();
-                alert('Available To date must be after Available From date.');
-                return false;
+            if (form) {
+                // Test button click
+                const submitButton = form.querySelector('button[type="submit"]');
+                if (submitButton) {
+                    submitButton.addEventListener('click', function(e) {
+                        console.log('Submit button clicked');
+                    });
+                }
+                
+                form.addEventListener('submit', function(e) {
+                    console.log('Form submit event triggered');
+                    console.log('Form action URL:', form.action);
+                    console.log('Form method:', form.method);
+                    
+                    // Debug: Log form submission
+                    console.log('Submitting car form with standard MVC form submission');
+                    
+                    // Temporarily disable validation to test form submission
+                    console.log('Form submission allowed - proceeding to server');
+                    return true;
+                });
+            } else {
+                console.error('Form with ID "addCarForm" not found');
             }
         });
     </script>

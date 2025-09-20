@@ -64,7 +64,21 @@ namespace CarRentalSystem.Infrastructure.Persistence.Repositories
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (statusId == Guid.Empty)
-                throw new Exception("Status not found");
+            {
+                // Try to create the missing status
+                Console.WriteLine($"CarApprovalStatus '{statusName}' not found, attempting to create it");
+                var newStatus = new CarApprovalStatus
+                {
+                    Id = Guid.NewGuid(),
+                    Name = statusName
+                };
+                
+                await _context.CarApprovalStatuses.AddAsync(newStatus, cancellationToken);
+                await _context.SaveChangesAsync(cancellationToken);
+                
+                Console.WriteLine($"Created CarApprovalStatus '{statusName}' with ID: {newStatus.Id}");
+                return newStatus.Id;
+            }
 
             return statusId;
         }

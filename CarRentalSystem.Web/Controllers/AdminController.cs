@@ -30,6 +30,7 @@ using CarRentalSystem.Application.Features.Customers.Commands.DeleteCustomer;
 using CarRentalSystem.Application.Features.Cars.Queries.GetCarById;
 using CarRentalSystem.Application.Features.Cars.Queries.GetMyCars;
 using CarRentalSystem.Application.Features.Bookings.Queries.GetBookingsByCarOwner;
+using CarRentalSystem.Application.Features.CarApproval.Queries.GetAllCarApprovalStatuses;
 using CarRentalSystem.Web.ViewModels.Admin;
 using CarRentalSystem.Infrastructure.Identity;
 using CarRentalSystem.Domain.Entities;
@@ -43,6 +44,8 @@ using OfficeOpenXml.Style;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
+using CarRentalSystem.Application.Common.Interfaces;
+using CarRentalSystem.Application.Helpers.EmailTemplates;
 
 namespace CarRentalSystem.Web.Controllers
 {
@@ -55,14 +58,16 @@ namespace CarRentalSystem.Web.Controllers
         private readonly ICarRepository _carRepository;
         private readonly IWebHostEnvironment _env;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IEmailService _emailService;
 
-        public AdminController(IMediator mediator, IMapper mapper, ICarRepository carRepository, IWebHostEnvironment env, UserManager<ApplicationUser> userManager)
+        public AdminController(IMediator mediator, IMapper mapper, ICarRepository carRepository, IWebHostEnvironment env, UserManager<ApplicationUser> userManager, IEmailService emailService)
         {
             _mediator = mediator;
             _mapper = mapper;
             _carRepository = carRepository;
             _env = env;
             _userManager = userManager;
+            _emailService = emailService;
         }
 
         private bool IsAdmin()
@@ -78,14 +83,6 @@ namespace CarRentalSystem.Web.Controllers
             return RedirectToAction("AdminLogin", "Account");
         }
 
-        [HttpPost]
-        [Route("Logout")]
-        public async Task<IActionResult> Logout()
-        {
-            // Use Identity logout
-            await HttpContext.SignOutAsync();
-            return RedirectToAction("AdminLogin", "Account");
-        }
 
         [HttpGet]
         [Route("")]
@@ -1186,8 +1183,37 @@ namespace CarRentalSystem.Web.Controllers
 
         [HttpPost]
         [Route("Cars/Add")]
-        public async Task<IActionResult> AddCar([FromForm] AdminAddCarViewModel model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddCar(AdminAddCarViewModel model)
         {
+            try
+            {
+                // Debug: Log that POST method was called
+                Console.WriteLine("=== AddCar POST method called ===");
+                Console.WriteLine($"Model is null: {model == null}");
+                if (model != null)
+                {
+                    Console.WriteLine($"Model Name: {model.Name}");
+                    Console.WriteLine($"Model Model: {model.Model}");
+                    Console.WriteLine($"Model Year: {model.Year}");
+                }
+                
+                // Debug: Log request details
+                Console.WriteLine($"Request Method: {Request.Method}");
+                Console.WriteLine($"Request Path: {Request.Path}");
+                Console.WriteLine($"Content Type: {Request.ContentType}");
+                Console.WriteLine($"Form Keys: {string.Join(", ", Request.Form.Keys)}");
+                
+                // Test: Simple return to see if method is reached
+                Console.WriteLine("=== TEST: Method reached, returning simple response ===");
+                return Json(new { success = true, message = "Method reached successfully" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in AddCar POST: {ex.Message}");
+                return Json(new { success = false, message = ex.Message });
+            }
+            
             // Debug: Log raw form data first
             Console.WriteLine("Raw form data:");
             foreach (var key in Request.Form.Keys)
@@ -1272,6 +1298,7 @@ namespace CarRentalSystem.Web.Controllers
                     Name = u.FullName ?? u.UserName ?? u.Email,
                     Email = u.Email
                 }).ToList();
+
                 return View(model);
             }
 
@@ -1332,11 +1359,19 @@ namespace CarRentalSystem.Web.Controllers
                 };
 
                 var carId = await _mediator.Send(command);
+
+                // Debug: Log successful car creation
+                Console.WriteLine($"Car added successfully with ID: {carId}");
+
                 TempData["Success"] = "Car added successfully!";
                 return RedirectToAction("Cars");
             }
             catch (Exception ex)
             {
+                // Debug: Log the error
+                Console.WriteLine($"Error adding car: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+
                 TempData["Error"] = "Error adding car: " + ex.Message;
                 var allUsers = _userManager.Users.ToList();
                 model.AvailableOwners = allUsers.Select(u => new OwnerOption
@@ -1367,6 +1402,7 @@ namespace CarRentalSystem.Web.Controllers
                 }
                 
                 var customers = await _mediator.Send(new GetAllCustomersQuery());
+                var approvalStatuses = await _mediator.Send(new GetAllCarApprovalStatusesQuery());
 
                 var model = new AdminEditCarViewModel
                 {
@@ -1383,7 +1419,7 @@ namespace CarRentalSystem.Web.Controllers
                     AvailableTo = car.AvailableTo,
                     OwnerId = car.OwnerId,
                     OwnerName = car.OwnerName,
-                    CurrentImagePath = car.ImagePath,
+                    CurrentImagePath = !string.IsNullOrEmpty(car.ImagePath) ? $"/images/cars/{car.ImagePath}" : null,
                     ApprovalStatus = car.ApprovalStatus,
                     AvailableOwners = customers.Select(c => new OwnerOption
                     {
@@ -1391,12 +1427,11 @@ namespace CarRentalSystem.Web.Controllers
                         Name = c.FullName,
                         Email = c.Email
                     }).ToList(),
-                    AvailableStatuses = new List<StatusOption>
+                    AvailableStatuses = approvalStatuses.Select(s => new StatusOption
                     {
-                        new StatusOption { Value = "Pending", Text = "Pending" },
-                        new StatusOption { Value = "Approved", Text = "Approved" },
-                        new StatusOption { Value = "Rejected", Text = "Rejected" }
-                    }
+                        Value = s.Name,
+                        Text = s.Name
+                    }).ToList()
                 };
 
                 return View(model);
@@ -1420,23 +1455,49 @@ namespace CarRentalSystem.Web.Controllers
             if (!ModelState.IsValid)
             {
                 var customers = await _mediator.Send(new GetAllCustomersQuery());
+                var approvalStatuses = await _mediator.Send(new GetAllCarApprovalStatusesQuery());
                 model.AvailableOwners = customers.Select(c => new OwnerOption
                 {
                     Id = c.Id,
                     Name = c.FullName,
                     Email = c.Email
                 }).ToList();
-                model.AvailableStatuses = new List<StatusOption>
+                model.AvailableStatuses = approvalStatuses.Select(s => new StatusOption
                 {
-                    new StatusOption { Value = "Pending", Text = "Pending" },
-                    new StatusOption { Value = "Approved", Text = "Approved" },
-                    new StatusOption { Value = "Rejected", Text = "Rejected" }
-                };
+                    Value = s.Name,
+                    Text = s.Name
+                }).ToList();
                 return View(model);
             }
 
             try
             {
+                // Handle image upload if a new image is provided
+                string? imagePath = model.CurrentImagePath?.Replace("/images/cars/", ""); // Keep current image by default, remove path prefix
+                if (model.ImageFile != null && model.ImageFile.Length > 0)
+                {
+                    // Create unique filename
+                    var fileName = $"{Guid.NewGuid()}_{model.ImageFile.FileName}";
+                    var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "cars");
+                    
+                    // Ensure directory exists
+                    if (!Directory.Exists(uploadsPath))
+                    {
+                        Directory.CreateDirectory(uploadsPath);
+                    }
+                    
+                    var filePath = Path.Combine(uploadsPath, fileName);
+                    
+                    // Save the file
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.ImageFile.CopyToAsync(stream);
+                    }
+                    
+                    imagePath = fileName; // Store just the filename, not the full path
+                    Console.WriteLine($"New image saved: {fileName} to {filePath}");
+                }
+
                 // Get approval status ID based on the status name
                 var approvalStatusId = await GetApprovalStatusId(model.ApprovalStatus);
 
@@ -1453,7 +1514,8 @@ namespace CarRentalSystem.Web.Controllers
                     Features = model.Features,
                     AvailableFrom = model.AvailableFrom,
                     AvailableTo = model.AvailableTo,
-                    CarApprovalStatusId = approvalStatusId
+                    CarApprovalStatusId = approvalStatusId,
+                    ImagePath = imagePath
                 };
 
                 var success = await _mediator.Send(command);
@@ -1481,6 +1543,27 @@ namespace CarRentalSystem.Web.Controllers
         {
             try
             {
+                // First, get the car details to handle image deletion
+                var car = await _mediator.Send(new GetCarByIdQuery(carId));
+                if (car != null && !string.IsNullOrEmpty(car.ImagePath))
+                {
+                    // Delete the car image file
+                    try
+                    {
+                        var imagePath = Path.Combine(_env.WebRootPath, "images", "cars", car.ImagePath);
+                        if (System.IO.File.Exists(imagePath))
+                        {
+                            System.IO.File.Delete(imagePath);
+                            Console.WriteLine($"DeleteCar: Deleted car image {car.ImagePath}");
+                        }
+                    }
+                    catch (Exception imgEx)
+                    {
+                        Console.WriteLine($"DeleteCar: Error deleting car image: {imgEx.Message}");
+                        // Continue with deletion even if image deletion fails
+                    }
+                }
+
                 var command = new DeleteCarCommand { CarId = carId };
                 var success = await _mediator.Send(command);
 
@@ -1495,6 +1578,8 @@ namespace CarRentalSystem.Web.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error deleting car: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
                 TempData["Error"] = "Error deleting car: " + ex.Message;
             }
 
@@ -1503,9 +1588,18 @@ namespace CarRentalSystem.Web.Controllers
 
         private async Task<Guid> GetApprovalStatusId(string statusName)
         {
-            // This would typically come from your database
-            // For now, returning a placeholder GUID
-            return Guid.NewGuid();
+            try
+            {
+                // Get the actual status ID from the database using the car repository
+                var statusId = await _carRepository.GetStatusIdByNameAsync(statusName, CancellationToken.None);
+                Console.WriteLine($"GetApprovalStatusId: Found status '{statusName}' with ID: {statusId}");
+                return statusId;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting approval status ID for '{statusName}': {ex.Message}");
+                throw new Exception($"Car approval status '{statusName}' not found in database.");
+            }
         }
 
         #endregion
@@ -1674,23 +1768,22 @@ namespace CarRentalSystem.Web.Controllers
         {
             try
             {
-                // For now, we'll just log the credentials
-                // In a real application, you would integrate with an email service
-                Console.WriteLine($"=== CUSTOMER LOGIN CREDENTIALS ===");
-                Console.WriteLine($"Email: {email}");
-                Console.WriteLine($"Full Name: {fullName}");
-                Console.WriteLine($"Password: {password}");
-                Console.WriteLine($"=====================================");
+                // Generate HTML email content using the template
+                var htmlBody = CustomerCredentialsEmailTemplateHelper.GenerateHtml(fullName, email, password);
                 
-                // TODO: Implement actual email sending service
-                // Example: await _emailService.SendAsync(email, "Your Car Rental Account", emailBody);
+                // Send email using the email service
+                await _emailService.SendEmailAsync(
+                    email,
+                    "Welcome to CarRentalSystem - Your Account Credentials",
+                    htmlBody
+                );
                 
-                // For now, we'll simulate email sending
-                await Task.Delay(100);
+                Console.WriteLine($"Credentials email sent successfully to: {email}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error sending credentials email: {ex.Message}");
+                Console.WriteLine($"Error sending credentials email to {email}: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
                 // Don't throw exception as this shouldn't prevent customer creation
             }
         }
