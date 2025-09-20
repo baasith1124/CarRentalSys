@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Http;
 
 namespace CarRentalSystem.Web.ViewModels.Admin
 {
@@ -11,15 +10,37 @@ namespace CarRentalSystem.Web.ViewModels.Admin
         [Display(Name = "Car Name")]
         public string Name { get; set; } = null!;
 
-        [Required(ErrorMessage = "Car model is required")]
+        [Required(ErrorMessage = "Model is required")]
         [Display(Name = "Model")]
         public string Model { get; set; } = null!;
 
+        [Display(Name = "Car Image")]
+        public IFormFile? ImageFile { get; set; }
+
+        [Required(ErrorMessage = "Available from date is required")]
+        [Display(Name = "Available From")]
+        [DataType(DataType.Date)]
+        public DateTime AvailableFrom { get; set; }
+
+        [Required(ErrorMessage = "Available to date is required")]
+        [Display(Name = "Available To")]
+        [DataType(DataType.Date)]
+        public DateTime AvailableTo { get; set; }
+
+        [Display(Name = "Description")]
+        [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters")]
+        public string? Description { get; set; }
+
+        [Display(Name = "Features")]
+        [StringLength(300, ErrorMessage = "Features cannot exceed 300 characters")]
+        public string? Features { get; set; }
+
         [Required(ErrorMessage = "Year is required")]
-        [Range(1900, 2030, ErrorMessage = "Year must be between 1900 and 2030")]
+        [Display(Name = "Year")]
+        [Range(1990, 2025, ErrorMessage = "Year must be between 1990 and 2025")]
         public int Year { get; set; }
 
-        [Required(ErrorMessage = "Transmission type is required")]
+        [Required(ErrorMessage = "Transmission is required")]
         [Display(Name = "Transmission")]
         public string Transmission { get; set; } = null!;
 
@@ -28,42 +49,17 @@ namespace CarRentalSystem.Web.ViewModels.Admin
         public string FuelType { get; set; } = null!;
 
         [Required(ErrorMessage = "Rate per day is required")]
-        [Range(0.01, double.MaxValue, ErrorMessage = "Rate must be greater than 0")]
-        [Display(Name = "Rate Per Day ($)")]
+        [Display(Name = "Rate Per Day")]
+        [Range(1, 10000, ErrorMessage = "Rate must be between $1 and $10,000")]
         public decimal RatePerDay { get; set; }
 
-        [Required(ErrorMessage = "Description is required")]
-        [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters")]
-        public string Description { get; set; } = null!;
-
-        [Required(ErrorMessage = "Features are required")]
-        [StringLength(500, ErrorMessage = "Features cannot exceed 500 characters")]
-        public string Features { get; set; } = null!;
-
-        [Required(ErrorMessage = "Available from date is required")]
-        [Display(Name = "Available From")]
-        public DateTime AvailableFrom { get; set; }
-
-        [Required(ErrorMessage = "Available to date is required")]
-        [Display(Name = "Available To")]
-        public DateTime AvailableTo { get; set; }
-
-        [Display(Name = "Current Image")]
-        public string? CurrentImagePath { get; set; }
-
-        [Display(Name = "New Car Image")]
-        public IFormFile? ImageFile { get; set; }
-
         [Required(ErrorMessage = "Owner is required")]
-        [Display(Name = "Car Owner")]
+        [Display(Name = "Owner")]
         public Guid OwnerId { get; set; }
 
-        [Display(Name = "Owner Name")]
-        public string OwnerName { get; set; } = null!;
-
-        [Required(ErrorMessage = "Approval status is required")]
-        [Display(Name = "Approval Status")]
-        public string ApprovalStatus { get; set; } = null!;
+        public string? OwnerName { get; set; }
+        public string? CurrentImagePath { get; set; }
+        public string? ApprovalStatus { get; set; }
 
         public List<OwnerOption> AvailableOwners { get; set; } = new();
         public List<StatusOption> AvailableStatuses { get; set; } = new();

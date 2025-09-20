@@ -2,8 +2,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CarRentalSystem.Web.ViewModels.Admin
 {
-    public class AdminAddCarViewModel
+    public class CarFormViewModel
     {
+        public Guid CarId { get; set; }
+
         [Required(ErrorMessage = "Car name is required")]
         [Display(Name = "Car Name")]
         public string Name { get; set; } = null!;
@@ -55,13 +57,20 @@ namespace CarRentalSystem.Web.ViewModels.Admin
         [Display(Name = "Owner")]
         public Guid OwnerId { get; set; }
 
+        // Properties for edit mode
+        public string? OwnerName { get; set; }
+        public string? CurrentImagePath { get; set; }
+        public string? ApprovalStatus { get; set; }
+
+        // Dropdown options
         public List<OwnerOption> AvailableOwners { get; set; } = new();
+        public List<StatusOption> AvailableStatuses { get; set; } = new();
+
+        // Helper properties
+        public bool IsEditMode => CarId != Guid.Empty;
+        public string PageTitle => IsEditMode ? $"Edit Car: {Name} {Model}" : "Add New Car";
+        public string SubmitButtonText => IsEditMode ? "Update Car" : "Create Car";
+        public string SubmitButtonIcon => IsEditMode ? "bi-save" : "bi-plus-circle";
     }
 
-    public class OwnerOption
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; } = null!;
-        public string Email { get; set; } = null!;
-    }
 }

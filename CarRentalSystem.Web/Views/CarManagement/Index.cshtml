@@ -1,0 +1,1006 @@
+@model CarRentalSystem.Web.ViewModels.Admin.CarManagementViewModel
+
+@{
+    ViewData["Title"] = "Car Management";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="car-management">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="page-title">
+                <i class="bi bi-car-front"></i>
+                Car Management
+            </h2>
+            <p class="text-muted">Manage all cars in the system</p>
+        </div>
+        <div class="header-actions">
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCarModal">
+                <i class="bi bi-plus-circle"></i> Add New Car
+            </button>
+            <button class="btn btn-outline-primary" onclick="refreshPage()">
+                <i class="bi bi-arrow-clockwise"></i> Refresh
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats Summary -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="stats-summary pending">
+                <div class="stats-icon">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+                <div class="stats-info">
+                    <h4>@Model.PendingCars.Count</h4>
+                    <p>Pending Approval</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-summary approved">
+                <div class="stats-icon">
+                    <i class="bi bi-check-circle"></i>
+                </div>
+                <div class="stats-info">
+                    <h4>@Model.ApprovedCars.Count</h4>
+                    <p>Approved Cars</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-summary rejected">
+                <div class="stats-icon">
+                    <i class="bi bi-x-circle"></i>
+                </div>
+                <div class="stats-info">
+                    <h4>@Model.RejectedCars.Count</h4>
+                    <p>Rejected Cars</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs" id="carTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button" role="tab">
+                <i class="bi bi-clock-history"></i> Pending (@Model.PendingCars.Count)
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="approved-tab" data-bs-toggle="tab" data-bs-target="#approved" type="button" role="tab">
+                <i class="bi bi-check-circle"></i> Approved (@Model.ApprovedCars.Count)
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="rejected-tab" data-bs-toggle="tab" data-bs-target="#rejected" type="button" role="tab">
+                <i class="bi bi-x-circle"></i> Rejected (@Model.RejectedCars.Count)
+            </button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="carTabsContent">
+        <!-- Pending Cars -->
+        <div class="tab-pane fade show active" id="pending" role="tabpanel">
+            <div class="card mt-3">
+                <div class="card-body">
+                    @if (Model.PendingCars.Any())
+                    {
+                        <div class="row g-3">
+                            @foreach (var car in Model.PendingCars)
+                            {
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="car-card pending">
+                                        <div class="car-image">
+                                            @if (!string.IsNullOrEmpty(car.ImagePath))
+                                            {
+                                                <img src="/images/cars/@car.ImagePath" alt="@car.Name" class="img-fluid">
+                                            }
+                                            else
+                                            {
+                                                <div class="car-placeholder">
+                                                    <i class="bi bi-car-front"></i>
+                                                </div>
+                                            }
+                                            <div class="car-status pending">Pending</div>
+                                        </div>
+                                        <div class="car-info">
+                                            <h5>@car.Name @car.Model</h5>
+                                            <p class="text-muted">@car.Year • @car.Transmission • @car.FuelType</p>
+                                            <p class="rate">$@car.RatePerDay/day</p>
+                                            <p class="owner">Owner: @car.OwnerName</p>
+                                        </div>
+                                        <div class="car-actions">
+                                            <button class="btn btn-sm btn-outline-info" onclick="showCarDetails('@car.CarId')">
+                                                <i class="bi bi-eye"></i> View
+                                            </button>
+                                            <button class="btn btn-sm btn-success" onclick="approveCar('@car.CarId')">
+                                                <i class="bi bi-check"></i> Approve
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="rejectCar('@car.CarId')">
+                                                <i class="bi bi-x"></i> Reject
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="openEditModal('@car.CarId')">
+                                                <i class="bi bi-pencil"></i> Edit
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="bi bi-car-front display-1 text-muted"></i>
+                            <h4 class="mt-3">No Pending Cars</h4>
+                            <p class="text-muted">All cars have been reviewed.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Approved Cars -->
+        <div class="tab-pane fade" id="approved" role="tabpanel">
+            <div class="card mt-3">
+                <div class="card-body">
+                    @if (Model.ApprovedCars.Any())
+                    {
+                        <div class="row g-3">
+                            @foreach (var car in Model.ApprovedCars)
+                            {
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="car-card approved">
+                                        <div class="car-image">
+                                            @if (!string.IsNullOrEmpty(car.ImagePath))
+                                            {
+                                                <img src="/images/cars/@car.ImagePath" alt="@car.Name" class="img-fluid">
+                                            }
+                                            else
+                                            {
+                                                <div class="car-placeholder">
+                                                    <i class="bi bi-car-front"></i>
+                                                </div>
+                                            }
+                                            <div class="car-status approved">Approved</div>
+                                        </div>
+                                        <div class="car-info">
+                                            <h5>@car.Name @car.Model</h5>
+                                            <p class="text-muted">@car.Year • @car.Transmission • @car.FuelType</p>
+                                            <p class="rate">$@car.RatePerDay/day</p>
+                                            <p class="owner">Owner: @car.OwnerName</p>
+                                        </div>
+                                        <div class="car-actions">
+                                            <button class="btn btn-sm btn-outline-info" onclick="showCarDetails('@car.CarId')">
+                                                <i class="bi bi-eye"></i> View
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="openEditModal('@car.CarId')">
+                                                <i class="bi bi-pencil"></i> Edit
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" onclick="deleteCar('@car.CarId')">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="bi bi-check-circle display-1 text-muted"></i>
+                            <h4 class="mt-3">No Approved Cars</h4>
+                            <p class="text-muted">No cars have been approved yet.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Rejected Cars -->
+        <div class="tab-pane fade" id="rejected" role="tabpanel">
+            <div class="card mt-3">
+                <div class="card-body">
+                    @if (Model.RejectedCars.Any())
+                    {
+                        <div class="row g-3">
+                            @foreach (var car in Model.RejectedCars)
+                            {
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="car-card rejected">
+                                        <div class="car-image">
+                                            @if (!string.IsNullOrEmpty(car.ImagePath))
+                                            {
+                                                <img src="/images/cars/@car.ImagePath" alt="@car.Name" class="img-fluid">
+                                            }
+                                            else
+                                            {
+                                                <div class="car-placeholder">
+                                                    <i class="bi bi-car-front"></i>
+                                                </div>
+                                            }
+                                            <div class="car-status rejected">Rejected</div>
+                                        </div>
+                                        <div class="car-info">
+                                            <h5>@car.Name @car.Model</h5>
+                                            <p class="text-muted">@car.Year • @car.Transmission • @car.FuelType</p>
+                                            <p class="rate">$@car.RatePerDay/day</p>
+                                            <p class="owner">Owner: @car.OwnerName</p>
+                                        </div>
+                                        <div class="car-actions">
+                                            <button class="btn btn-sm btn-outline-info" onclick="showCarDetails('@car.CarId')">
+                                                <i class="bi bi-eye"></i> View
+                                            </button>
+                                            <button class="btn btn-sm btn-success" onclick="approveCar('@car.CarId')">
+                                                <i class="bi bi-check"></i> Approve
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="openEditModal('@car.CarId')">
+                                                <i class="bi bi-pencil"></i> Edit
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" onclick="deleteCar('@car.CarId')">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="bi bi-x-circle display-1 text-muted"></i>
+                            <h4 class="mt-3">No Rejected Cars</h4>
+                            <p class="text-muted">No cars have been rejected yet.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Car Details Modal -->
+<div class="modal fade" id="carDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Car Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="carDetailsContent">
+                <!-- Car details will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function refreshPage() {
+            location.reload();
+        }
+
+        // Modal functions
+        let availableOwners = [];
+
+        // Load owners when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadOwners();
+            setupImagePreview();
+        });
+
+        function loadOwners() {
+            fetch('/Admin/CarManagement/GetOwners')
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    console.log('Response headers:', response.headers);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const contentType = response.headers.get('content-type');
+                    if (!contentType || !contentType.includes('application/json')) {
+                        throw new Error('Response is not JSON');
+                    }
+                    
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Owners data received:', data);
+                    
+                    if (data.error) {
+                        console.error('Server error:', data.error);
+                        alert('Error loading owners: ' + data.error);
+                        return;
+                    }
+                    
+                    availableOwners = data;
+                    populateOwnerDropdowns();
+                })
+                .catch(error => {
+                    console.error('Error loading owners:', error);
+                    alert('Error loading owners: ' + error.message);
+                });
+        }
+
+        function populateOwnerDropdowns() {
+            const addOwnerSelect = document.getElementById('addOwnerId');
+            const editOwnerSelect = document.getElementById('editOwnerId');
+            
+            if (addOwnerSelect) {
+                addOwnerSelect.innerHTML = '<option value="">Select Owner</option>';
+                availableOwners.forEach(owner => {
+                    const option = document.createElement('option');
+                    option.value = owner.id;
+                    option.textContent = owner.name;
+                    addOwnerSelect.appendChild(option);
+                });
+            }
+            
+            if (editOwnerSelect) {
+                editOwnerSelect.innerHTML = '<option value="">Select Owner</option>';
+                availableOwners.forEach(owner => {
+                    const option = document.createElement('option');
+                    option.value = owner.id;
+                    option.textContent = owner.name;
+                    editOwnerSelect.appendChild(option);
+                });
+            }
+        }
+
+        function setupImagePreview() {
+            // Add car image preview
+            const addImageFile = document.getElementById('addImageFile');
+            if (addImageFile) {
+                addImageFile.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            document.getElementById('addImagePreviewImg').src = e.target.result;
+                            document.getElementById('addImagePreview').style.display = 'block';
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            // Edit car image preview
+            const editImageFile = document.getElementById('editImageFile');
+            if (editImageFile) {
+                editImageFile.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            document.getElementById('editImagePreviewImg').src = e.target.result;
+                            document.getElementById('editImagePreviewImg').style.display = 'block';
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        }
+
+        function openEditModal(carId) {
+            // Load car data
+            fetch(`/Admin/CarManagement/GetCarData/${carId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Populate form fields
+                        document.getElementById('editCarId').value = data.car.carId;
+                        document.getElementById('editName').value = data.car.name;
+                        document.getElementById('editModel').value = data.car.model;
+                        document.getElementById('editYear').value = data.car.year;
+                        document.getElementById('editTransmission').value = data.car.transmission;
+                        document.getElementById('editFuelType').value = data.car.fuelType;
+                        document.getElementById('editRatePerDay').value = data.car.ratePerDay;
+                        document.getElementById('editOwnerId').value = data.car.ownerId;
+                        document.getElementById('editAvailableFrom').value = data.car.availableFrom;
+                        document.getElementById('editAvailableTo').value = data.car.availableTo;
+                        document.getElementById('editDescription').value = data.car.description || '';
+                        document.getElementById('editFeatures').value = data.car.features || '';
+                        
+                        // Show current image if exists
+                        if (data.car.imagePath) {
+                            document.getElementById('editImagePreviewImg').src = `/images/cars/${data.car.imagePath}`;
+                            document.getElementById('editImagePreviewImg').style.display = 'block';
+                        } else {
+                            document.getElementById('editImagePreviewImg').style.display = 'none';
+                        }
+                        
+                        // Show modal
+                        new bootstrap.Modal(document.getElementById('editCarModal')).show();
+                    } else {
+                        alert('Error loading car data: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error loading car data');
+                });
+        }
+
+        function submitAddCar() {
+            const form = document.getElementById('addCarForm');
+            const formData = new FormData(form);
+            
+            fetch('/Admin/CarManagement/Create', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            })
+            .then(response => {
+                console.log('Add car response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('Response is not JSON');
+                }
+                
+                return response.json();
+            })
+            .then(data => {
+                console.log('Add car response data:', data);
+                
+                if (data.success) {
+                    bootstrap.Modal.getInstance(document.getElementById('addCarModal')).hide();
+                    location.reload();
+                } else {
+                    alert('Error adding car: ' + (data.message || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('Error adding car:', error);
+                alert('Error adding car: ' + error.message);
+            });
+        }
+
+        function submitEditCar() {
+            const form = document.getElementById('editCarForm');
+            const formData = new FormData(form);
+            const carId = document.getElementById('editCarId').value;
+            
+            fetch(`/Admin/CarManagement/Edit/${carId}`, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            })
+            .then(response => {
+                console.log('Edit car response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('Response is not JSON');
+                }
+                
+                return response.json();
+            })
+            .then(data => {
+                console.log('Edit car response data:', data);
+                
+                if (data.success) {
+                    bootstrap.Modal.getInstance(document.getElementById('editCarModal')).hide();
+                    location.reload();
+                } else {
+                    alert('Error updating car: ' + (data.message || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('Error updating car:', error);
+                alert('Error updating car: ' + error.message);
+            });
+        }
+
+        function showCarDetails(carId) {
+            fetch(`/Admin/CarManagement/Details/${carId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.html) {
+                        document.getElementById('carDetailsContent').innerHTML = data.html;
+                        new bootstrap.Modal(document.getElementById('carDetailsModal')).show();
+                    } else if (data.error) {
+                        alert('Error loading car details: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error loading car details');
+                });
+        }
+
+        function approveCar(carId) {
+            if (confirm('Are you sure you want to approve this car?')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/Admin/CarManagement/Approve/${carId}`;
+                
+                const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                const tokenInput = document.createElement('input');
+                tokenInput.type = 'hidden';
+                tokenInput.name = '__RequestVerificationToken';
+                tokenInput.value = token;
+                form.appendChild(tokenInput);
+                
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+        function rejectCar(carId) {
+            if (confirm('Are you sure you want to reject this car?')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/Admin/CarManagement/Reject/${carId}`;
+                
+                const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                const tokenInput = document.createElement('input');
+                tokenInput.type = 'hidden';
+                tokenInput.name = '__RequestVerificationToken';
+                tokenInput.value = token;
+                form.appendChild(tokenInput);
+                
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+        function deleteCar(carId) {
+            if (confirm('Are you sure you want to delete this car? This action cannot be undone.')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/Admin/CarManagement/Delete/${carId}`;
+                
+                const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                const tokenInput = document.createElement('input');
+                tokenInput.type = 'hidden';
+                tokenInput.name = '__RequestVerificationToken';
+                tokenInput.value = token;
+                form.appendChild(tokenInput);
+                
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    </script>
+}
+
+@section Styles {
+    <style>
+        .car-management {
+            padding: 20px;
+        }
+
+        .page-title {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .stats-summary {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stats-summary.pending {
+            border-left: 4px solid #ffc107;
+        }
+
+        .stats-summary.approved {
+            border-left: 4px solid #28a745;
+        }
+
+        .stats-summary.rejected {
+            border-left: 4px solid #dc3545;
+        }
+
+        .stats-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .stats-summary.pending .stats-icon {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .stats-summary.approved .stats-icon {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .stats-summary.rejected .stats-icon {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .stats-info h4 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .stats-info p {
+            margin: 0;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .car-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .car-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .car-image {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .car-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .car-placeholder {
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #6c757d;
+        }
+
+        .car-status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .car-status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .car-status.approved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .car-status.rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .car-info {
+            padding: 15px;
+        }
+
+        .car-info h5 {
+            margin: 0 0 5px 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .car-info .rate {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #28a745;
+            margin: 10px 0;
+        }
+
+        .car-info .owner {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin: 0;
+        }
+
+        .car-actions {
+            padding: 15px;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .car-actions .btn {
+            font-size: 0.8rem;
+            padding: 5px 10px;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+        }
+
+        .header-actions .btn {
+            margin-left: 10px;
+        }
+    </style>
+}
+
+<!-- Add Car Modal -->
+<div class="modal fade" id="addCarModal" tabindex="-1" aria-labelledby="addCarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCarModalLabel">
+                    <i class="bi bi-plus-circle"></i> Add New Car
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addCarForm" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="addName" class="form-label">Car Name *</label>
+                                <input type="text" class="form-control" id="addName" name="Name" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="addModel" class="form-label">Model *</label>
+                                <input type="text" class="form-control" id="addModel" name="Model" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="addYear" class="form-label">Year *</label>
+                                <input type="number" class="form-control" id="addYear" name="Year" min="1900" max="@DateTime.Now.Year" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="addTransmission" class="form-label">Transmission *</label>
+                                <select class="form-select" id="addTransmission" name="Transmission" required>
+                                    <option value="">Select Transmission</option>
+                                    <option value="Automatic">Automatic</option>
+                                    <option value="Manual">Manual</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="addFuelType" class="form-label">Fuel Type *</label>
+                                <select class="form-select" id="addFuelType" name="FuelType" required>
+                                    <option value="">Select Fuel Type</option>
+                                    <option value="Petrol">Petrol</option>
+                                    <option value="Diesel">Diesel</option>
+                                    <option value="Electric">Electric</option>
+                                    <option value="Hybrid">Hybrid</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="addRatePerDay" class="form-label">Rate Per Day *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" id="addRatePerDay" name="RatePerDay" step="0.01" min="1" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="addOwnerId" class="form-label">Owner *</label>
+                                <select class="form-select" id="addOwnerId" name="OwnerId" required>
+                                    <option value="">Select Owner</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="addAvailableFrom" class="form-label">Available From *</label>
+                                <input type="date" class="form-control" id="addAvailableFrom" name="AvailableFrom" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="addAvailableTo" class="form-label">Available To *</label>
+                                <input type="date" class="form-control" id="addAvailableTo" name="AvailableTo" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="addDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="addDescription" name="Description" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="addFeatures" class="form-label">Features</label>
+                        <textarea class="form-control" id="addFeatures" name="Features" rows="2"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="addImageFile" class="form-label">Car Image</label>
+                        <input type="file" class="form-control" id="addImageFile" name="ImageFile" accept="image/*">
+                        <div class="mt-2" id="addImagePreview" style="display: none;">
+                            <img id="addImagePreviewImg" src="#" alt="Image Preview" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" onclick="submitAddCar()">
+                    <i class="bi bi-plus-circle"></i> Add Car
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Car Modal -->
+<div class="modal fade" id="editCarModal" tabindex="-1" aria-labelledby="editCarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCarModalLabel">
+                    <i class="bi bi-pencil-square"></i> Edit Car
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editCarForm" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="editCarId" name="CarId">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="editName" class="form-label">Car Name *</label>
+                                <input type="text" class="form-control" id="editName" name="Name" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="editModel" class="form-label">Model *</label>
+                                <input type="text" class="form-control" id="editModel" name="Model" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="editYear" class="form-label">Year *</label>
+                                <input type="number" class="form-control" id="editYear" name="Year" min="1900" max="@DateTime.Now.Year" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="editTransmission" class="form-label">Transmission *</label>
+                                <select class="form-select" id="editTransmission" name="Transmission" required>
+                                    <option value="">Select Transmission</option>
+                                    <option value="Automatic">Automatic</option>
+                                    <option value="Manual">Manual</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="editFuelType" class="form-label">Fuel Type *</label>
+                                <select class="form-select" id="editFuelType" name="FuelType" required>
+                                    <option value="">Select Fuel Type</option>
+                                    <option value="Petrol">Petrol</option>
+                                    <option value="Diesel">Diesel</option>
+                                    <option value="Electric">Electric</option>
+                                    <option value="Hybrid">Hybrid</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="editRatePerDay" class="form-label">Rate Per Day *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" id="editRatePerDay" name="RatePerDay" step="0.01" min="1" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="editOwnerId" class="form-label">Owner *</label>
+                                <select class="form-select" id="editOwnerId" name="OwnerId" required>
+                                    <option value="">Select Owner</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="editAvailableFrom" class="form-label">Available From *</label>
+                                <input type="date" class="form-control" id="editAvailableFrom" name="AvailableFrom" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="editAvailableTo" class="form-label">Available To *</label>
+                                <input type="date" class="form-control" id="editAvailableTo" name="AvailableTo" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="editDescription" name="Description" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editFeatures" class="form-label">Features</label>
+                        <textarea class="form-control" id="editFeatures" name="Features" rows="2"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editImageFile" class="form-label">Car Image</label>
+                        <input type="file" class="form-control" id="editImageFile" name="ImageFile" accept="image/*">
+                        <div class="mt-2" id="editImagePreview">
+                            <img id="editImagePreviewImg" src="#" alt="Current Image" class="img-thumbnail" style="max-width: 200px; max-height: 200px; display: none;">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="submitEditCar()">
+                    <i class="bi bi-save"></i> Update Car
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+

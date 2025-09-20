@@ -54,7 +54,7 @@
             <div class="sidebar-menu-3d show" id="sidebarMenu">
                 <ul class="nav flex-column">
                     <li class="nav-item-3d">
-                        <a class="nav-link-3d @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")" asp-action="Index">
+                        <a class="nav-link-3d @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")" asp-controller="Admin" asp-action="Index">
                             <div class="nav-icon-3d">
                                 <i class="bi bi-speedometer2"></i>
                             </div>
@@ -62,7 +62,7 @@
                         </a>
                     </li>
                     <li class="nav-item-3d">
-                        <a class="nav-link-3d @(ViewContext.RouteData.Values["Action"]?.ToString() == "Cars" ? "active" : "")" asp-action="Cars">
+                        <a class="nav-link-3d" asp-controller="CarManagement" asp-action="Index">
                             <div class="nav-icon-3d">
                                 <i class="bi bi-car-front"></i>
                             </div>
@@ -74,7 +74,7 @@
                         </a>
                     </li>
                     <li class="nav-item-3d">
-                        <a class="nav-link-3d @(ViewContext.RouteData.Values["Action"]?.ToString() == "KYC" ? "active" : "")" asp-action="KYC">
+                        <a class="nav-link-3d @(ViewContext.RouteData.Values["Action"]?.ToString() == "KYC" ? "active" : "")" asp-controller="Admin" asp-action="KYC">
                             <div class="nav-icon-3d">
                                 <i class="bi bi-file-earmark-check"></i>
                             </div>
@@ -86,7 +86,7 @@
                         </a>
                     </li>
                     <li class="nav-item-3d">
-                        <a class="nav-link-3d @(ViewContext.RouteData.Values["Action"]?.ToString() == "BookingsEnhanced" ? "active" : "")" asp-action="BookingsEnhanced">
+                        <a class="nav-link-3d @(ViewContext.RouteData.Values["Action"]?.ToString() == "BookingsEnhanced" ? "active" : "")" asp-controller="Admin" asp-action="BookingsEnhanced">
                             <div class="nav-icon-3d">
                                 <i class="bi bi-calendar-check"></i>
                             </div>
@@ -94,7 +94,7 @@
                         </a>
                     </li>
                     <li class="nav-item-3d">
-                        <a class="nav-link-3d @(ViewContext.RouteData.Values["Action"]?.ToString() == "Customers" ? "active" : "")" asp-action="Customers">
+                        <a class="nav-link-3d @(ViewContext.RouteData.Values["Action"]?.ToString() == "Customers" ? "active" : "")" asp-controller="Admin" asp-action="Customers">
                             <div class="nav-icon-3d">
                                 <i class="bi bi-people"></i>
                             </div>
@@ -102,7 +102,15 @@
                         </a>
                     </li>
                     <li class="nav-item-3d">
-                        <a class="nav-link-3d @(ViewContext.RouteData.Values["Action"]?.ToString() == "KPI" ? "active" : "")" asp-action="KPI">
+                        <a class="nav-link-3d @(ViewContext.RouteData.Values["Action"]?.ToString() == "CarOwners" ? "active" : "")" asp-controller="Admin" asp-action="CarOwners">
+                            <div class="nav-icon-3d">
+                                <i class="bi bi-person-badge"></i>
+                            </div>
+                            <span>Car Owners</span>
+                        </a>
+                    </li>
+                    <li class="nav-item-3d">
+                        <a class="nav-link-3d @(ViewContext.RouteData.Values["Action"]?.ToString() == "KPI" ? "active" : "")" asp-controller="Admin" asp-action="KPI">
                             <div class="nav-icon-3d">
                                 <i class="bi bi-bar-chart-line"></i>
                             </div>
