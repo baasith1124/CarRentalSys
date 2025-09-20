@@ -45,6 +45,12 @@ namespace CarRentalSystem.Application.Features.KYC.Commands.AdminApproveOrReject
             Console.WriteLine($"AdminApproveOrRejectKYCCommandHandler: Updating KYC {request.KYCId} to status {request.NewStatus}");
             var result = await _kycRepository.UpdateKYCStatusAsync(request.KYCId, request.NewStatus, cancellationToken);
             Console.WriteLine($"AdminApproveOrRejectKYCCommandHandler: Update result: {result}");
+            
+            if (!result)
+            {
+                Console.WriteLine($"AdminApproveOrRejectKYCCommandHandler: Failed to update KYC {request.KYCId} status");
+                return false;
+            }
 
             if (result && request.IsApproved)
             {

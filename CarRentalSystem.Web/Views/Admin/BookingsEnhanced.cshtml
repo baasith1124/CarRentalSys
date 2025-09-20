@@ -343,8 +343,40 @@
         }
 
         function exportBookings() {
-            // Implementation for exporting bookings to CSV/Excel
-            window.location.href = '/Admin/Bookings/Export';
+            // Get current filter values
+            const status = document.getElementById('status').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            // Build export URL with current filters
+            let exportUrl = '/Admin/Bookings/Export?';
+            const params = new URLSearchParams();
+            
+            if (status) params.append('status', status);
+            if (startDate) params.append('startDate', startDate);
+            if (endDate) params.append('endDate', endDate);
+            
+            exportUrl += params.toString();
+            
+            // Show loading state
+            const exportBtn = document.querySelector('button[onclick="exportBookings()"]');
+            const originalText = exportBtn.innerHTML;
+            exportBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Exporting...';
+            exportBtn.disabled = true;
+            
+            // Create a temporary link to trigger download
+            const link = document.createElement('a');
+            link.href = exportUrl;
+            link.download = '';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Reset button state after a short delay
+            setTimeout(() => {
+                exportBtn.innerHTML = originalText;
+                exportBtn.disabled = false;
+            }, 2000);
         }
 
         function viewBookingDetails(bookingId) {

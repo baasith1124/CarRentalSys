@@ -440,6 +440,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <form id="deleteCustomerForm" method="post" style="display: inline;">
+                    @Html.AntiForgeryToken()
                     <button type="submit" class="btn btn-danger">
                         <i class="bi bi-trash"></i> Delete Customer
                     </button>
@@ -625,11 +626,32 @@
         
         // Enhanced delete customer
         function deleteCustomer(customerId, customerName) {
+            console.log('deleteCustomer called with:', customerId, customerName);
+            
             document.getElementById('deleteCustomerName').textContent = customerName;
             document.getElementById('deleteCustomerForm').action = '/Admin/Customers/Delete/' + customerId;
             
+            console.log('Form action set to:', document.getElementById('deleteCustomerForm').action);
+            
             const modal = new bootstrap.Modal(document.getElementById('deleteCustomerModal'));
             modal.show();
+            
+            // Add form submit event listener for traditional ASP.NET MVC submission
+            const form = document.getElementById('deleteCustomerForm');
+            form.addEventListener('submit', function(e) {
+                console.log('Form submitted to:', form.action);
+                console.log('Form method:', form.method);
+                
+                // Show loading state
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const originalText = submitBtn.textContent;
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Deleting...';
+                
+                // Let the form submit naturally - ASP.NET MVC will handle it
+                // The server will redirect back to the customers page after deletion
+                console.log('Submitting form using traditional ASP.NET MVC method');
+            });
         }
         
         // Enhanced refresh customers

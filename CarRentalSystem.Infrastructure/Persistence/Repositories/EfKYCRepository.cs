@@ -69,13 +69,39 @@ namespace CarRentalSystem.Infrastructure.Persistence.Repositories
 
             Console.WriteLine($"EfKYCRepository: Found KYC {kycId}, current status: {kyc.Status}");
             
-            kyc.Status = status;
-            _context.KYCUploads.Update(kyc);
+            // Check if status is actually different
+            if (kyc.Status == status)
+            {
+                Console.WriteLine($"EfKYCRepository: KYC {kycId} already has status {status}, no update needed");
+                return true;
+            }
             
-            var saveResult = await _context.SaveChangesAsync(cancellationToken);
-            Console.WriteLine($"EfKYCRepository: Save changes result: {saveResult}");
-
-            return true;
+            kyc.Status = status;
+            _context.Entry(kyc).State = EntityState.Modified;
+            Console.WriteLine($"EfKYCRepository: Marked KYC {kycId} as modified");
+            
+            try
+            {
+                var saveResult = await _context.SaveChangesAsync(cancellationToken);
+                Console.WriteLine($"EfKYCRepository: Save changes result: {saveResult}");
+                
+                if (saveResult > 0)
+                {
+                    Console.WriteLine($"EfKYCRepository: Successfully updated KYC {kycId} to status {status}");
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine($"EfKYCRepository: No changes were saved for KYC {kycId}");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"EfKYCRepository: Error saving KYC status update: {ex.Message}");
+                Console.WriteLine($"EfKYCRepository: Stack trace: {ex.StackTrace}");
+                return false;
+            }
         }
         public async Task<List<KYCUpload>> GetPendingKYCsAsync(CancellationToken cancellationToken)
         {

@@ -1,4 +1,4 @@
-@model CarRentalSystem.Application.Features.Customers.Commands.CreateCustomer.CreateCustomerCommand
+@model CarRentalSystem.Web.ViewModels.Admin.CreateCustomerViewModel
 
 @{
     ViewData["Title"] = "Create Customer";
@@ -76,12 +76,13 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label asp-for="ProfileImagePath" class="form-label">Profile Image URL</label>
+                                    <label asp-for="ProfileImage" class="form-label">Profile Image</label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="bi bi-image"></i></span>
-                                        <input asp-for="ProfileImagePath" type="url" class="form-control focus-glow" placeholder="Enter image URL" />
+                                        <input asp-for="ProfileImage" type="file" class="form-control focus-glow" accept="image/*" />
                                     </div>
-                                    <span asp-validation-for="ProfileImagePath" class="text-danger"></span>
+                                    <small class="form-text text-muted">Upload a profile picture (JPG, PNG, GIF). Max size: 5MB.</small>
+                                    <span asp-validation-for="ProfileImage" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-12">
@@ -92,6 +93,55 @@
                                         <textarea asp-for="Address" class="form-control focus-glow" rows="3" placeholder="Enter address"></textarea>
                                     </div>
                                     <span asp-validation-for="Address" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Password Management Section -->
+                        <div class="row g-3 mt-3">
+                            <div class="col-12">
+                                <div class="card bg-light">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">
+                                            <i class="bi bi-key"></i> Password Management
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <div class="form-check">
+                                                    <input asp-for="GenerateRandomPassword" class="form-check-input" type="checkbox" id="generateRandomPassword" />
+                                                    <label class="form-check-label" for="generateRandomPassword">
+                                                        Generate Random Password
+                                                    </label>
+                                                </div>
+                                                <small class="form-text text-muted">A secure random password will be generated automatically.</small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-check">
+                                                    <input asp-for="SendCredentialsEmail" class="form-check-input" type="checkbox" id="sendCredentialsEmail" />
+                                                    <label class="form-check-label" for="sendCredentialsEmail">
+                                                        Send Login Credentials via Email
+                                                    </label>
+                                                </div>
+                                                <small class="form-text text-muted">Login credentials will be sent to the customer's email address.</small>
+                                            </div>
+                                            <div class="col-12" id="customPasswordSection" style="display: none;">
+                                                <div class="form-group">
+                                                    <label asp-for="CustomPassword" class="form-label">Custom Password</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                                        <input asp-for="CustomPassword" type="password" class="form-control focus-glow" placeholder="Enter custom password" />
+                                                        <button type="button" class="btn btn-outline-secondary" onclick="togglePasswordVisibility()">
+                                                            <i class="bi bi-eye" id="passwordToggleIcon"></i>
+                                                        </button>
+                                                    </div>
+                                                    <small class="form-text text-muted">Password must be at least 6 characters long.</small>
+                                                    <span asp-validation-for="CustomPassword" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -121,6 +171,18 @@
             const form = document.getElementById('createCustomerForm');
             const submitBtn = form.querySelector('button[type="submit"]');
             const inputs = form.querySelectorAll('input, textarea');
+            const generateRandomPasswordCheckbox = document.getElementById('generateRandomPassword');
+            const customPasswordSection = document.getElementById('customPasswordSection');
+            
+            // Handle password generation checkbox
+            generateRandomPasswordCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    customPasswordSection.style.display = 'none';
+                    document.getElementById('CustomPassword').value = '';
+                } else {
+                    customPasswordSection.style.display = 'block';
+                }
+            });
             
             // Add real-time validation
             inputs.forEach(input => {
@@ -131,6 +193,12 @@
                 input.addEventListener('input', function() {
                     clearFieldError(this);
                 });
+            });
+            
+            // Handle file upload validation
+            const profileImageInput = document.getElementById('ProfileImage');
+            profileImageInput.addEventListener('change', function() {
+                validateImageFile(this);
             });
             
             // Enhanced form submission
@@ -204,6 +272,14 @@
                     }
                 }
                 
+                // Special validation for custom password
+                if (field.name === 'CustomPassword' && value) {
+                    if (value.length < 6) {
+                        isValid = false;
+                        errorMessage = 'Password must be at least 6 characters long';
+                    }
+                }
+                
                 if (!isValid) {
                     showFieldError(field, errorMessage);
                 }
@@ -237,6 +313,45 @@
             const errorDiv = field.parentElement.querySelector('.invalid-feedback');
             if (errorDiv) {
                 errorDiv.remove();
+            }
+        }
+        
+        // Validate image file
+        function validateImageFile(input) {
+            const file = input.files[0];
+            if (file) {
+                // Check file size (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    showFieldError(input, 'File size must be less than 5MB');
+                    input.value = '';
+                    return false;
+                }
+                
+                // Check file type
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+                if (!allowedTypes.includes(file.type)) {
+                    showFieldError(input, 'Please select a valid image file (JPG, PNG, GIF)');
+                    input.value = '';
+                    return false;
+                }
+                
+                clearFieldError(input);
+                return true;
+            }
+            return true;
+        }
+        
+        // Toggle password visibility
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('CustomPassword');
+            const toggleIcon = document.getElementById('passwordToggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.className = 'bi bi-eye-slash';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.className = 'bi bi-eye';
             }
         }
     </script>

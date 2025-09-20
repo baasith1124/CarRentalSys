@@ -113,6 +113,23 @@ namespace CarRentalSystem.Web.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
+            // Try to find the user first
+            var user = await _signInManager.UserManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return View(model);
+            }
+
+            // Check if user has a password
+            var hasPassword = await _signInManager.UserManager.HasPasswordAsync(user);
+            if (!hasPassword)
+            {
+                ModelState.AddModelError(string.Empty, "No password set for this account. Please set a password first.");
+                return View(model);
+            }
+
+            // Try password sign in
             var result = await _signInManager.PasswordSignInAsync(
                 model.Email, 
                 model.Password, 
@@ -121,7 +138,6 @@ namespace CarRentalSystem.Web.Controllers
 
             if (result.Succeeded)
             {
-                var user = await _signInManager.UserManager.FindByEmailAsync(model.Email);
                 if (user != null && await _signInManager.UserManager.IsInRoleAsync(user, "Admin"))
                 {
                     return LocalRedirect(returnUrl ?? Url.Action("Index", "Admin"));
@@ -132,7 +148,9 @@ namespace CarRentalSystem.Web.Controllers
                 }
             }
 
-            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+            // Debug information
+            var debugInfo = $"User found: {user.Email}, EmailConfirmed: {user.EmailConfirmed}, HasPassword: {hasPassword}";
+            ModelState.AddModelError(string.Empty, $"Invalid login attempt. Debug: {debugInfo}, Result: {result}");
             return View(model);
         }
 

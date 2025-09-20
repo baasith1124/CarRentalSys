@@ -9,8 +9,9 @@ namespace CarRentalSystem.Application.Mappings
         public KYCProfile()
         {
             CreateMap<KYCUpload, KYCUploadDto>()
-                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => "Unknown")) // Will be populated by repository
-                .ForMember(dest => dest.UserEmail, opt => opt.MapFrom(src => "Unknown")); // Will be populated by repository
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.KYCId))
+                .ForMember(dest => dest.UserName, opt => opt.Ignore()) // Will be populated by repository
+                .ForMember(dest => dest.UserEmail, opt => opt.Ignore()); // Will be populated by repository
         }
     }
 }

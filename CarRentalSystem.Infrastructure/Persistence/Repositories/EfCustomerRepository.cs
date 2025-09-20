@@ -51,11 +51,31 @@ namespace CarRentalSystem.Infrastructure.Persistence.Repositories
 
         public async Task<bool> DeleteCustomerAsync(Guid customerId, CancellationToken cancellationToken)
         {
-            var customer = await _context.Customers.FindAsync(new object[] { customerId }, cancellationToken);
-            if (customer == null) return false;
+            try
+            {
+                Console.WriteLine($"EfCustomerRepository: Attempting to delete customer {customerId}");
+                
+                var customer = await _context.Customers.FindAsync(new object[] { customerId }, cancellationToken);
+                if (customer == null)
+                {
+                    Console.WriteLine($"EfCustomerRepository: Customer {customerId} not found in database");
+                    return false;
+                }
 
-            _context.Customers.Remove(customer);
-            return await _context.SaveChangesAsync(cancellationToken) > 0;
+                Console.WriteLine($"EfCustomerRepository: Found customer {customerId}, removing from context");
+                _context.Customers.Remove(customer);
+                
+                var result = await _context.SaveChangesAsync(cancellationToken);
+                Console.WriteLine($"EfCustomerRepository: Save changes result: {result}");
+                
+                return result > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"EfCustomerRepository: Error deleting customer {customerId}: {ex.Message}");
+                Console.WriteLine($"EfCustomerRepository: Stack trace: {ex.StackTrace}");
+                throw;
+            }
         }
     }
 }

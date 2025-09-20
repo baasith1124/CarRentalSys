@@ -12,6 +12,7 @@ using CarRentalSystem.Application.Features.Cars.Queries.GetCarsByApprovalStatus;
 using CarRentalSystem.Application.Features.Cars.Queries.GetAllCars;
 using CarRentalSystem.Application.Features.KYC.Commands.AdminApproveOrRejectKYC;
 using CarRentalSystem.Application.Features.KYC.Queries.GetAllKYCUploads;
+using CarRentalSystem.Application.Features.KYC.Queries.GetAllKYCUploadsWithCustomerInfo;
 using CarRentalSystem.Application.Features.KYC.Queries.GetKYCById;
 using CarRentalSystem.Application.Features.Bookings.Queries.GetAllBookings;
 using CarRentalSystem.Application.Features.Bookings.Queries.GetBookingById;
@@ -30,10 +31,18 @@ using CarRentalSystem.Application.Features.Cars.Queries.GetCarById;
 using CarRentalSystem.Application.Features.Cars.Queries.GetMyCars;
 using CarRentalSystem.Application.Features.Bookings.Queries.GetBookingsByCarOwner;
 using CarRentalSystem.Web.ViewModels.Admin;
+using CarRentalSystem.Infrastructure.Identity;
+using CarRentalSystem.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
+using System.Security.Cryptography;
+using System.Text;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CarRentalSystem.Web.Controllers
 {
@@ -45,13 +54,15 @@ namespace CarRentalSystem.Web.Controllers
         private readonly IMapper _mapper;
         private readonly ICarRepository _carRepository;
         private readonly IWebHostEnvironment _env;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AdminController(IMediator mediator, IMapper mapper, ICarRepository carRepository, IWebHostEnvironment env)
+        public AdminController(IMediator mediator, IMapper mapper, ICarRepository carRepository, IWebHostEnvironment env, UserManager<ApplicationUser> userManager)
         {
             _mediator = mediator;
             _mapper = mapper;
             _carRepository = carRepository;
             _env = env;
+            _userManager = userManager;
         }
 
         private bool IsAdmin()
@@ -230,21 +241,24 @@ namespace CarRentalSystem.Web.Controllers
         }
 
         [HttpGet]
-        [Route("KYC")]
+        [Route("Admin/KYC")]
         public async Task<IActionResult> KYC()
         {
-            var kycUploads = await _mediator.Send(new GetAllKYCUploadsQuery());
-            return View(_mapper.Map<List<KYCUploadDto>>(kycUploads));
+            var kycUploads = await _mediator.Send(new GetAllKYCUploadsWithCustomerInfoQuery());
+            return View(kycUploads);
         }
 
         [HttpPost]
-        [Route("KYC/Approve/{kycId}")]
+        [Route("Admin/KYC/Approve/{kycId}")]
         public async Task<IActionResult> ApproveKYC(Guid kycId)
         {
             try
             {
                 // Log the approval attempt
-                Console.WriteLine($"Attempting to approve KYC: {kycId}");
+                Console.WriteLine($"AdminController: Attempting to approve KYC: {kycId}");
+                Console.WriteLine($"AdminController: Request method: {Request.Method}");
+                Console.WriteLine($"AdminController: Request path: {Request.Path}");
+                Console.WriteLine($"AdminController: Anti-forgery token present: {Request.Headers.ContainsKey("RequestVerificationToken")}");
                 
                 var command = new AdminApproveOrRejectKYCCommand 
                 { 
@@ -253,22 +267,26 @@ namespace CarRentalSystem.Web.Controllers
                     NewStatus = "Approved"
                 };
                 
+                Console.WriteLine($"AdminController: Sending command with KYCId: {command.KYCId}, IsApproved: {command.IsApproved}, NewStatus: {command.NewStatus}");
+                
                 var result = await _mediator.Send(command);
-                Console.WriteLine($"KYC approval result: {result}");
+                Console.WriteLine($"AdminController: KYC approval result: {result}");
 
                 if (result)
                 {
                     TempData["Success"] = "KYC approved successfully!";
+                    Console.WriteLine($"AdminController: KYC {kycId} approved successfully");
                 }
                 else
                 {
                     TempData["Error"] = "Failed to approve KYC. It may already be processed.";
+                    Console.WriteLine($"AdminController: KYC {kycId} approval failed");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error approving KYC: {ex.Message}");
-                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                Console.WriteLine($"AdminController: Error approving KYC: {ex.Message}");
+                Console.WriteLine($"AdminController: Stack trace: {ex.StackTrace}");
                 TempData["Error"] = "Error approving KYC: " + ex.Message;
             }
 
@@ -276,7 +294,7 @@ namespace CarRentalSystem.Web.Controllers
         }
 
         [HttpPost]
-        [Route("KYC/Reject/{kycId}")]
+        [Route("Admin/KYC/Reject/{kycId}")]
         public async Task<IActionResult> RejectKYC(Guid kycId, string? remarks = null)
         {
             try
@@ -315,7 +333,7 @@ namespace CarRentalSystem.Web.Controllers
         }
 
         [HttpGet]
-        [Route("KYC/View/{kycId}")]
+        [Route("Admin/KYC/View/{kycId}")]
         public async Task<IActionResult> ViewKYCDocument(Guid kycId)
         {
             try
@@ -379,35 +397,126 @@ namespace CarRentalSystem.Web.Controllers
         public async Task<IActionResult> Customers()
         {
             var customers = await _mediator.Send(new GetAllCustomersQuery());
-            return View(customers);
+            
+            // Remove duplicates based on email (keep the first occurrence)
+            var uniqueCustomers = customers
+                .GroupBy(c => c.Email)
+                .Select(g => g.First())
+                .ToList();
+            
+            Console.WriteLine($"Customers: Total={customers.Count}, Unique={uniqueCustomers.Count}");
+            
+            return View(uniqueCustomers);
         }
 
         [HttpGet]
         [Route("Customers/Create")]
         public IActionResult CreateCustomer()
         {
-            return View();
+            var model = new CreateCustomerViewModel();
+            return View(model);
         }
 
         [HttpPost]
         [Route("Customers/Create")]
-        public async Task<IActionResult> CreateCustomer(CreateCustomerCommand command)
+        public async Task<IActionResult> CreateCustomer(CreateCustomerViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                return View(command);
+                return View(model);
             }
 
             try
             {
-                var customerId = await _mediator.Send(command);
-                TempData["Success"] = "Customer created successfully!";
-                return RedirectToAction("Customers");
+                // Handle profile image upload
+                string? profileImagePath = null;
+                if (model.ProfileImage != null && model.ProfileImage.Length > 0)
+                {
+                    // Create uploads directory if it doesn't exist
+                    var uploadsPath = Path.Combine(_env.WebRootPath, "uploads", "profile-pictures");
+                    Directory.CreateDirectory(uploadsPath);
+
+                    // Generate unique filename
+                    var fileName = $"{Guid.NewGuid()}_{model.ProfileImage.FileName}";
+                    var filePath = Path.Combine(uploadsPath, fileName);
+
+                    // Save the file
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.ProfileImage.CopyToAsync(stream);
+                    }
+
+                    profileImagePath = fileName; // Store only filename in database
+                    Console.WriteLine($"Profile image saved: {fileName} to {filePath}");
+                }
+
+                // Generate password
+                string password;
+                if (model.GenerateRandomPassword)
+                {
+                    password = GenerateRandomPassword();
+                }
+                else
+                {
+                    password = model.CustomPassword ?? GenerateRandomPassword();
+                }
+
+                // Create Identity user
+                var user = new ApplicationUser
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = model.Email,
+                    Email = model.Email,
+                    FullName = model.FullName,
+                    NICNumber = model.NIC,
+                    Address = model.Address,
+                    ProfileImagePath = profileImagePath,
+                    EmailConfirmed = true
+                };
+
+                var result = await _userManager.CreateAsync(user, password);
+                if (result.Succeeded)
+                {
+                    // Add to Customer role
+                    await _userManager.AddToRoleAsync(user, "Customer");
+
+                    // Create customer record in database using the repository directly
+                    var customer = new Customer
+                    {
+                        Id = user.Id,
+                        FullName = model.FullName,
+                        Email = model.Email,
+                        NIC = model.NIC,
+                        Address = model.Address,
+                        ProfileImagePath = profileImagePath
+                    };
+
+                    // Use the customer repository directly instead of the command to avoid duplicates
+                    var customerRepository = HttpContext.RequestServices.GetRequiredService<ICustomerRepository>();
+                    var customerId = await customerRepository.CreateCustomerAsync(customer, CancellationToken.None);
+
+                    // Send email with credentials if requested
+                    if (model.SendCredentialsEmail)
+                    {
+                        await SendCredentialsEmail(model.Email, model.FullName, password);
+                    }
+
+                    TempData["Success"] = $"Customer created successfully! {(model.SendCredentialsEmail ? "Login credentials have been sent to the customer's email." : "")}";
+                    return RedirectToAction("Customers");
+                }
+                else
+                {
+                    var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                    TempData["Error"] = $"Error creating customer: {errors}";
+                    return View(model);
+                }
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error creating customer: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
                 TempData["Error"] = "Error creating customer: " + ex.Message;
-                return View(command);
+                return View(model);
             }
         }
 
@@ -480,24 +589,79 @@ namespace CarRentalSystem.Web.Controllers
 
         [HttpPost]
         [Route("Customers/Delete/{customerId}")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteCustomer(Guid customerId)
         {
             try
             {
+                Console.WriteLine($"DeleteCustomer: Action method called for customer {customerId}");
+                Console.WriteLine($"DeleteCustomer: Request method: {Request.Method}");
+                Console.WriteLine($"DeleteCustomer: Request path: {Request.Path}");
+                Console.WriteLine($"DeleteCustomer: Request query: {Request.QueryString}");
+                
+                // First, get the customer details to handle profile image deletion
+                var customer = await _mediator.Send(new GetCustomerByIdQuery(customerId));
+                if (customer != null && !string.IsNullOrEmpty(customer.ProfileImagePath))
+                {
+                    // Delete the profile image file
+                    try
+                    {
+                        var imagePath = Path.Combine(_env.WebRootPath, "uploads", "profile-pictures", customer.ProfileImagePath);
+                        if (System.IO.File.Exists(imagePath))
+                        {
+                            System.IO.File.Delete(imagePath);
+                            Console.WriteLine($"DeleteCustomer: Deleted profile image {customer.ProfileImagePath}");
+                        }
+                    }
+                    catch (Exception imgEx)
+                    {
+                        Console.WriteLine($"DeleteCustomer: Error deleting profile image: {imgEx.Message}");
+                        // Continue with deletion even if image deletion fails
+                    }
+                }
+                
+                // Try to find and delete the Identity user
+                var user = await _userManager.FindByIdAsync(customerId.ToString());
+                if (user != null)
+                {
+                    Console.WriteLine($"DeleteCustomer: Found Identity user {user.Email}");
+                    
+                    // Delete the Identity user (this will also handle related data)
+                    var identityResult = await _userManager.DeleteAsync(user);
+                    if (identityResult.Succeeded)
+                    {
+                        Console.WriteLine($"DeleteCustomer: Successfully deleted Identity user {user.Email}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"DeleteCustomer: Failed to delete Identity user: {string.Join(", ", identityResult.Errors.Select(e => e.Description))}");
+                        // Continue with customer deletion even if Identity deletion fails
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"DeleteCustomer: No Identity user found for {customerId}");
+                }
+                
+                // Delete the customer record from the database
                 var command = new DeleteCustomerCommand { CustomerId = customerId };
                 var result = await _mediator.Send(command);
                 
                 if (result)
                 {
+                    Console.WriteLine($"DeleteCustomer: Successfully deleted customer record {customerId}");
                     TempData["Success"] = "Customer deleted successfully!";
                 }
                 else
                 {
-                    TempData["Error"] = "Failed to delete customer.";
+                    Console.WriteLine($"DeleteCustomer: Failed to delete customer record {customerId}");
+                    TempData["Error"] = "Failed to delete customer record.";
                 }
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"DeleteCustomer: Error deleting customer {customerId}: {ex.Message}");
+                Console.WriteLine($"DeleteCustomer: Stack trace: {ex.StackTrace}");
                 TempData["Error"] = "Error deleting customer: " + ex.Message;
             }
 
@@ -743,6 +907,150 @@ namespace CarRentalSystem.Web.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        [Route("Bookings/Export")]
+        public async Task<IActionResult> ExportBookings(string? status, DateTime? startDate, DateTime? endDate)
+        {
+            try
+            {
+                // Get all bookings data (same logic as BookingsEnhanced)
+                var allBookings = await _mediator.Send(new GetAllBookingsQuery());
+                var allCars = await _mediator.Send(new GetAllCarsQuery());
+                var allCustomers = await _mediator.Send(new GetAllCustomersQuery());
+
+                var bookingDetails = allBookings.Select(booking =>
+                {
+                    var car = allCars.FirstOrDefault(c => c.CarId == booking.CarId);
+                    var customer = allCustomers.FirstOrDefault(c => c.Id == booking.CustomerId);
+                    var carOwner = allCustomers.FirstOrDefault(c => c.Id == car?.OwnerId);
+
+                    return new BookingDetailsDto
+                    {
+                        BookingId = booking.BookingId,
+                        StartDate = booking.PickupDate,
+                        EndDate = booking.ReturnDate,
+                        TotalAmount = booking.TotalCost,
+                        Status = booking.BookingStatus?.Name ?? "Unknown",
+                        PaymentStatus = booking.PaymentStatus?.Name ?? "Unknown",
+                        CreatedDate = booking.CreatedAt,
+                        UpdatedDate = booking.CreatedAt,
+                        Notes = "",
+                        CarId = car?.CarId ?? Guid.Empty,
+                        CarName = car?.Name ?? "Unknown",
+                        CarModel = car?.Model ?? "Unknown",
+                        CarImagePath = car?.ImagePath,
+                        CarRatePerDay = car?.RatePerDay ?? 0,
+                        CustomerId = customer?.Id ?? Guid.Empty,
+                        CustomerName = customer?.FullName ?? "Unknown",
+                        CustomerEmail = customer?.Email ?? "Unknown",
+                        CarOwnerId = carOwner?.Id ?? Guid.Empty,
+                        CarOwnerName = carOwner?.FullName ?? "Unknown",
+                        CarOwnerEmail = carOwner?.Email ?? "Unknown"
+                    };
+                }).ToList();
+
+                // Apply filters (same as BookingsEnhanced)
+                if (!string.IsNullOrEmpty(status) && status != "All")
+                {
+                    bookingDetails = bookingDetails.Where(b => b.Status == status).ToList();
+                }
+
+                if (startDate.HasValue)
+                {
+                    bookingDetails = bookingDetails.Where(b => b.StartDate >= startDate.Value).ToList();
+                }
+
+                if (endDate.HasValue)
+                {
+                    bookingDetails = bookingDetails.Where(b => b.EndDate <= endDate.Value).ToList();
+                }
+
+                // Create Excel file
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                using var package = new ExcelPackage();
+                var worksheet = package.Workbook.Worksheets.Add("Bookings");
+
+                // Add headers
+                var headers = new[]
+                {
+                    "Booking ID", "Customer Name", "Customer Email", "Customer Phone",
+                    "Car Name", "Car Model", "Car Owner", "Car Owner Email",
+                    "Start Date", "End Date", "Duration (Days)", "Daily Rate",
+                    "Total Amount", "Booking Status", "Payment Status",
+                    "Created Date", "Notes"
+                };
+
+                for (int i = 0; i < headers.Length; i++)
+                {
+                    worksheet.Cells[1, i + 1].Value = headers[i];
+                }
+
+                // Style headers
+                using (var range = worksheet.Cells[1, 1, 1, headers.Length])
+                {
+                    range.Style.Font.Bold = true;
+                    range.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    range.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightBlue);
+                    range.Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                }
+
+                // Add data
+                for (int i = 0; i < bookingDetails.Count; i++)
+                {
+                    var booking = bookingDetails[i];
+                    var row = i + 2;
+
+                    worksheet.Cells[row, 1].Value = booking.BookingId.ToString();
+                    worksheet.Cells[row, 2].Value = booking.CustomerName;
+                    worksheet.Cells[row, 3].Value = booking.CustomerEmail;
+                    worksheet.Cells[row, 4].Value = ""; // Customer phone not available
+                    worksheet.Cells[row, 5].Value = booking.CarName;
+                    worksheet.Cells[row, 6].Value = booking.CarModel;
+                    worksheet.Cells[row, 7].Value = booking.CarOwnerName;
+                    worksheet.Cells[row, 8].Value = booking.CarOwnerEmail;
+                    worksheet.Cells[row, 9].Value = booking.StartDate.ToString("yyyy-MM-dd");
+                    worksheet.Cells[row, 10].Value = booking.EndDate.ToString("yyyy-MM-dd");
+                    worksheet.Cells[row, 11].Value = (booking.EndDate - booking.StartDate).Days;
+                    worksheet.Cells[row, 12].Value = booking.CarRatePerDay;
+                    worksheet.Cells[row, 13].Value = booking.TotalAmount;
+                    worksheet.Cells[row, 14].Value = booking.Status;
+                    worksheet.Cells[row, 15].Value = booking.PaymentStatus;
+                    worksheet.Cells[row, 16].Value = booking.CreatedDate.ToString("yyyy-MM-dd HH:mm");
+                    worksheet.Cells[row, 17].Value = booking.Notes;
+                }
+
+                // Auto-fit columns
+                worksheet.Cells.AutoFitColumns();
+
+                // Add borders to all data cells
+                using (var range = worksheet.Cells[1, 1, bookingDetails.Count + 1, headers.Length])
+                {
+                    range.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    range.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    range.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    range.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                }
+
+                // Generate filename with timestamp
+                var fileName = $"Bookings_Export_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                
+                // Convert to byte array
+                var fileBytes = package.GetAsByteArray();
+
+                // Return file
+                return File(fileBytes, 
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
+                    fileName);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error exporting bookings: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                TempData["Error"] = "Error exporting bookings: " + ex.Message;
+                return RedirectToAction("BookingsEnhanced");
+            }
+        }
+
         [HttpPost]
         [Route("Bookings/UpdateStatus/{bookingId}")]
         public async Task<IActionResult> UpdateBookingStatus(Guid bookingId, string status)
@@ -852,16 +1160,26 @@ namespace CarRentalSystem.Web.Controllers
         [Route("Cars/Add")]
         public async Task<IActionResult> AddCar()
         {
-            var customers = await _mediator.Send(new GetAllCustomersQuery());
+            // Get all users from Identity system (including Admin users)
+            var allUsers = _userManager.Users.ToList();
+            
+            // Find System Admin user
+            var systemAdmin = allUsers.FirstOrDefault(u => u.Email == "admin@carrental.com");
+            
             var model = new AdminAddCarViewModel
             {
-                AvailableOwners = customers.Select(c => new OwnerOption
+                AvailableOwners = allUsers.Select(u => new OwnerOption
                 {
-                    Id = c.Id,
-                    Name = c.FullName,
-                    Email = c.Email
-                }).ToList()
+                    Id = u.Id,
+                    Name = u.FullName ?? u.UserName ?? u.Email,
+                    Email = u.Email
+                }).ToList(),
+                // Set default owner to System Admin
+                OwnerId = systemAdmin?.Id ?? Guid.Empty
             };
+
+            Console.WriteLine($"AddCar GET - Found {allUsers.Count} users, System Admin: {systemAdmin?.FullName} ({systemAdmin?.Email})");
+            Console.WriteLine($"Default OwnerId set to: {model.OwnerId}");
 
             return View(model);
         }
@@ -947,18 +1265,30 @@ namespace CarRentalSystem.Web.Controllers
             
             if (!ModelState.IsValid)
             {
-                var customers = await _mediator.Send(new GetAllCustomersQuery());
-                model.AvailableOwners = customers.Select(c => new OwnerOption
+                var allUsers = _userManager.Users.ToList();
+                model.AvailableOwners = allUsers.Select(u => new OwnerOption
                 {
-                    Id = c.Id,
-                    Name = c.FullName,
-                    Email = c.Email
+                    Id = u.Id,
+                    Name = u.FullName ?? u.UserName ?? u.Email,
+                    Email = u.Email
                 }).ToList();
                 return View(model);
             }
 
             try
             {
+                // Ensure System Admin is set as default owner if no owner selected
+                if (model.OwnerId == Guid.Empty)
+                {
+                    var allUsers = _userManager.Users.ToList();
+                    var systemAdmin = allUsers.FirstOrDefault(u => u.Email == "admin@carrental.com");
+                    if (systemAdmin != null)
+                    {
+                        model.OwnerId = systemAdmin.Id;
+                        Console.WriteLine($"Defaulting to System Admin as owner: {systemAdmin.FullName}");
+                    }
+                }
+
                 // Handle image upload
                 string? imagePath = null;
                 if (model.ImageFile != null && model.ImageFile.Length > 0)
@@ -1008,12 +1338,12 @@ namespace CarRentalSystem.Web.Controllers
             catch (Exception ex)
             {
                 TempData["Error"] = "Error adding car: " + ex.Message;
-                var customers = await _mediator.Send(new GetAllCustomersQuery());
-                model.AvailableOwners = customers.Select(c => new OwnerOption
+                var allUsers = _userManager.Users.ToList();
+                model.AvailableOwners = allUsers.Select(u => new OwnerOption
                 {
-                    Id = c.Id,
-                    Name = c.FullName,
-                    Email = c.Email
+                    Id = u.Id,
+                    Name = u.FullName ?? u.UserName ?? u.Email,
+                    Email = u.Email
                 }).ToList();
                 return View(model);
             }
@@ -1319,6 +1649,49 @@ namespace CarRentalSystem.Web.Controllers
             {
                 Console.WriteLine($"Error loading car KPI data: {ex.Message}");
                 return Json(new { error = ex.Message });
+            }
+        }
+
+        #endregion
+
+        #region Helper Methods
+
+        private string GenerateRandomPassword(int length = 12)
+        {
+            const string validChars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+            var random = new Random();
+            var chars = new char[length];
+            
+            for (int i = 0; i < length; i++)
+            {
+                chars[i] = validChars[random.Next(validChars.Length)];
+            }
+            
+            return new string(chars);
+        }
+
+        private async Task SendCredentialsEmail(string email, string fullName, string password)
+        {
+            try
+            {
+                // For now, we'll just log the credentials
+                // In a real application, you would integrate with an email service
+                Console.WriteLine($"=== CUSTOMER LOGIN CREDENTIALS ===");
+                Console.WriteLine($"Email: {email}");
+                Console.WriteLine($"Full Name: {fullName}");
+                Console.WriteLine($"Password: {password}");
+                Console.WriteLine($"=====================================");
+                
+                // TODO: Implement actual email sending service
+                // Example: await _emailService.SendAsync(email, "Your Car Rental Account", emailBody);
+                
+                // For now, we'll simulate email sending
+                await Task.Delay(100);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error sending credentials email: {ex.Message}");
+                // Don't throw exception as this shouldn't prevent customer creation
             }
         }
 

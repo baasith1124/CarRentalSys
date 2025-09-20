@@ -22,7 +22,7 @@
                 </button>
             </div>
 
-            <form id="kycUploadForm" method="post" enctype="multipart/form-data">
+            <form id="kycUploadForm" asp-controller="KYC" asp-action="UploadAjax" method="post" enctype="multipart/form-data">
                 @Html.AntiForgeryToken()
                 <div class="modal-body kyc-body-3d">
                     <!-- Document Type Selection -->
@@ -554,3 +554,131 @@
     color: #ff6b6b;
 }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const kycForm = document.getElementById('kycUploadForm');
+    const submitBtn = kycForm.querySelector('button[type="submit"]');
+    const fileInput = kycForm.querySelector('input[type="file"]');
+    const documentTypeRadios = kycForm.querySelectorAll('input[name="DocumentType"]');
+    const errorDisplay = document.querySelector('.error-display-3d');
+
+    // Enable submit button when form is valid
+    function updateSubmitButton() {
+        const hasDocumentType = Array.from(documentTypeRadios).some(radio => radio.checked);
+        const hasFile = fileInput.files && fileInput.files.length > 0;
+        
+        submitBtn.disabled = !(hasDocumentType && hasFile);
+    }
+
+    // Add event listeners
+    documentTypeRadios.forEach(radio => {
+        radio.addEventListener('change', updateSubmitButton);
+    });
+
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            // Validate file size (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showError('File size must be less than 5MB.');
+                e.target.value = '';
+                return;
+            }
+
+            // Validate file type
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+            if (!allowedTypes.includes(file.type)) {
+                showError('Please select a valid file (JPG, PNG, or PDF).');
+                e.target.value = '';
+                return;
+            }
+
+            hideError();
+        }
+        updateSubmitButton();
+    });
+
+    // Form submission
+    kycForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(kycForm);
+        
+        // Show loading state
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Uploading...';
+        submitBtn.disabled = true;
+        
+        // Submit via AJAX
+        fetch(kycForm.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show success message
+                showSuccess(data.message);
+                
+                // Close modal after delay
+                setTimeout(() => {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('kycUploadModal'));
+                    if (modal) {
+                        modal.hide();
+                    }
+                    // Reload page to update KYC status
+                    window.location.reload();
+                }, 2000);
+            } else {
+                showError(data.message || 'Upload failed. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Upload error:', error);
+            showError('Upload failed. Please try again.');
+        })
+        .finally(() => {
+            // Reset button state
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        });
+    });
+
+    function showError(message) {
+        if (errorDisplay) {
+            errorDisplay.textContent = message;
+            errorDisplay.style.display = 'block';
+        } else {
+            alert(message);
+        }
+    }
+
+    function hideError() {
+        if (errorDisplay) {
+            errorDisplay.style.display = 'none';
+        }
+    }
+
+    function showSuccess(message) {
+        // Create success message element
+        const successDiv = document.createElement('div');
+        successDiv.className = 'alert alert-success alert-dismissible fade show';
+        successDiv.innerHTML = `
+            <i class="bi bi-check-circle me-2"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        // Insert at the top of the modal body
+        const modalBody = document.querySelector('.kyc-body-3d');
+        modalBody.insertBefore(successDiv, modalBody.firstChild);
+    }
+
+    // Initialize submit button state
+    updateSubmitButton();
+});
+</script>

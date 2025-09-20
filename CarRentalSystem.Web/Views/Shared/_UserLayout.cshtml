@@ -78,28 +78,6 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link enhanced-nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Account" && ViewContext.RouteData.Values["Action"]?.ToString() == "Kyc" ? "active" : "")" asp-controller="Account" asp-action="Kyc" data-tooltip="Identity Verification">
-                            <div class="nav-icon-3d">
-                                <i class="bi bi-shield-check"></i>
-                                <div class="icon-background"></div>
-                            </div>
-                            <span class="nav-text">KYC Status</span>
-                            <div class="nav-indicator"></div>
-                            <div class="hover-effect"></div>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link enhanced-nav-link" asp-controller="Account" asp-action="Logout" data-tooltip="Sign Out">
-                            <div class="nav-icon-3d">
-                                <i class="bi bi-box-arrow-right"></i>
-                                <div class="icon-background"></div>
-                            </div>
-                            <span class="nav-text">Logout</span>
-                            <div class="nav-indicator"></div>
-                            <div class="hover-effect"></div>
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link enhanced-nav-link" href="#" data-tooltip="24/7 Customer Support">
                             <div class="nav-icon-3d">
                                 <i class="bi bi-headset"></i>
@@ -155,6 +133,7 @@
                     </div>
                     <div class="nav-item">
                         <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline w-100">
+                            @Html.AntiForgeryToken()
                             <button type="submit" class="nav-link logout-btn enhanced-nav-link" data-tooltip="Sign Out Securely">
                                 <div class="nav-icon-3d">
                                     <i class="bi bi-box-arrow-right"></i>

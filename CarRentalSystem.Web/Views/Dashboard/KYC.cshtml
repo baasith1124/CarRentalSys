@@ -1,0 +1,487 @@
+@model CarRentalSystem.Web.ViewModels.KYC.KYCUploadViewModel
+
+@{
+    ViewData["Title"] = "KYC Verification";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="kyc-verification-page">
+    <div class="container py-4">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a asp-action="Index" class="text-decoration-none">Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-action="Profile" class="text-decoration-none">Profile</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">KYC Verification</li>
+                    </ol>
+                </nav>
+                <h1 class="display-6 fw-bold text-primary mb-0">
+                    <i class="bi bi-shield-check"></i>
+                    KYC Verification
+                </h1>
+                <p class="text-muted">Complete your identity verification to access all features</p>
+            </div>
+            <div>
+                <a asp-action="Profile" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Profile
+                </a>
+            </div>
+        </div>
+
+        <!-- Success/Error Messages -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle me-2"></i>
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <div class="row g-4">
+            <!-- KYC Status Card -->
+            <div class="col-lg-4">
+                <div class="card kyc-status-card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-info-circle text-primary"></i>
+                            Verification Status
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        @if (ViewBag.HasKyc == true)
+                        {
+                            <div class="kyc-status-verified">
+                                <div class="status-icon">
+                                    <i class="bi bi-shield-check text-success"></i>
+                                </div>
+                                <h6 class="status-title">Verification Submitted</h6>
+                                <p class="status-description">Your documents have been submitted and are under review.</p>
+                                <div class="status-badge">
+                                    <span class="badge bg-warning">
+                                        <i class="bi bi-clock"></i> Pending Review
+                                    </span>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="kyc-status-pending">
+                                <div class="status-icon">
+                                    <i class="bi bi-shield-exclamation text-warning"></i>
+                                </div>
+                                <h6 class="status-title">Verification Required</h6>
+                                <p class="status-description">Please upload your identity documents to complete verification.</p>
+                                <div class="status-badge">
+                                    <span class="badge bg-danger">
+                                        <i class="bi bi-exclamation-triangle"></i> Not Verified
+                                    </span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Benefits Card -->
+                <div class="card benefits-card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-star text-primary"></i>
+                            Benefits of Verification
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="benefits-list">
+                            <li>
+                                <i class="bi bi-check-circle text-success me-2"></i>
+                                Access to premium car rentals
+                            </li>
+                            <li>
+                                <i class="bi bi-check-circle text-success me-2"></i>
+                                Faster booking approval
+                            </li>
+                            <li>
+                                <i class="bi bi-check-circle text-success me-2"></i>
+                                Enhanced security features
+                            </li>
+                            <li>
+                                <i class="bi bi-check-circle text-success me-2"></i>
+                                Priority customer support
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KYC Upload Form -->
+            <div class="col-lg-8">
+                <div class="card kyc-upload-card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-upload text-primary"></i>
+                            Upload Identity Documents
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        @if (ViewBag.HasKyc == true)
+                        {
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <strong>Documents Already Submitted:</strong> You have already submitted your KYC documents. Please wait for admin approval.
+                            </div>
+                            
+                            @if (ViewBag.KycUploads != null)
+                            {
+                                <div class="submitted-documents">
+                                    <h6>Submitted Documents:</h6>
+                                    @foreach (var upload in ViewBag.KycUploads)
+                                    {
+                                        <div class="document-item">
+                                            <div class="document-info">
+                                                <i class="bi bi-file-earmark-text text-primary"></i>
+                                                <span class="document-type">@upload.DocumentType</span>
+                                                <span class="document-status badge bg-warning">@upload.Status</span>
+                                            </div>
+                                            <div class="document-date">
+                                                <small class="text-muted">Submitted: @upload.UploadedAt.ToString("MMM dd, yyyy")</small>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <form asp-action="UploadKYC" method="post" enctype="multipart/form-data" id="kycForm">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label asp-for="DocumentType" class="form-label">Document Type</label>
+                                            <select asp-for="DocumentType" class="form-select" required>
+                                                <option value="">Select Document Type</option>
+                                                <option value="NIC">National Identity Card (NIC)</option>
+                                                <option value="Passport">Passport</option>
+                                                <option value="Driving License">Driving License</option>
+                                            </select>
+                                            <span asp-validation-for="DocumentType" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label asp-for="Document" class="form-label">Upload Document</label>
+                                            <input asp-for="Document" type="file" class="form-control" accept=".jpg,.jpeg,.png,.pdf" required />
+                                            <span asp-validation-for="Document" class="text-danger"></span>
+                                            <div class="form-text">
+                                                <i class="bi bi-info-circle me-1"></i>
+                                                Supported formats: JPG, PNG, PDF (Max 5MB)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-actions mt-4">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-upload"></i> Upload Document
+                                    </button>
+                                    <a asp-action="Profile" class="btn btn-outline-secondary ms-2">
+                                        <i class="bi bi-x-circle"></i> Cancel
+                                    </a>
+                                </div>
+                            </form>
+                        }
+                    </div>
+                </div>
+
+                <!-- Requirements Card -->
+                <div class="card requirements-card mt-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-list-check text-primary"></i>
+                            Document Requirements
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="requirements-list">
+                            <div class="requirement-item">
+                                <h6><i class="bi bi-camera text-primary me-2"></i>Photo Quality</h6>
+                                <ul>
+                                    <li>Clear, high-resolution image</li>
+                                    <li>All text must be readable</li>
+                                    <li>No blur or glare</li>
+                                    <li>Full document visible</li>
+                                </ul>
+                            </div>
+                            <div class="requirement-item">
+                                <h6><i class="bi bi-file-earmark text-primary me-2"></i>Document Types</h6>
+                                <ul>
+                                    <li><strong>NIC:</strong> Front and back sides</li>
+                                    <li><strong>Passport:</strong> Photo page only</li>
+                                    <li><strong>Driving License:</strong> Front and back sides</li>
+                                </ul>
+                            </div>
+                            <div class="requirement-item">
+                                <h6><i class="bi bi-shield-check text-primary me-2"></i>Security</h6>
+                                <ul>
+                                    <li>Document must be valid and not expired</li>
+                                    <li>Name must match your account</li>
+                                    <li>No edited or modified images</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .kyc-status-card, .benefits-card, .kyc-upload-card, .requirements-card {
+            background: var(--glass-bg-dark);
+            backdrop-filter: var(--glass-backdrop-strong);
+            border: 2px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--glass-shadow);
+            transition: var(--transition-smooth);
+        }
+
+        .kyc-status-card:hover, .benefits-card:hover, .kyc-upload-card:hover, .requirements-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--glass-shadow-colored);
+            border-color: var(--glass-border-light);
+        }
+
+        .kyc-status-verified, .kyc-status-pending {
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .status-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .status-title {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .status-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .status-badge .badge {
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+        }
+
+        .benefits-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .benefits-list li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control, .form-select {
+            background: var(--glass-bg);
+            border: 2px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            color: var(--text-primary);
+            padding: 0.75rem 1rem;
+            transition: var(--transition-smooth);
+        }
+
+        .form-control:focus, .form-select:focus {
+            background: var(--glass-bg-light);
+            border-color: var(--glass-border-light);
+            box-shadow: var(--shadow-glow);
+            color: var(--text-primary);
+        }
+
+        .form-text {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        .btn {
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            border: 2px solid var(--glass-border-light);
+            color: var(--text-primary);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .btn-outline-secondary {
+            border: 2px solid var(--glass-border);
+            color: var(--text-primary);
+            background: transparent;
+        }
+
+        .btn-outline-secondary:hover {
+            background: var(--glass-bg);
+            border-color: var(--glass-border-light);
+            transform: translateY(-2px);
+        }
+
+        .submitted-documents {
+            margin-top: 1rem;
+        }
+
+        .document-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: var(--glass-bg);
+            border-radius: var(--radius-lg);
+            margin-bottom: 0.5rem;
+        }
+
+        .document-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .document-type {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .requirements-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .requirement-item h6 {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .requirement-item ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .requirement-item li {
+            padding: 0.25rem 0;
+            color: var(--text-secondary);
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .requirement-item li::before {
+            content: "•";
+            color: var(--primary-color);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .breadcrumb {
+            background: transparent;
+            padding: 0;
+        }
+
+        .breadcrumb-item a {
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+
+        .breadcrumb-item a:hover {
+            color: var(--text-primary);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--text-primary);
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const kycForm = document.getElementById('kycForm');
+            
+            if (kycForm) {
+                kycForm.addEventListener('submit', function(e) {
+                    const submitBtn = kycForm.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Uploading...';
+                    submitBtn.disabled = true;
+                });
+            }
+
+            // File input validation
+            const fileInput = document.querySelector('input[type="file"]');
+            if (fileInput) {
+                fileInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        // Validate file size (5MB)
+                        if (file.size > 5 * 1024 * 1024) {
+                            alert('File size must be less than 5MB.');
+                            e.target.value = '';
+                            return;
+                        }
+
+                        // Validate file type
+                        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+                        if (!allowedTypes.includes(file.type)) {
+                            alert('Please select a valid file (JPG, PNG, or PDF).');
+                            e.target.value = '';
+                            return;
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+}
