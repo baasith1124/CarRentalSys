@@ -43,15 +43,7 @@ A comprehensive web application built with ASP.NET Core MVC that facilitates car
 - Receive real-time notifications and email updates
 - Access customer dashboard with spending analytics
 
-### 🚗 Car Owner Role
-**Manage car listings and track earnings**
-- Register and manage car listings with detailed specifications
-- Upload car documents for admin approval
-- View and manage booking requests
-- Track earnings and performance metrics
-- Update car availability and pricing
-- Access car owner dashboard with analytics
-- Monitor booking status and customer feedback
+
 
 ## 🛠️ Technology Stack
 
@@ -217,7 +209,7 @@ dotnet run --project CarRentalSystem.Web
 | `GoogleMaps` | Maps API configuration | Yes |
 | `EmailSettings` | SMTP email configuration | Yes |
 | `Stripe` | Payment processing | Yes |
-| `OpenRouter` | AI assistant (optional) | No |
+| `OpenRouter` | AI assistant (optional) | yes |
 
 ### Environment-Specific Configuration
 
