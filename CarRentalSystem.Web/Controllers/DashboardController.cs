@@ -22,7 +22,6 @@ using System.Security.Claims;
 
 namespace CarRentalSystem.Web.Controllers
 {
-    [Authorize]
     public class DashboardController : Controller
     {
         private readonly IMediator _mediator;
@@ -48,7 +47,11 @@ namespace CarRentalSystem.Web.Controllers
             try
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                if (userId == null) return Unauthorized();
+                if (userId == null) 
+                {
+                    // No authenticated user - redirect to home page
+                    return RedirectToAction("Index", "Home");
+                }
 
                 // Check if user is admin - redirect to admin dashboard
                 if (User.IsInRole("Admin"))
@@ -131,7 +134,7 @@ namespace CarRentalSystem.Web.Controllers
         public async Task<IActionResult> Profile()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null) return Unauthorized();
+            if (userId == null) return RedirectToAction("Index", "Home");
 
             // Check if user is admin - redirect to admin dashboard
             if (User.IsInRole("Admin"))
@@ -154,7 +157,7 @@ namespace CarRentalSystem.Web.Controllers
         public async Task<IActionResult> UpdateProfile(CustomerDto model)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null) return Unauthorized();
+            if (userId == null) return RedirectToAction("Index", "Home");
 
             // Check if user is admin - redirect to admin dashboard
             if (User.IsInRole("Admin"))
@@ -213,7 +216,7 @@ namespace CarRentalSystem.Web.Controllers
         public async Task<IActionResult> UploadProfilePicture(IFormFile profileImage)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null) return Unauthorized();
+            if (userId == null) return RedirectToAction("Index", "Home");
 
             try
             {
@@ -310,7 +313,7 @@ namespace CarRentalSystem.Web.Controllers
         public async Task<IActionResult> PasswordManagement()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null) return Unauthorized();
+            if (userId == null) return RedirectToAction("Index", "Home");
 
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null) return NotFound();
@@ -334,7 +337,7 @@ namespace CarRentalSystem.Web.Controllers
         public async Task<IActionResult> SetPassword(PasswordManagementViewModel model)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null) return Unauthorized();
+            if (userId == null) return RedirectToAction("Index", "Home");
 
             if (!ModelState.IsValid)
             {
@@ -392,7 +395,7 @@ namespace CarRentalSystem.Web.Controllers
         public async Task<IActionResult> ChangePassword(PasswordManagementViewModel model)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null) return Unauthorized();
+            if (userId == null) return RedirectToAction("Index", "Home");
 
             if (!ModelState.IsValid)
             {
@@ -510,7 +513,7 @@ namespace CarRentalSystem.Web.Controllers
         public async Task<IActionResult> Bookings(bool? paymentSuccess = false)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null) return Unauthorized();
+            if (userId == null) return RedirectToAction("Index", "Home");
 
             // Check if user is admin - redirect to admin dashboard
             if (User.IsInRole("Admin"))
@@ -538,7 +541,7 @@ namespace CarRentalSystem.Web.Controllers
         public async Task<IActionResult> BookingDetails(Guid bookingId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null) return Unauthorized();
+            if (userId == null) return RedirectToAction("Index", "Home");
 
             // Check if user is admin - redirect to admin dashboard
             if (User.IsInRole("Admin"))

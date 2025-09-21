@@ -122,23 +122,25 @@ document.addEventListener('DOMContentLoaded', function() {
             method: 'POST',
             body: formData,
             headers: {
-                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value,
+                'X-Requested-With': 'XMLHttpRequest'
             }
         })
         .then(response => {
             if (response.ok) {
-                // Success - redirect to dashboard or home
-                window.location.href = '/Dashboard';
+                return response.json();
             } else {
-                return response.text().then(text => {
-                    // Try to parse as JSON for error messages
-                    try {
-                        const data = JSON.parse(text);
-                        throw new Error(data.message || 'Login failed');
-                    } catch (e) {
-                        throw new Error('Invalid email or password');
-                    }
+                return response.json().then(data => {
+                    throw new Error(data.errors ? data.errors[0] : 'Login failed');
                 });
+            }
+        })
+        .then(data => {
+            if (data.success) {
+                // Success - redirect to the provided URL or dashboard
+                window.location.href = data.redirectUrl || '/Dashboard';
+            } else {
+                throw new Error(data.errors ? data.errors[0] : 'Login failed');
             }
         })
         .catch(error => {
@@ -200,13 +202,13 @@ document.addEventListener('DOMContentLoaded', function() {
 // Global variable to store car ID for booking context
 window.selectedCarId = null;
 
-// Global function to show registration modal (changed from login modal for better UX)
+// Global function to show login modal
 function showLoginModal(carId = null) {
     // Store car ID for booking context
     window.selectedCarId = carId;
     
-    // Show registration modal directly for better conversion
-    const modal = new bootstrap.Modal(document.getElementById('registerModal'));
+    // Show login modal
+    const modal = new bootstrap.Modal(document.getElementById('loginModal'));
     modal.show();
 }
 

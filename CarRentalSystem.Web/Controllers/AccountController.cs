@@ -115,12 +115,26 @@ namespace CarRentalSystem.Web.Controllers
         public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
         {
             if (!ModelState.IsValid)
+            {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .ToList();
+                    return BadRequest(new { success = false, errors });
+                }
                 return View(model);
+            }
 
             // Try to find the user first
             var user = await _signInManager.UserManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return BadRequest(new { success = false, errors = new[] { "Invalid email or password." } });
+                }
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                 return View(model);
             }
@@ -129,6 +143,10 @@ namespace CarRentalSystem.Web.Controllers
             var hasPassword = await _signInManager.UserManager.HasPasswordAsync(user);
             if (!hasPassword)
             {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return BadRequest(new { success = false, errors = new[] { "No password set for this account. Please use Google login or contact support." } });
+                }
                 ModelState.AddModelError(string.Empty, "No password set for this account. Please set a password first.");
                 return View(model);
             }
@@ -142,6 +160,13 @@ namespace CarRentalSystem.Web.Controllers
 
             if (result.Succeeded)
             {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return Ok(new { success = true, redirectUrl = user != null && await _signInManager.UserManager.IsInRoleAsync(user, "Admin") 
+                        ? Url.Action("Index", "Admin") 
+                        : Url.Action("Index", "Dashboard") });
+                }
+                
                 if (user != null && await _signInManager.UserManager.IsInRoleAsync(user, "Admin"))
                 {
                     return LocalRedirect(returnUrl ?? Url.Action("Index", "Admin"));
@@ -150,6 +175,12 @@ namespace CarRentalSystem.Web.Controllers
                 {
                     return LocalRedirect(returnUrl ?? Url.Action("Index", "Dashboard"));
                 }
+            }
+
+            // Login failed
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return BadRequest(new { success = false, errors = new[] { "Invalid email or password." } });
             }
 
             // Debug information
