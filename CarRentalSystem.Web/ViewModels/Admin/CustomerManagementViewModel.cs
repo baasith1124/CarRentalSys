@@ -33,6 +33,7 @@ namespace CarRentalSystem.Web.ViewModels.Admin
 
     public class EditCustomerViewModel : UpdateCustomerCommand
     {
-        // Additional properties for the view if needed
+        [Display(Name = "Profile Image")]
+        public IFormFile? ProfileImage { get; set; }
     }
 }

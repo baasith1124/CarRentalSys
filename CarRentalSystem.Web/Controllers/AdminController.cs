@@ -1,6 +1,7 @@
 using AutoMapper;
 using CarRentalSystem.Application.Common.Interfaces;
 using CarRentalSystem.Application.Contracts.Booking;
+using CarRentalSystem.Infrastructure.Persistence.Seeders;
 using CarRentalSystem.Application.Contracts.Car;
 using CarRentalSystem.Application.Contracts.KYC;
 using CarRentalSystem.Application.Contracts.Customer;
@@ -17,6 +18,7 @@ using CarRentalSystem.Application.Features.KYC.Queries.GetKYCById;
 using CarRentalSystem.Application.Features.Bookings.Queries.GetAllBookings;
 using CarRentalSystem.Application.Features.Bookings.Queries.GetBookingById;
 using CarRentalSystem.Application.Features.Bookings.Queries.GetBookingStatusIdByName;
+using Microsoft.EntityFrameworkCore;
 using CarRentalSystem.Application.Features.Bookings.Queries.GetPaymentStatusIdByName;
 using CarRentalSystem.Application.Features.Bookings.Commands.UpdateBookingStatus;
 using CarRentalSystem.Application.Features.Bookings.Queries.GetBookingKPIData;
@@ -44,8 +46,8 @@ using OfficeOpenXml.Style;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
-using CarRentalSystem.Application.Common.Interfaces;
 using CarRentalSystem.Application.Helpers.EmailTemplates;
+using CarRentalSystem.Infrastructure.Persistence;
 
 namespace CarRentalSystem.Web.Controllers
 {
@@ -59,8 +61,12 @@ namespace CarRentalSystem.Web.Controllers
         private readonly IWebHostEnvironment _env;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailService _emailService;
+        private readonly IGoogleMapsService _googleMapsService;
+        private readonly ApplicationDbContext _context;
+        private readonly IBookingTimeoutService _bookingTimeoutService;
+        private readonly IBookingRepository _bookingRepository;
 
-        public AdminController(IMediator mediator, IMapper mapper, ICarRepository carRepository, IWebHostEnvironment env, UserManager<ApplicationUser> userManager, IEmailService emailService)
+        public AdminController(IMediator mediator, IMapper mapper, ICarRepository carRepository, IWebHostEnvironment env, UserManager<ApplicationUser> userManager, IEmailService emailService, IGoogleMapsService googleMapsService, ApplicationDbContext context, IBookingTimeoutService bookingTimeoutService, IBookingRepository bookingRepository)
         {
             _mediator = mediator;
             _mapper = mapper;
@@ -68,6 +74,10 @@ namespace CarRentalSystem.Web.Controllers
             _env = env;
             _userManager = userManager;
             _emailService = emailService;
+            _googleMapsService = googleMapsService;
+            _context = context;
+            _bookingTimeoutService = bookingTimeoutService;
+            _bookingRepository = bookingRepository;
         }
 
         private bool IsAdmin()
@@ -85,7 +95,8 @@ namespace CarRentalSystem.Web.Controllers
 
 
         [HttpGet]
-        [Route("")]
+        [Route("Admin")]
+        [Route("Admin/Index")]
         public async Task<IActionResult> Index()
         {
             try
@@ -123,6 +134,7 @@ namespace CarRentalSystem.Web.Controllers
                 ViewBag.TotalBookings = totalBookings;
                 ViewBag.ConfirmedBookings = confirmedBookings;
                 ViewBag.ActiveCustomers = activeCustomers;
+                ViewBag.GoogleMapsApiKey = await _googleMapsService.GetApiKeyAsync();
 
                 Console.WriteLine($"Dashboard loaded - Revenue: ${totalRevenue:N2}, Bookings: {totalBookings}, Customers: {customers.Count}");
 
@@ -434,7 +446,7 @@ namespace CarRentalSystem.Web.Controllers
                     return RedirectToAction("Customers");
                 }
 
-                var command = new UpdateCustomerCommand
+                var viewModel = new EditCustomerViewModel
                 {
                     CustomerId = customer.Id,
                     FullName = customer.FullName,
@@ -444,7 +456,7 @@ namespace CarRentalSystem.Web.Controllers
                     Address = customer.Address
                 };
 
-                return View(command);
+                return View(viewModel);
             }
             catch (Exception ex)
             {
@@ -455,9 +467,9 @@ namespace CarRentalSystem.Web.Controllers
 
         [HttpPost]
         [Route("Customers/Edit/{customerId}")]
-        public async Task<IActionResult> EditCustomer(Guid customerId, UpdateCustomerCommand command)
+        public async Task<IActionResult> EditCustomer(Guid customerId, EditCustomerViewModel model)
         {
-            if (customerId != command.CustomerId)
+            if (customerId != model.CustomerId)
             {
                 TempData["Error"] = "Customer ID mismatch.";
                 return RedirectToAction("Customers");
@@ -465,11 +477,60 @@ namespace CarRentalSystem.Web.Controllers
 
             if (!ModelState.IsValid)
             {
-                return View(command);
+                return View(model);
             }
 
             try
             {
+                // Handle profile image upload
+                string? imagePath = model.ProfileImagePath; // Keep existing path by default
+                
+                if (model.ProfileImage != null && model.ProfileImage.Length > 0)
+                {
+                    // Validate file
+                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+                    var fileExtension = Path.GetExtension(model.ProfileImage.FileName).ToLowerInvariant();
+                    
+                    if (!allowedExtensions.Contains(fileExtension))
+                    {
+                        ModelState.AddModelError("ProfileImage", "Please upload a valid image file (JPG, PNG, GIF).");
+                        return View(model);
+                    }
+                    
+                    if (model.ProfileImage.Length > 5 * 1024 * 1024) // 5MB limit
+                    {
+                        ModelState.AddModelError("ProfileImage", "File size must be less than 5MB.");
+                        return View(model);
+                    }
+                    
+                    // Save the uploaded file
+                    var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads", "profiles");
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+                    
+                    var fileName = $"{model.CustomerId}_{DateTime.Now:yyyyMMddHHmmss}{fileExtension}";
+                    var filePath = Path.Combine(uploadsFolder, fileName);
+                    
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.ProfileImage.CopyToAsync(stream);
+                    }
+                    
+                    imagePath = $"/uploads/profiles/{fileName}";
+                }
+
+                var command = new UpdateCustomerCommand
+                {
+                    CustomerId = model.CustomerId,
+                    FullName = model.FullName,
+                    Email = model.Email,
+                    ProfileImagePath = imagePath,
+                    NIC = model.NIC,
+                    Address = model.Address
+                };
+
                 var result = await _mediator.Send(command);
                 if (result)
                 {
@@ -484,7 +545,7 @@ namespace CarRentalSystem.Web.Controllers
             catch (Exception ex)
             {
                 TempData["Error"] = "Error updating customer: " + ex.Message;
-                return View(command);
+                return View(model);
             }
         }
 
@@ -960,6 +1021,18 @@ namespace CarRentalSystem.Web.Controllers
 
                 Console.WriteLine($"GetBookingDetails: Found booking - Status: {booking.BookingStatus}, Payment: {booking.PaymentStatus}");
 
+                var routeSimulationButton = "";
+                if (booking.PickupLatitude.HasValue && booking.PickupLongitude.HasValue && 
+                    booking.DropLatitude.HasValue && booking.DropLongitude.HasValue)
+                {
+                    routeSimulationButton = $@"
+                        <div class='mt-3'>
+                            <button type='button' class='btn btn-outline-primary btn-sm' onclick='openRouteSimulation({booking.PickupLatitude}, {booking.PickupLongitude}, {booking.DropLatitude}, {booking.DropLongitude}, ""{booking.PickupLocation}"", ""{booking.DropLocation}"")'>
+                                <i class='bi bi-map'></i> View Route Simulation
+                            </button>
+                        </div>";
+                }
+
                 var html = $@"
                     <div class='row'>
                         <div class='col-md-6'>
@@ -976,7 +1049,9 @@ namespace CarRentalSystem.Web.Controllers
                             <h6>Car Information</h6>
                             <p><strong>Car:</strong> {booking.CarName}</p>
                             <p><strong>Pickup Location:</strong> {booking.PickupLocation}</p>
+                            <p><strong>Drop Location:</strong> {booking.DropLocation}</p>
                             <p><strong>Customer:</strong> {booking.CustomerName}</p>
+                            {routeSimulationButton}
                         </div>
                     </div>";
 
@@ -1192,6 +1267,159 @@ namespace CarRentalSystem.Web.Controllers
                 // Don't throw exception as this shouldn't prevent customer creation
             }
         }
+
+        [HttpPost]
+        [Route("Admin/UpdateBookingLocations")]
+        public async Task<IActionResult> UpdateBookingLocations()
+        {
+            try
+            {
+                var seeder = new BookingLocationSeeder(_context);
+                await seeder.SeedBookingLocationsAsync();
+                
+                TempData["Success"] = "Booking locations updated successfully!";
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating booking locations: {ex.Message}");
+                TempData["Error"] = "Error updating booking locations: " + ex.Message;
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        [Route("Admin/GetDashboardData")]
+        public async Task<IActionResult> GetDashboardData()
+        {
+            try
+            {
+                var pendingCars = await _mediator.Send(new GetCarsByApprovalStatusQuery("Pending"));
+                var kycUploads = await _mediator.Send(new GetAllKYCUploadsQuery());
+                var bookings = await _mediator.Send(new GetAllBookingsQuery());
+                var customers = await _mediator.Send(new GetAllCustomersQuery());
+
+                // Calculate metrics
+                var totalRevenue = bookings.Where(b => b.PaymentStatus != null && b.PaymentStatus.Name == "Paid").Sum(b => b.TotalCost);
+                var totalBookings = bookings.Count;
+                var confirmedBookings = bookings.Count(b => b.BookingStatus != null && b.BookingStatus.Name == "Confirmed");
+
+                var dashboardData = new
+                {
+                    pendingCarsCount = pendingCars.Count,
+                    pendingKYCCount = kycUploads.Count(c => c.Status == "Pending"),
+                    totalRevenue = totalRevenue,
+                    totalBookings = totalBookings,
+                    confirmedBookings = confirmedBookings,
+                    totalCustomers = customers.Count
+                };
+
+                return Json(dashboardData);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting dashboard data: {ex.Message}");
+                return Json(new { error = "Failed to load dashboard data" });
+            }
+        }
+
+        [HttpGet]
+        [Route("Admin/TestCoordinates")]
+        public async Task<IActionResult> TestCoordinates()
+        {
+            try
+            {
+                // Get a sample booking to test coordinates
+                var bookings = await _mediator.Send(new GetAllBookingsQuery());
+                var sampleBooking = bookings.FirstOrDefault();
+                
+                if (sampleBooking == null)
+                {
+                    return Json(new { message = "No bookings found to test coordinates" });
+                }
+
+                var coordinateInfo = new
+                {
+                    bookingId = sampleBooking.BookingId,
+                    pickupLocation = sampleBooking.PickupLocation,
+                    dropLocation = sampleBooking.DropLocation,
+                    pickupLatitude = sampleBooking.PickupLatitude,
+                    pickupLongitude = sampleBooking.PickupLongitude,
+                    dropLatitude = sampleBooking.DropLatitude,
+                    dropLongitude = sampleBooking.DropLongitude,
+                    hasCoordinates = sampleBooking.PickupLatitude.HasValue && sampleBooking.DropLatitude.HasValue
+                };
+
+                return Json(coordinateInfo);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error testing coordinates: {ex.Message}");
+                return Json(new { error = "Failed to test coordinates" });
+            }
+        }
+
+        [HttpPost]
+        [Route("Admin/ProcessBookingTimeouts")]
+        public async Task<IActionResult> ProcessBookingTimeouts()
+        {
+            try
+            {
+                await _bookingTimeoutService.ProcessBookingTimeoutsAsync(CancellationToken.None);
+                TempData["Success"] = "Booking timeouts processed successfully!";
+                return Json(new { success = true, message = "Booking timeouts processed successfully!" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error processing booking timeouts: {ex.Message}");
+                TempData["Error"] = "Error processing booking timeouts: " + ex.Message;
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        [Route("Admin/TestAvailability/{carId}")]
+        public async Task<IActionResult> TestAvailability(Guid carId, DateTime pickupDate, DateTime dropDate)
+        {
+            try
+            {
+                var isAvailable = await _bookingRepository.IsCarAvailableAsync(carId, pickupDate, dropDate, CancellationToken.None);
+                
+                // Get all bookings for this car to show what's blocking it
+                var allBookings = await _context.Bookings
+                    .Include(b => b.BookingStatus)
+                    .Include(b => b.PaymentStatus)
+                    .Where(b => b.CarId == carId)
+                    .ToListAsync();
+
+                var result = new
+                {
+                    carId = carId,
+                    pickupDate = pickupDate,
+                    dropDate = dropDate,
+                    isAvailable = isAvailable,
+                    conflictingBookings = allBookings.Where(b => 
+                        b.BookingStatus.Name != "Cancelled" &&
+                        (pickupDate < b.ReturnDate && dropDate > b.PickupDate)
+                    ).Select(b => new
+                    {
+                        bookingId = b.BookingId,
+                        bookingStatus = b.BookingStatus.Name,
+                        paymentStatus = b.PaymentStatus.Name,
+                        bookingPickup = b.PickupDate,
+                        bookingReturn = b.ReturnDate,
+                        createdAt = b.CreatedAt
+                    }).ToList()
+                };
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+            }
+        }
+
 
         #endregion
     }

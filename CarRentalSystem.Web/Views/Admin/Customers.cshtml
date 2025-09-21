@@ -260,15 +260,6 @@
                                                     <button type="button" class="btn btn-outline-info btn-sm hover-lift" onclick="viewCustomerDetails('@customer.Id')" title="View Details">
                                                         <i class="bi bi-eye"></i>
                                                     </button>
-                                                    <button type="button" class="btn btn-outline-success btn-sm hover-lift" onclick="viewCustomerBookings('@customer.Id')" title="View Bookings">
-                                                        <i class="bi bi-calendar-check"></i>
-                                                    </button>
-                                                    @if (!customer.IsKycVerified)
-                                                    {
-                                                        <button type="button" class="btn btn-outline-warning btn-sm hover-lift" onclick="viewKYCStatus('@customer.Id')" title="Check KYC">
-                                                            <i class="bi bi-file-earmark-check"></i>
-                                                        </button>
-                                                    }
                                                     <button type="button" class="btn btn-outline-danger btn-sm hover-lift" onclick="deleteCustomer('@customer.Id', '@customer.FullName')" title="Delete Customer">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
@@ -356,9 +347,6 @@
                                                 <button type="button" class="btn btn-outline-info btn-sm" onclick="viewCustomerDetails('@customer.Id')" title="View">
                                                     <i class="bi bi-eye"></i>
                                                 </button>
-                                                <button type="button" class="btn btn-outline-success btn-sm" onclick="viewCustomerBookings('@customer.Id')" title="Bookings">
-                                                    <i class="bi bi-calendar-check"></i>
-                                                </button>
                                                 <button type="button" class="btn btn-outline-danger btn-sm" onclick="deleteCustomer('@customer.Id', '@customer.FullName')" title="Delete">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
@@ -406,22 +394,6 @@
     </div>
 </div>
 
-<!-- Customer Bookings Modal -->
-<div class="modal fade" id="customerBookingsModal" tabindex="-1">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="bi bi-calendar-check"></i> Customer Bookings
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body" id="customerBookingsContent">
-                <!-- Customer bookings will be loaded here -->
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Delete Confirmation Modal -->
 <div class="modal fade" id="deleteCustomerModal" tabindex="-1">
@@ -566,63 +538,6 @@
             }, 500);
         }
         
-        // Enhanced view customer bookings
-        function viewCustomerBookings(customerId) {
-            showNotification('Loading customer bookings...', 'info', 2000);
-            
-            setTimeout(() => {
-                const modal = new bootstrap.Modal(document.getElementById('customerBookingsModal'));
-                document.getElementById('customerBookingsContent').innerHTML = `
-                    <div class="text-center">
-                        <div class="loading-spinner mb-3"></div>
-                        <p>Loading booking history...</p>
-                    </div>
-                `;
-                modal.show();
-                
-                setTimeout(() => {
-                    document.getElementById('customerBookingsContent').innerHTML = `
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Booking ID</th>
-                                        <th>Car</th>
-                                        <th>Dates</th>
-                                        <th>Status</th>
-                                        <th>Amount</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>BK001</td>
-                                        <td>Toyota Camry</td>
-                                        <td>2024-01-15 to 2024-01-20</td>
-                                        <td><span class="badge bg-success">Completed</span></td>
-                                        <td>$250.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td>BK002</td>
-                                        <td>Honda Civic</td>
-                                        <td>2024-01-25 to 2024-01-30</td>
-                                        <td><span class="badge bg-warning">Active</span></td>
-                                        <td>$200.00</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    `;
-                }, 1500);
-            }, 500);
-        }
-        
-        // View KYC status
-        function viewKYCStatus(customerId) {
-            showNotification('Redirecting to KYC management...', 'info', 2000);
-            setTimeout(() => {
-                window.location.href = '/Admin/KYC';
-            }, 1000);
-        }
         
         // Enhanced delete customer
         function deleteCustomer(customerId, customerName) {

@@ -562,7 +562,8 @@ body {
     position: relative;
     min-height: 100vh;
     background: transparent;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -608,6 +609,43 @@ body {
 
 .dashboard-header:hover {
     box-shadow: var(--glass-shadow-colored);
+}
+
+/* WhatsApp Contact Button */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-right: 1rem;
+}
+
+.btn-whatsapp {
+    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+    border: 2px solid rgba(37, 211, 102, 0.3);
+    color: white;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-smooth);
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+    font-weight: 600;
+    min-width: 50px;
+    height: 50px;
+}
+
+.btn-whatsapp:hover {
+    background: linear-gradient(135deg, #128C7E 0%, #25D366 100%);
+    border-color: rgba(37, 211, 102, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+    color: white;
+}
+
+.btn-whatsapp i {
+    font-size: 1.2rem;
 }
 
 .header-left {
@@ -1305,6 +1343,44 @@ body {
 @media (max-width: 768px) {
     .mobile-header {
         display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem;
+        background: var(--gradient-dark);
+        border-bottom: 1px solid var(--glass-border);
+        position: relative;
+        z-index: 1020;
+        width: 100%;
+    }
+    
+    .sidebar-toggle-mobile {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        color: var(--text-primary);
+        padding: 0.75rem;
+        border-radius: var(--radius-md);
+        font-size: 1.25rem;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        pointer-events: auto !important;
+        z-index: 1080;
+        position: relative;
+    }
+    
+    .sidebar-toggle-mobile:hover {
+        background: var(--glass-bg-light);
+        transform: scale(1.05);
+    }
+    
+    .sidebar-toggle-mobile:active {
+        pointer-events: auto !important;
+    }
+    
+    .mobile-title {
+        color: var(--text-primary);
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0;
     }
     
     .user-sidebar {
@@ -1312,11 +1388,145 @@ body {
         min-width: 100%;
         transform: translateX(-100%);
         transition: var(--transition-smooth);
-        z-index: 1050;
+        z-index: 1070;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        pointer-events: none;
+        background: var(--gradient-dark);
+        overflow-y: auto;
+        overflow-x: hidden;
     }
     
     .user-sidebar.show {
         transform: translateX(0);
+        pointer-events: auto;
+    }
+    
+    .user-sidebar .sidebar-header,
+    .user-sidebar .sidebar-menu,
+    .user-sidebar .sidebar-footer {
+        pointer-events: auto !important;
+        position: relative;
+        z-index: 1071;
+    }
+    
+    .user-sidebar .sidebar-menu {
+        overflow-y: auto;
+        flex: 1;
+    }
+    
+    .user-sidebar .nav {
+        pointer-events: auto !important;
+    }
+    
+    .user-sidebar .nav-item {
+        pointer-events: auto !important;
+    }
+    
+    .user-sidebar .nav-link {
+        pointer-events: auto !important;
+        position: relative;
+        z-index: 1072;
+        cursor: pointer;
+        display: block;
+        width: 100%;
+        text-decoration: none;
+        background: transparent;
+        border: none;
+        padding: 1rem;
+        margin: 0;
+    }
+    
+    .user-sidebar .nav-link:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    .user-sidebar .nav-link:active {
+        background: rgba(255, 255, 255, 0.2) !important;
+        transform: scale(0.98);
+    }
+    
+    .user-sidebar .nav-link:hover {
+        pointer-events: auto !important;
+    }
+    
+    .user-sidebar .nav-link:active {
+        pointer-events: auto !important;
+    }
+    
+    /* Ensure mobile sidebar is fully clickable */
+    .user-sidebar.show {
+        pointer-events: auto !important;
+        backdrop-filter: none !important;
+        filter: none !important;
+        opacity: 1 !important;
+    }
+    
+    .user-sidebar.show * {
+        pointer-events: auto !important;
+        backdrop-filter: none !important;
+        filter: none !important;
+    }
+    
+    /* Fix any potential touch issues */
+    .user-sidebar .nav-link {
+        -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+        touch-action: manipulation;
+    }
+    
+    /* Override any global blur effects on mobile sidebar */
+    @media (max-width: 768px) {
+        .user-sidebar,
+        .user-sidebar *,
+        .user-sidebar.show,
+        .user-sidebar.show * {
+            backdrop-filter: none !important;
+            filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            -webkit-filter: none !important;
+        }
+        
+        /* Ensure all interactive elements are clickable */
+        .user-sidebar.show .nav-link,
+        .user-sidebar.show .nav-item,
+        .user-sidebar.show .sidebar-header,
+        .user-sidebar.show .sidebar-menu,
+        .user-sidebar.show .sidebar-footer {
+            pointer-events: auto !important;
+            cursor: pointer;
+        }
+        
+        /* Force clickability on all link elements */
+        .user-sidebar.show a,
+        .user-sidebar.show a *,
+        .user-sidebar.show .enhanced-nav-link,
+        .user-sidebar.show .enhanced-nav-link * {
+            pointer-events: auto !important;
+            cursor: pointer !important;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        
+        /* Make sure the sidebar itself is interactive */
+        .user-sidebar.show {
+            pointer-events: auto !important;
+            touch-action: manipulation;
+        }
+    }
+    
+    .mobile-sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1040;
+        pointer-events: auto;
     }
     
     .user-content {

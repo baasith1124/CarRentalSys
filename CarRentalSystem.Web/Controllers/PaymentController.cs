@@ -21,13 +21,15 @@ namespace CarRentalSystem.Web.Controllers
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly IBookingRepository _bookingRepository;
+        private readonly IPdfService _pdfService;
 
-        public PaymentController(IMediator mediator, IMapper mapper, IConfiguration configuration, IBookingRepository bookingRepository)
+        public PaymentController(IMediator mediator, IMapper mapper, IConfiguration configuration, IBookingRepository bookingRepository, IPdfService pdfService)
         {
             _mediator = mediator;
             _mapper = mapper;
             _configuration = configuration;
             _bookingRepository = bookingRepository;
+            _pdfService = pdfService;
             
             // Initialize Stripe
             StripeConfiguration.ApiKey = _configuration["Stripe:SecretKey"];
@@ -139,6 +141,14 @@ namespace CarRentalSystem.Web.Controllers
 
                     await _mediator.Send(updateBookingStatusCommand);
 
+                    // Check if booking has coordinates, if not, try to geocode the locations
+                    var booking = await _mediator.Send(new GetBookingByIdQuery { BookingId = request.BookingId });
+                    if (booking != null && (!booking.PickupLatitude.HasValue || !booking.DropLatitude.HasValue))
+                    {
+                        // Try to geocode the locations if coordinates are missing
+                        await TryGeocodeBookingLocations(request.BookingId, booking.PickupLocation, booking.DropLocation);
+                    }
+
                     // Create invoice
                     var createInvoiceCommand = new CreateInvoiceCommand
                     {
@@ -221,6 +231,87 @@ namespace CarRentalSystem.Web.Controllers
             return View();
         }
 
+        [HttpGet]
+        [Route("DownloadReceipt/{bookingId}")]
+        public async Task<IActionResult> DownloadReceipt(Guid bookingId)
+        {
+            try
+            {
+                // Get booking details
+                var booking = await _mediator.Send(new GetBookingByIdQuery { BookingId = bookingId });
+                
+                if (booking == null)
+                {
+                    TempData["Error"] = "Booking not found.";
+                    return RedirectToAction("Index", "Home");
+                }
+
+                // Verify that the booking belongs to the current user
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (userId == null || booking.CustomerId != Guid.Parse(userId))
+                {
+                    TempData["Error"] = "You can only download receipts for your own bookings.";
+                    return RedirectToAction("Index", "Home");
+                }
+
+                // Generate receipt PDF
+                var pdfBytes = await _pdfService.GenerateReceiptPdfAsync(booking, $"RCP-{bookingId.ToString().Substring(0, 8)}", booking.TotalCost);
+                
+                var fileName = $"Receipt_{bookingId.ToString().Substring(0, 8)}_{DateTime.Now:yyyyMMdd}.pdf";
+                return File(pdfBytes, "application/pdf", fileName);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error generating receipt.";
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        // Helper method to geocode booking locations
+        private async Task TryGeocodeBookingLocations(Guid bookingId, string pickupLocation, string dropLocation)
+        {
+            try
+            {
+                // This is a simple implementation - in production, you'd want to use a proper geocoding service
+                // For now, we'll use a basic approach with sample coordinates
+                
+                // You could integrate with Google Geocoding API here
+                // For demonstration, we'll use some sample coordinates
+                var sampleCoordinates = new Dictionary<string, (double lat, double lng)>
+                {
+                    { "New York", (40.7128, -74.0060) },
+                    { "Los Angeles", (34.0522, -118.2437) },
+                    { "Chicago", (41.8781, -87.6298) },
+                    { "Houston", (29.7604, -95.3698) },
+                    { "Phoenix", (33.4484, -112.0740) },
+                    { "Philadelphia", (39.9526, -75.1652) },
+                    { "San Antonio", (29.4241, -98.4936) },
+                    { "San Diego", (32.7157, -117.1611) },
+                    { "Dallas", (32.7767, -96.7970) },
+                    { "San Jose", (37.3382, -121.8863) }
+                };
+
+                // Try to find coordinates for pickup location
+                var pickupCoords = sampleCoordinates.FirstOrDefault(x => 
+                    pickupLocation.Contains(x.Key, StringComparison.OrdinalIgnoreCase));
+                
+                // Try to find coordinates for drop location
+                var dropCoords = sampleCoordinates.FirstOrDefault(x => 
+                    dropLocation.Contains(x.Key, StringComparison.OrdinalIgnoreCase));
+
+                // Update booking with coordinates if found
+                if (pickupCoords.Key != null || dropCoords.Key != null)
+                {
+                    // You would need to add an UpdateBookingCoordinates command here
+                    // For now, we'll just log that we would update the coordinates
+                    Console.WriteLine($"Would update booking {bookingId} with coordinates: Pickup: {pickupCoords.Value}, Drop: {dropCoords.Value}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error geocoding booking locations: {ex.Message}");
+            }
+        }
     }
 
     public class CreatePaymentIntentRequest

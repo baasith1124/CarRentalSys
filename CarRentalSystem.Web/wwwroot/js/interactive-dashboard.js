@@ -29,16 +29,25 @@ class InteractiveDashboard {
     }
 
     setupEventListeners() {
-        // Sidebar navigation
-        document.querySelectorAll('.enhanced-nav-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                this.handleNavClick(e);
+        // Sidebar navigation - only add listeners on desktop
+        if (window.innerWidth > 768) {
+            document.querySelectorAll('.enhanced-nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    this.handleNavClick(e);
+                });
+                
+                link.addEventListener('mouseenter', (e) => {
+                    this.handleNavHover(e);
+                });
             });
-            
-            link.addEventListener('mouseenter', (e) => {
-                this.handleNavHover(e);
+        } else {
+            // On mobile, just add basic click logging
+            document.querySelectorAll('.enhanced-nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    console.log('Mobile nav link clicked:', e.target);
+                });
             });
-        });
+        }
 
         // Metric cards
         document.querySelectorAll('.metric-card').forEach(card => {
@@ -425,14 +434,22 @@ class InteractiveDashboard {
     }
 
     handleNavClick(e) {
+        console.log('Nav link clicked:', e.target);
+        
         // Add click animation
-        e.target.closest('.enhanced-nav-link').classList.add('nav-clicked');
-        setTimeout(() => {
-            e.target.closest('.enhanced-nav-link').classList.remove('nav-clicked');
-        }, 300);
+        const navLink = e.target.closest('.enhanced-nav-link');
+        if (navLink) {
+            navLink.classList.add('nav-clicked');
+            setTimeout(() => {
+                navLink.classList.remove('nav-clicked');
+            }, 300);
+        }
 
         // Add ripple effect
         this.createRippleEffect(e);
+        
+        // Don't prevent default - let the link work normally
+        console.log('Navigation should proceed normally');
     }
 
     handleNavHover(e) {
@@ -527,18 +544,9 @@ class InteractiveDashboard {
     createMobileOverlay() {
         const overlay = document.createElement('div');
         overlay.className = 'mobile-sidebar-overlay';
-        overlay.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(5px);
-            z-index: 1040;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        `;
+        // Use CSS classes instead of inline styles
+        overlay.style.opacity = '0';
+        overlay.style.transition = 'opacity 0.3s ease';
 
         overlay.addEventListener('click', () => {
             this.toggleMobileSidebar();

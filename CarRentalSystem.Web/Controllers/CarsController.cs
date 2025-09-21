@@ -44,6 +44,71 @@ namespace CarRentalSystem.Web.Controllers
                 FuelType = query.FuelType,
                 PickupDate = query.PickupDate,
                 DropDate = query.DropDate,
+                PickupLocation = query.PickupLocation,
+                DropLocation = query.DropLocation,
+                Brands = brands,
+                Transmissions = transmissions,
+                FuelTypes = fuelTypes,
+                MinYear = query.MinYear ?? 2000,
+                MaxYear = query.MaxYear ?? DateTime.Now.Year
+            };
+
+            // Pass Google Places API key to the view
+            ViewBag.GooglePlacesApiKey = _googleSettings.PlacesApiKey;
+
+            return View("SearchResults", resultViewModel);
+        }
+
+        [HttpGet]
+        [Route("cars/search")]
+        public async Task<IActionResult> SearchWithFilters([FromQuery] SearchCarsQuery query)
+        {
+            // Get search parameters from session if not provided in query
+            if (query.PickupDate == default)
+            {
+                var pickupDateStr = HttpContext.Session.GetString("PickupDate");
+                if (!string.IsNullOrEmpty(pickupDateStr))
+                {
+                    query.PickupDate = DateTime.Parse(pickupDateStr);
+                }
+            }
+
+            if (query.DropDate == default)
+            {
+                var dropDateStr = HttpContext.Session.GetString("DropDate");
+                if (!string.IsNullOrEmpty(dropDateStr))
+                {
+                    query.DropDate = DateTime.Parse(dropDateStr);
+                }
+            }
+
+            if (string.IsNullOrEmpty(query.PickupLocation))
+            {
+                query.PickupLocation = HttpContext.Session.GetString("PickupLocation") ?? "";
+            }
+
+            if (string.IsNullOrEmpty(query.DropLocation))
+            {
+                query.DropLocation = HttpContext.Session.GetString("DropLocation") ?? "";
+            }
+
+            var cars = await _mediator.Send(query);
+
+            // Extract unique values from the result for filters
+            var brands = cars.Select(c => c.Name).Distinct().ToList();
+            var transmissions = cars.Select(c => c.Transmission).Distinct().ToList();
+            var fuelTypes = cars.Select(c => c.FuelType).Distinct().ToList();
+
+            var resultViewModel = new CarSearchResultViewModel
+            {
+                Cars = cars,
+                Brand = query.Brand,
+                Transmission = query.Transmission,
+                FuelType = query.FuelType,
+                PickupDate = query.PickupDate,
+                DropDate = query.DropDate,
+                PickupLocation = query.PickupLocation,
+                DropLocation = query.DropLocation,
                 Brands = brands,
                 Transmissions = transmissions,
                 FuelTypes = fuelTypes,

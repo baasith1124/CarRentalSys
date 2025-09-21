@@ -43,6 +43,15 @@ namespace CarRentalSystem.Infrastructure.Migrations
                     b.Property<Guid>("CustomerId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<double?>("DropLatitude")
+                        .HasColumnType("float");
+
+                    b.Property<string>("DropLocation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("DropLongitude")
+                        .HasColumnType("float");
+
                     b.Property<Guid?>("InvoiceId")
                         .HasColumnType("uniqueidentifier");
 
@@ -51,6 +60,15 @@ namespace CarRentalSystem.Infrastructure.Migrations
 
                     b.Property<DateTime>("PickupDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<double?>("PickupLatitude")
+                        .HasColumnType("float");
+
+                    b.Property<string>("PickupLocation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("PickupLongitude")
+                        .HasColumnType("float");
 
                     b.Property<DateTime>("ReturnDate")
                         .HasColumnType("datetime2");
@@ -316,9 +334,6 @@ namespace CarRentalSystem.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("CustomerId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -334,11 +349,52 @@ namespace CarRentalSystem.Infrastructure.Migrations
 
                     b.HasKey("NotificationId");
 
-                    b.HasIndex("CustomerId");
-
                     b.HasIndex("UserId");
 
                     b.ToTable("Notifications");
+                });
+
+            modelBuilder.Entity("CarRentalSystem.Domain.Entities.OTP", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Purpose")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("UsedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email", "Purpose")
+                        .HasDatabaseName("IX_OTP_Email_Purpose");
+
+                    b.ToTable("OTPs");
                 });
 
             modelBuilder.Entity("CarRentalSystem.Domain.Entities.Payment", b =>
@@ -619,7 +675,7 @@ namespace CarRentalSystem.Infrastructure.Migrations
                     b.HasOne("CarRentalSystem.Domain.Entities.Customer", "Customer")
                         .WithMany("Bookings")
                         .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("CarRentalSystem.Domain.Entities.Invoice", "Invoice")
@@ -700,10 +756,6 @@ namespace CarRentalSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("CarRentalSystem.Domain.Entities.Notification", b =>
                 {
-                    b.HasOne("CarRentalSystem.Domain.Entities.Customer", null)
-                        .WithMany("Notifications")
-                        .HasForeignKey("CustomerId");
-
                     b.HasOne("CarRentalSystem.Infrastructure.Identity.ApplicationUser", null)
                         .WithMany("Notifications")
                         .HasForeignKey("UserId")
@@ -800,8 +852,6 @@ namespace CarRentalSystem.Infrastructure.Migrations
                     b.Navigation("Bookings");
 
                     b.Navigation("KYCUploads");
-
-                    b.Navigation("Notifications");
                 });
 
             modelBuilder.Entity("CarRentalSystem.Domain.Entities.Payment", b =>

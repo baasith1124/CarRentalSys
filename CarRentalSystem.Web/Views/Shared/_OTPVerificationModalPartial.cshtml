@@ -1,0 +1,478 @@
+<div class="modal fade" id="otpVerificationModal" tabindex="-1" aria-labelledby="otpVerificationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content otp-modal-3d">
+            <!-- Enhanced Modal Header with 3D Effects -->
+            <div class="modal-header otp-header-3d">
+                <div class="header-content-3d">
+                    <div class="otp-icon-3d">
+                        <i class="bi bi-car-front-fill"></i>
+                        <div class="icon-glow-3d"></div>
+                    </div>
+                    <div class="header-text-3d">
+                        <h5 class="modal-title otp-title-3d" id="otpVerificationModalLabel">
+                            <span class="title-gradient">🚗 Complete Your Registration</span>
+                        </h5>
+                        <p class="otp-subtitle-3d">Enter the 6-digit verification code sent to your email</p>
+                    </div>
+                </div>
+            </div>
+
+            <form id="otpVerificationForm">
+                @Html.AntiForgeryToken()
+                <div class="modal-body otp-body-3d">
+                    <!-- OTP Input Fields -->
+                    <div class="otp-input-container">
+                        <div class="otp-input-group">
+                            <input type="text" class="otp-input" maxlength="1" data-index="0" />
+                            <input type="text" class="otp-input" maxlength="1" data-index="1" />
+                            <input type="text" class="otp-input" maxlength="1" data-index="2" />
+                            <input type="text" class="otp-input" maxlength="1" data-index="3" />
+                            <input type="text" class="otp-input" maxlength="1" data-index="4" />
+                            <input type="text" class="otp-input" maxlength="1" data-index="5" />
+                        </div>
+                    </div>
+
+                    <!-- Timer and Resend Section -->
+                    <div class="otp-timer-section">
+                        <div id="otpTimer" class="otp-timer">
+                            <span class="timer-text">Resend code in <span id="countdown">60</span>s</span>
+                        </div>
+                        <button type="button" id="resendOTPBtn" class="btn-resend-otp" disabled>
+                            <i class="bi bi-arrow-clockwise me-2"></i>Resend Code
+                        </button>
+                    </div>
+
+                    <!-- Error Display -->
+                    <div id="otpError" class="error-display-3d"></div>
+
+                    <!-- Hidden field for complete OTP -->
+                    <input type="hidden" id="completeOTP" name="otpCode" />
+                </div>
+
+                <!-- Enhanced Modal Footer -->
+                <div class="modal-footer otp-footer-3d">
+                    <button type="button" class="btn-cancel-otp" data-bs-dismiss="modal">
+                        <span class="btn-content-3d">
+                            <i class="bi bi-x-circle me-2"></i>
+                            <span class="btn-text">Cancel</span>
+                        </span>
+                        <div class="btn-glow-3d"></div>
+                    </button>
+                    <button type="submit" class="btn-verify-otp">
+                        <span class="btn-content-3d">
+                            <i class="bi bi-car-front-fill me-2"></i>
+                            <span class="btn-text">Verify & Drive</span>
+                        </span>
+                        <div class="btn-glow-3d"></div>
+                        <div class="btn-ripple-3d"></div>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* OTP Modal - Landing Page Theme Integration */
+    .otp-modal-3d {
+        border-radius: 25px;
+        box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(248, 249, 250, 0.9));
+        backdrop-filter: blur(20px);
+        transform: perspective(1000px) rotateX(0deg);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .otp-modal-3d:hover {
+        transform: perspective(1000px) rotateX(2deg) translateY(-5px);
+        box-shadow: 0 35px 100px rgba(0, 0, 0, 0.5);
+    }
+
+    .otp-header-3d {
+        background: linear-gradient(135deg, #2323FF 0%, #4A4AFF 50%, #667eea 100%);
+        border-radius: 25px 25px 0 0;
+        border: none;
+        padding: 35px 40px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .otp-header-3d::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+        animation: shimmer 4s ease-in-out infinite;
+    }
+
+    .otp-header-3d::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+        animation: slide 3s ease-in-out infinite;
+    }
+
+    @@keyframes shimmer {
+        0%, 100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+        50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    @@keyframes slide {
+        0%, 100% { transform: translateX(-100%); }
+        50% { transform: translateX(100%); }
+    }
+
+    .otp-icon-3d {
+        position: relative;
+        width: 70px;
+        height: 70px;
+        margin: 0 auto 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.25);
+        border-radius: 50%;
+        backdrop-filter: blur(15px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .otp-icon-3d i {
+        font-size: 32px;
+        color: white;
+        z-index: 2;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+
+    .icon-glow-3d {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
+        animation: pulse 2.5s ease-in-out infinite;
+    }
+
+    @@keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 0.8; }
+        50% { transform: scale(1.2); opacity: 1; }
+    }
+
+    .otp-title-3d {
+        color: white;
+        font-weight: 800;
+        font-size: 28px;
+        margin: 0;
+        text-align: center;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        letter-spacing: -0.5px;
+    }
+
+    .title-gradient {
+        background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .otp-subtitle-3d {
+        color: rgba(255, 255, 255, 0.95);
+        font-size: 16px;
+        margin: 15px 0 0;
+        text-align: center;
+        font-weight: 500;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    .otp-body-3d {
+        padding: 45px 40px;
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(248, 249, 250, 0.9));
+        backdrop-filter: blur(10px);
+    }
+
+    /* Enhanced OTP Input Styles */
+    .otp-input-container {
+        margin-bottom: 35px;
+    }
+
+    .otp-input-group {
+        display: flex;
+        justify-content: center;
+        gap: 18px;
+        margin-bottom: 25px;
+    }
+
+    .otp-input {
+        width: 55px;
+        height: 55px;
+        text-align: center;
+        font-size: 26px;
+        font-weight: 700;
+        border: 3px solid #e8ecf0;
+        border-radius: 15px;
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        color: #2d3748;
+        position: relative;
+    }
+
+    .otp-input:focus {
+        outline: none;
+        border-color: #2323FF;
+        box-shadow: 0 0 0 4px rgba(35, 35, 255, 0.15), 0 8px 25px rgba(35, 35, 255, 0.2);
+        transform: translateY(-3px) scale(1.05);
+        background: linear-gradient(145deg, #ffffff, #f0f8ff);
+    }
+
+    .otp-input.filled {
+        border-color: #10b981;
+        background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+        color: #065f46;
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.2);
+        transform: translateY(-2px);
+    }
+
+    .otp-input.error {
+        border-color: #ef4444;
+        background: linear-gradient(135deg, #fef2f2, #fecaca);
+        color: #991b1b;
+        animation: shake 0.6s ease-in-out;
+        box-shadow: 0 6px 20px rgba(239, 68, 68, 0.2);
+    }
+
+    @@keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-8px); }
+        75% { transform: translateX(8px); }
+    }
+
+    /* Enhanced Timer and Resend Section */
+    .otp-timer-section {
+        text-align: center;
+        margin-bottom: 25px;
+        padding: 20px;
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.7), rgba(248, 249, 250, 0.5));
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .otp-timer {
+        margin-bottom: 18px;
+    }
+
+    .timer-text {
+        color: #4a5568;
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    #countdown {
+        color: #2323FF;
+        font-weight: 800;
+        font-size: 18px;
+    }
+
+    .btn-resend-otp {
+        background: linear-gradient(135deg, #2323FF, #4A4AFF);
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 30px;
+        font-size: 15px;
+        font-weight: 700;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 6px 20px rgba(35, 35, 255, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-resend-otp::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn-resend-otp:hover:not(:disabled)::before {
+        left: 100%;
+    }
+
+    .btn-resend-otp:hover:not(:disabled) {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(35, 35, 255, 0.4);
+    }
+
+    .btn-resend-otp:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    /* Enhanced Modal Footer */
+    .otp-footer-3d {
+        background: linear-gradient(145deg, rgba(248, 249, 250, 0.9), rgba(233, 236, 239, 0.7));
+        border-radius: 0 0 25px 25px;
+        border: none;
+        padding: 30px 40px;
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        backdrop-filter: blur(10px);
+    }
+
+    .btn-cancel-otp, .btn-verify-otp {
+        position: relative;
+        overflow: hidden;
+        border: none;
+        padding: 14px 28px;
+        border-radius: 30px;
+        font-weight: 700;
+        font-size: 15px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-cancel-otp {
+        background: linear-gradient(135deg, #6b7280, #4b5563);
+        color: white;
+    }
+
+    .btn-cancel-otp:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(107, 114, 128, 0.4);
+    }
+
+    .btn-verify-otp {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+    }
+
+    .btn-verify-otp:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-verify-otp:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .btn-glow-3d {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.2) 50%, transparent 70%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .btn-cancel-otp:hover .btn-glow-3d,
+    .btn-verify-otp:hover .btn-glow-3d {
+        opacity: 1;
+        animation: glow-sweep 0.6s ease-out;
+    }
+
+    @@keyframes glow-sweep {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+
+    .btn-ripple-3d {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(0);
+        animation: ripple 0.6s ease-out;
+    }
+
+    @@keyframes ripple {
+        to {
+            transform: scale(4);
+            opacity: 0;
+        }
+    }
+
+    /* Enhanced Error Display */
+    .error-display-3d {
+        background: linear-gradient(135deg, #fef2f2, #fee2e2);
+        color: #991b1b;
+        padding: 18px;
+        border-radius: 15px;
+        border: 2px solid #fca5a5;
+        margin-bottom: 25px;
+        font-size: 15px;
+        font-weight: 600;
+        display: none;
+        box-shadow: 0 4px 15px rgba(239, 68, 68, 0.1);
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 576px) {
+        .otp-input-group {
+            gap: 12px;
+        }
+        
+        .otp-input {
+            width: 45px;
+            height: 45px;
+            font-size: 22px;
+        }
+        
+        .otp-footer-3d {
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .otp-body-3d {
+            padding: 35px 25px;
+        }
+
+        .otp-header-3d {
+            padding: 30px 25px;
+        }
+
+        .otp-title-3d {
+            font-size: 24px;
+        }
+    }
+
+    /* Dark theme support */
+    @@media (prefers-color-scheme: dark) {
+        .otp-modal-3d {
+            background: linear-gradient(145deg, rgba(30, 30, 30, 0.95), rgba(45, 45, 45, 0.9));
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .otp-body-3d {
+            background: linear-gradient(145deg, rgba(30, 30, 30, 0.95), rgba(45, 45, 45, 0.9));
+        }
+
+        .otp-input {
+            background: linear-gradient(145deg, #2d3748, #4a5568);
+            border-color: #4a5568;
+            color: #e2e8f0;
+        }
+
+        .otp-input:focus {
+            background: linear-gradient(145deg, #2d3748, #4a5568);
+            border-color: #2323FF;
+        }
+    }
+</style>

@@ -126,16 +126,33 @@ namespace CarRentalSystem.Infrastructure.Persistence.Repositories
                 .Include(b => b.PaymentStatus)
                 .AnyAsync(b =>
                     b.CarId == carId &&
-                    // Only consider bookings that are:
-                    // 1. Approved (confirmed bookings)
-                    // 2. Pending with Paid status (payment completed but not yet approved)
-                    (b.BookingStatus.Name == "Approved" || 
-                     (b.BookingStatus.Name == "Pending" && b.PaymentStatus.Name == "Paid")) &&
+                    // Consider bookings that are:
+                    // 1. Pending (temporary hold - blocks availability)
+                    // 2. Approved (confirmed bookings - blocks availability)
+                    // 3. Confirmed (paid bookings - blocks availability)
+                    // 4. Completed (booking in progress - blocks availability)
+                    // 5. Exclude only Cancelled bookings (these don't block availability)
+                    (b.BookingStatus.Name == "Pending" || 
+                     b.BookingStatus.Name == "Approved" || 
+                     b.BookingStatus.Name == "Confirmed" || 
+                     b.BookingStatus.Name == "Completed") &&
                     // Check for date overlap
                     (
                         (pickupDate < b.ReturnDate && returnDate > b.PickupDate)
                     ),
                     cancellationToken);
+        }
+
+        public async Task<List<Booking>> GetExpiredUnpaidBookingsAsync(DateTime cutoffTime, CancellationToken cancellationToken)
+        {
+            return await _context.Bookings
+                .Include(b => b.BookingStatus)
+                .Include(b => b.PaymentStatus)
+                .Where(b => 
+                    b.BookingStatus.Name == "Pending" &&
+                    b.PaymentStatus.Name == "Unpaid" &&
+                    b.CreatedAt <= cutoffTime)
+                .ToListAsync(cancellationToken);
         }
     }
 }

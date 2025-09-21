@@ -20,13 +20,22 @@
                             <button class="action-btn share-btn" title="Share Vehicle" aria-label="Share Vehicle" data-anime="actionBtn">
                                 <i class="bi bi-share"></i>
                             </button>
-                            <a href="@Url.Action("Details", "Cars", new { id = Model.CarId })" 
-                               class="action-btn view-btn" 
-                               title="View Details" 
-                               aria-label="View Vehicle Details"
-                               data-anime="actionBtn">
+                            <button class="action-btn view-btn" 
+                                    title="View Details" 
+                                    aria-label="View Vehicle Details"
+                                    data-anime="actionBtn"
+                                    data-car-id="@Model.CarId"
+                                    data-car-name="@Html.Raw(Model.Name)"
+                                    data-car-model="@Html.Raw(Model.Model)"
+                                    data-car-image="@(!string.IsNullOrEmpty(Model.ImagePath) ? $"/images/cars/{Model.ImagePath}" : "/images/default-car.jpg")"
+                                    data-car-seats="5"
+                                    data-car-transmission="@(Model.Transmission ?? "Auto")"
+                                    data-car-fuel="@(Model.FuelType ?? "Petrol")"
+                                    data-car-speed="180"
+                                    data-car-available-from="@Model.AvailableFrom.ToString("yyyy-MM-dd")"
+                                    data-car-available-to="@Model.AvailableTo.ToString("yyyy-MM-dd")">
                                 <i class="bi bi-eye"></i>
-                            </a>
+                            </button>
                         </div>
                         <div class="quick-info" data-anime="quickInfo">
                             <span class="quick-info-badge">Premium</span>
@@ -178,16 +187,25 @@
 
             <!-- Action Buttons -->
             <div class="car-actions" data-anime="carActions">
-                <a href="@Url.Action("Details", "Cars", new { id = Model.CarId })" 
-                   class="btn-view-details-3d"
-                   data-anime="viewDetailsBtn">
+                <button class="btn-view-details-3d"
+                        data-anime="viewDetailsBtn"
+                        data-car-id="@Model.CarId"
+                        data-car-name="@Html.Raw(Model.Name)"
+                        data-car-model="@Html.Raw(Model.Model)"
+                        data-car-image="@(!string.IsNullOrEmpty(Model.ImagePath) ? $"/images/cars/{Model.ImagePath}" : "/images/default-car.jpg")"
+                        data-car-seats="5"
+                        data-car-transmission="@(Model.Transmission ?? "Auto")"
+                        data-car-fuel="@(Model.FuelType ?? "Petrol")"
+                        data-car-speed="180"
+                        data-car-available-from="@Model.AvailableFrom.ToString("yyyy-MM-dd")"
+                        data-car-available-to="@Model.AvailableTo.ToString("yyyy-MM-dd")">
                     <span class="btn-content">
                         <i class="bi bi-eye"></i>
                         <span class="btn-text">View Details</span>
                         <i class="bi bi-arrow-right btn-arrow"></i>
                     </span>
                     <div class="btn-background"></div>
-                </a>
+                </button>
                 
                 <!-- Book Now Button -->
                 <div class="booking-actions">
@@ -205,16 +223,15 @@
                     }
                     else
                     {
-                        <button type="button" class="btn-book-now-3d" 
-                                onclick="showLoginModal('@Model.CarId')"
-                                data-anime="bookNowBtn"
-                                data-car-id="@Model.CarId">
+                        <a href="@Url.Action("Login", "Account")" 
+                           class="btn-book-now-3d"
+                           data-anime="bookNowBtn">
                             <span class="btn-content">
                                 <i class="bi bi-calendar-plus"></i>
                                 <span class="btn-text">Book Now</span>
                             </span>
                             <div class="btn-background"></div>
-                        </button>
+                        </a>
                     }
                 </div>
                 

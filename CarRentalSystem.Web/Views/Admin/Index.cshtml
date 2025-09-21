@@ -6,60 +6,41 @@
 }
 
 <div class="admin-dashboard-3d">
-    <!-- Enhanced 3D Header -->
-    <div class="dashboard-header-3d">
+    <!-- Compact Header -->
+    <div class="dashboard-header-3d mb-3">
         <div class="d-flex justify-content-between align-items-center">
             <div>
-                <h1 class="dashboard-title-3d">
+                <h2 class="dashboard-title-3d mb-1">
                     <div class="title-icon-3d">
                         <i class="bi bi-speedometer2"></i>
                         <div class="icon-glow-3d"></div>
                     </div>
                     Admin Dashboard
-                </h1>
-                <p class="dashboard-subtitle-3d">Welcome back! Here's what's happening today.</p>
+                </h2>
             </div>
             <div class="dashboard-actions-3d">
-                <button class="btn-3d-interactive btn-primary-3d" onclick="refreshDashboard()">
+                <button class="btn-3d-interactive btn-primary-3d btn-sm" onclick="refreshDashboard()">
                     <i class="bi bi-arrow-clockwise"></i>
                     <span>Refresh</span>
                 </button>
+           <form method="post" asp-action="UpdateBookingLocations" style="display: inline;">
+               <button type="submit" class="btn-3d-interactive btn-success-3d btn-sm ms-1" onclick="return confirm('This will update all existing bookings with sample location data. Continue?')">
+                   <i class="bi bi-geo-alt"></i>
+                   <span>Update Locations</span>
+               </button>
+           </form>
+           <button type="button" class="btn-3d-interactive btn-warning-3d btn-sm ms-1" onclick="processBookingTimeouts()">
+               <i class="bi bi-clock-history"></i>
+               <span>Process Timeouts</span>
+           </button>
             </div>
         </div>
     </div>
 
     <!-- Enhanced 3D Stats Cards -->
-    <div class="row g-4 mb-4">
-        <div class="col-xl-3 col-md-6">
-            <div class="stats-card-3d pending-3d">
-                <div class="stats-icon-3d">
-                    <i class="bi bi-clock-history"></i>
-                    <div class="icon-glow-3d"></div>
-                </div>
-                <div class="stats-content-3d">
-                    <h3>@Model.PendingCars.Count</h3>
-                    <p>Pending Cars</p>
-                    <small>Awaiting approval</small>
-                </div>
-                <div class="card-glow-3d"></div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="stats-card-3d kyc-3d">
-                <div class="stats-icon-3d">
-                    <i class="bi bi-file-earmark-check"></i>
-                    <div class="icon-glow-3d"></div>
-                </div>
-                <div class="stats-content-3d">
-                    <h3>@Model.PendingKYC.Count</h3>
-                    <p>Pending KYC</p>
-                    <small>Documents to review</small>
-                </div>
-                <div class="card-glow-3d"></div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="stats-card-3d bookings-3d">
+    <div class="row g-3 mb-3">
+        <div class="col-xl-6 col-md-6">
+            <div class="stats-card-3d bookings-3d" style="padding: 1rem;">
                 <div class="stats-icon-3d">
                     <i class="bi bi-calendar-check"></i>
                     <div class="icon-glow-3d"></div>
@@ -72,8 +53,8 @@
                 <div class="card-glow-3d"></div>
             </div>
         </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="stats-card-3d customers-3d">
+        <div class="col-xl-6 col-md-6">
+            <div class="stats-card-3d customers-3d" style="padding: 1rem;">
                 <div class="stats-icon-3d">
                     <i class="bi bi-people"></i>
                     <div class="icon-glow-3d"></div>
@@ -88,98 +69,23 @@
         </div>
     </div>
 
-    <!-- Enhanced 3D Quick Actions -->
-    <div class="row g-4 mb-4">
-        <div class="col-12">
-            <div class="card-3d-interactive quick-actions-card-3d">
-                <div class="card-header-3d">
-                    <h5 class="card-title-3d mb-0">
-                        <div class="title-icon-3d">
-                            <i class="bi bi-lightning"></i>
-                            <div class="icon-glow-3d"></div>
-                        </div>
-                        Quick Actions
-                    </h5>
-                </div>
-                <div class="card-body-3d">
-                    <div class="row g-3">
-                        <div class="col-md-3">
-                            <a asp-action="Cars" class="quick-action-btn-3d">
-                                <div class="quick-action-icon-3d">
-                                    <i class="bi bi-car-front"></i>
-                                    <div class="icon-glow-3d"></div>
-                                </div>
-                                <div class="quick-action-content-3d">
-                                    <h6>Manage Cars</h6>
-                                    <small>Approve/Reject cars</small>
-                                </div>
-                                <div class="btn-glow-3d"></div>
-                            </a>
-                        </div>
-                        <div class="col-md-3">
-                            <a asp-action="KYC" class="quick-action-btn-3d">
-                                <div class="quick-action-icon-3d">
-                                    <i class="bi bi-file-earmark-check"></i>
-                                    <div class="icon-glow-3d"></div>
-                                </div>
-                                <div class="quick-action-content-3d">
-                                    <h6>Review KYC</h6>
-                                    <small>Verify documents</small>
-                                </div>
-                                <div class="btn-glow-3d"></div>
-                            </a>
-                        </div>
-                        <div class="col-md-3">
-                            <a asp-action="BookingsEnhanced" class="quick-action-btn-3d">
-                                <div class="quick-action-icon-3d">
-                                    <i class="bi bi-calendar-check"></i>
-                                    <div class="icon-glow-3d"></div>
-                                </div>
-                                <div class="quick-action-content-3d">
-                                    <h6>Booking Management</h6>
-                                    <small>Enhanced booking control</small>
-                                </div>
-                                <div class="btn-glow-3d"></div>
-                            </a>
-                        </div>
-                        <div class="col-md-3">
-                            <a asp-action="CarOwners" class="quick-action-btn-3d">
-                                <div class="quick-action-icon-3d">
-                                    <i class="bi bi-people-fill"></i>
-                                    <div class="icon-glow-3d"></div>
-                                </div>
-                                <div class="quick-action-content-3d">
-                                    <h6>Car Owner Management</h6>
-                                    <small>Owner & earnings tracking</small>
-                                </div>
-                                <div class="btn-glow-3d"></div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Recent Activity -->
-    <div class="row g-4">
-        <!-- Charts Row -->
-        <div class="col-12">
-            <div class="row g-4 mb-4">
+    <!-- Charts Row -->
+    <div class="row g-3 mb-3">
                 <!-- Enhanced 3D Revenue Chart -->
                 <div class="col-lg-4">
                     <div class="card-3d-interactive chart-card-3d">
-                        <div class="card-header-3d">
-                            <h5 class="card-title-3d mb-0">
+                        <div class="card-header-3d" style="padding: 0.75rem 1rem;">
+                            <h6 class="card-title-3d mb-0">
                                 <div class="title-icon-3d">
                                     <i class="bi bi-pie-chart"></i>
                                     <div class="icon-glow-3d"></div>
                                 </div>
                                 Revenue Distribution
-                            </h5>
+                            </h6>
                         </div>
                         <div class="card-body-3d">
-                            <div style="height: 300px;">
+                            <div style="height: 200px;">
                                 <canvas id="revenueChart"></canvas>
                             </div>
                         </div>
@@ -190,17 +96,17 @@
                 <!-- Enhanced 3D Bookings Trend -->
                 <div class="col-lg-4">
                     <div class="card-3d-interactive chart-card-3d">
-                        <div class="card-header-3d">
-                            <h5 class="card-title-3d mb-0">
+                        <div class="card-header-3d" style="padding: 0.75rem 1rem;">
+                            <h6 class="card-title-3d mb-0">
                                 <div class="title-icon-3d">
                                     <i class="bi bi-graph-up"></i>
                                     <div class="icon-glow-3d"></div>
                                 </div>
                                 Bookings Trend
-                            </h5>
+                            </h6>
                         </div>
                         <div class="card-body-3d">
-                            <div style="height: 300px;">
+                            <div style="height: 200px;">
                                 <canvas id="bookingsTrendChart"></canvas>
                             </div>
                         </div>
@@ -211,132 +117,23 @@
                 <!-- Enhanced 3D Car Status -->
                 <div class="col-lg-4">
                     <div class="card-3d-interactive chart-card-3d">
-                        <div class="card-header-3d">
-                            <h5 class="card-title-3d mb-0">
+                        <div class="card-header-3d" style="padding: 0.75rem 1rem;">
+                            <h6 class="card-title-3d mb-0">
                                 <div class="title-icon-3d">
                                     <i class="bi bi-bar-chart"></i>
                                     <div class="icon-glow-3d"></div>
                                 </div>
                                 Car Status Overview
-                            </h5>
+                            </h6>
                         </div>
                         <div class="card-body-3d">
-                            <div style="height: 300px;">
+                            <div style="height: 200px;">
                                 <canvas id="carStatusChart"></canvas>
                             </div>
                         </div>
                         <div class="card-glow-3d"></div>
                     </div>
                 </div>
-            </div>
-        </div>
-    <div class="row g-4">
-        <!-- Enhanced 3D Pending Cars -->
-        <div class="col-lg-6">
-            <div class="card-3d-interactive">
-                <div class="card-header-3d d-flex justify-content-between align-items-center">
-                    <h5 class="card-title-3d mb-0">
-                        <div class="title-icon-3d">
-                            <i class="bi bi-clock-history"></i>
-                            <div class="icon-glow-3d"></div>
-                        </div>
-                        Pending Car Approvals
-                    </h5>
-                    <a asp-action="Cars" class="btn-3d-interactive btn-secondary-3d btn-sm">View All</a>
-                </div>
-                <div class="card-body-3d">
-                    @if (Model.PendingCars.Any())
-                    {
-                        <div class="pending-items-3d">
-                            @foreach (var car in Model.PendingCars.Take(5))
-                            {
-                                <div class="pending-item-3d">
-                                    <div class="pending-item-content-3d">
-                                        <h6>@car.Name @car.Model</h6>
-                                        <small class="text-muted">Owner: @car.OwnerName</small>
-                                        <small class="text-muted d-block">Rate: $@car.RatePerDay/day</small>
-                                    </div>
-                                    <div class="pending-item-actions-3d">
-                                        <form asp-action="ApproveCar" asp-route-carId="@car.CarId" method="post" class="d-inline">
-                                            <button type="submit" class="btn-3d-interactive btn-success-3d btn-sm">
-                                                <i class="bi bi-check"></i>
-                                            </button>
-                                        </form>
-                                        <form asp-action="RejectCar" asp-route-carId="@car.CarId" method="post" class="d-inline">
-                                            <button type="submit" class="btn-3d-interactive btn-danger-3d btn-sm">
-                                                <i class="bi bi-x"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="text-center py-4">
-                            <i class="bi bi-check-circle text-success" style="font-size: 2rem;"></i>
-                            <p class="text-white-box mt-2">No pending car approvals</p>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-
-        <!-- Enhanced 3D Pending KYC -->
-        <div class="col-lg-6">
-            <div class="card-3d-interactive">
-                <div class="card-header-3d d-flex justify-content-between align-items-center">
-                    <h5 class="card-title-3d mb-0">
-                        <div class="title-icon-3d">
-                            <i class="bi bi-file-earmark-check"></i>
-                            <div class="icon-glow-3d"></div>
-                        </div>
-                        Pending KYC Reviews
-                    </h5>
-                    <a asp-action="KYC" class="btn-3d-interactive btn-secondary-3d btn-sm">View All</a>
-                </div>
-                <div class="card-body-3d">
-                    @if (Model.PendingKYC.Any())
-                    {
-                        <div class="pending-items-3d">
-                            @foreach (var kyc in Model.PendingKYC.Take(5))
-                            {
-                                <div class="pending-item-3d">
-                                    <div class="pending-item-content-3d">
-                                        <h6>@kyc.DocumentType</h6>
-                                        <small class="text-muted">User: @kyc.UserEmail</small>
-                                        <small class="text-muted d-block">Uploaded: @kyc.UploadedAt.ToString("MMM dd, yyyy")</small>
-                                    </div>
-                                    <div class="pending-item-actions-3d">
-                                        <a href="@kyc.FilePath" target="_blank" class="btn-3d-interactive btn-secondary-3d btn-sm">
-                                            <i class="bi bi-eye"></i>
-                                        </a>
-                                        <form asp-action="ApproveKYC" asp-route-kycId="@kyc.Id" method="post" class="d-inline">
-                                            <button type="submit" class="btn-3d-interactive btn-success-3d btn-sm">
-                                                <i class="bi bi-check"></i>
-                                            </button>
-                                        </form>
-                                        <form asp-action="RejectKYC" asp-route-kycId="@kyc.Id" method="post" class="d-inline">
-                                            <button type="submit" class="btn-3d-interactive btn-danger-3d btn-sm">
-                                                <i class="bi bi-x"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="text-center py-4">
-                            <i class="bi bi-check-circle text-success" style="font-size: 2rem;"></i>
-                            <p class="text-white-box mt-2">No pending KYC reviews</p>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -445,6 +242,31 @@
         
         function refreshDashboard() {
             location.reload();
+        }
+
+        function processBookingTimeouts() {
+            if (confirm('This will cancel all unpaid bookings that are older than 15 minutes. Continue?')) {
+                fetch('/Admin/ProcessBookingTimeouts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Booking timeouts processed successfully!');
+                        refreshDashboard();
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while processing booking timeouts.');
+                });
+            }
         }
 
         // Auto-refresh every 30 seconds

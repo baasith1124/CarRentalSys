@@ -20,6 +20,5 @@ namespace CarRentalSystem.Domain.Entities
         public ICollection<Booking>? Bookings { get; set; }
         
         public ICollection<KYCUpload> KYCUploads { get; set; } = new List<KYCUpload>();
-        public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
     }
 }

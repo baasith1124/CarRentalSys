@@ -23,17 +23,39 @@ namespace CarRentalSystem.Infrastructure.External.Services
 
         public async Task SendEmailAsync(string to, string subject, string body)
         {
-            var email = new MimeMessage();
-            email.From.Add(new MailboxAddress(_settings.FromName, _settings.FromEmail));
-            email.To.Add(MailboxAddress.Parse(to));
-            email.Subject = subject;
-            email.Body = new TextPart("html") { Text = body };
+            try
+            {
+                Console.WriteLine($"MailKitEmailService: Starting to send email to {to}");
+                Console.WriteLine($"MailKitEmailService: From: {_settings.FromEmail}");
+                Console.WriteLine($"MailKitEmailService: SMTP Server: {_settings.SmtpServer}:{_settings.SmtpPort}");
+                
+                var email = new MimeMessage();
+                email.From.Add(new MailboxAddress(_settings.FromName, _settings.FromEmail));
+                email.To.Add(MailboxAddress.Parse(to));
+                email.Subject = subject;
+                email.Body = new TextPart("html") { Text = body };
 
-            using var smtp = new SmtpClient();
-            await smtp.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
-            await smtp.AuthenticateAsync(_settings.FromEmail, _settings.Password);
-            await smtp.SendAsync(email);
-            await smtp.DisconnectAsync(true);
+                using var smtp = new SmtpClient();
+                Console.WriteLine($"MailKitEmailService: Connecting to SMTP server...");
+                await smtp.ConnectAsync(_settings.SmtpServer, _settings.SmtpPort, SecureSocketOptions.StartTls);
+                
+                Console.WriteLine($"MailKitEmailService: Authenticating...");
+                await smtp.AuthenticateAsync(_settings.FromEmail, _settings.Password);
+                
+                Console.WriteLine($"MailKitEmailService: Sending email...");
+                await smtp.SendAsync(email);
+                
+                Console.WriteLine($"MailKitEmailService: Disconnecting...");
+                await smtp.DisconnectAsync(true);
+                
+                Console.WriteLine($"MailKitEmailService: Email sent successfully to {to}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"MailKitEmailService Exception: {ex.Message}");
+                Console.WriteLine($"MailKitEmailService Stack Trace: {ex.StackTrace}");
+                throw;
+            }
         }
     }
 

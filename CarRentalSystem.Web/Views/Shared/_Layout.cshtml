@@ -108,20 +108,7 @@
                                     <li><a class="dropdown-item" asp-controller="Dashboard" asp-action="Index">
                                         <i class="bi bi-speedometer2 me-2"></i>Dashboard
                                     </a></li>
-                                    <li><a class="dropdown-item" asp-controller="Bookings" asp-action="MyBookings">
-                                        <i class="bi bi-calendar-check me-2"></i>My Bookings
-                                    </a></li>
-                                    <li><a class="dropdown-item" asp-controller="Profile" asp-action="Index">
-                                        <i class="bi bi-person me-2"></i>Profile
-                                    </a></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    @if (User.IsInRole("Admin") || Context.Session.GetString("AdminLoggedIn") == "true")
-                                    {
-                                        <li><a class="dropdown-item" href="/Admin" id="admin-panel-link" onclick="window.location.href='/Admin'; return false;">
-                                            <i class="bi bi-shield-check me-2"></i>Admin Panel
-                                        </a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                    }
                                     <li>
                                         <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
                                             <button type="submit" class="dropdown-item">
@@ -335,6 +322,7 @@
     
     @await Html.PartialAsync("_RegisterModalPartial", new RegisterCustomerViewModel())
     @await Html.PartialAsync("_KYCUploadModalPartial", new KYCUploadViewModel())
+    @await Html.PartialAsync("_OTPVerificationModalPartial")
     @await Html.PartialAsync("_AuthModalPartial")
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -347,6 +335,7 @@
     <script src="~/js/register.js" asp-append-version="true"></script>
     <script src="~/js/register-modal.js" asp-append-version="true"></script>
     <script src="~/js/login-modal.js" asp-append-version="true"></script>
+    <script src="~/js/otp-verification.js" asp-append-version="true"></script>
     <script src="~/js/google-places-autocomplete.js" asp-append-version="true"></script>
     <script src="~/js/datetime-validation.js" asp-append-version="true"></script>
     <script src="~/js/interactive-statistics.js" asp-append-version="true"></script>

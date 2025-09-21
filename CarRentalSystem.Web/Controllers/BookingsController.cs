@@ -126,7 +126,11 @@ namespace CarRentalSystem.Web.Controllers
                     DropDate = model.DropDate,
                     PickupLocation = model.PickupLocation,
                     DropLocation = model.DropLocation,
-                    EstimatedCost = model.EstimatedCost
+                    EstimatedCost = model.EstimatedCost,
+                    PickupLatitude = model.PickupLatitude,
+                    PickupLongitude = model.PickupLongitude,
+                    DropLatitude = model.DropLatitude,
+                    DropLongitude = model.DropLongitude
                 };
 
                 return View("BookingSummary", summaryModel); //  View expects this model
@@ -150,7 +154,11 @@ namespace CarRentalSystem.Web.Controllers
                 PickupLocation = model.PickupLocation,
                 DropLocation = model.DropLocation,
                 TotalCost = model.EstimatedCost,
-                UserId = User.GetUserId() // custom extension method to get logged-in user Guid
+                UserId = User.GetUserId(), // custom extension method to get logged-in user Guid
+                PickupLatitude = model.PickupLatitude,
+                PickupLongitude = model.PickupLongitude,
+                DropLatitude = model.DropLatitude,
+                DropLongitude = model.DropLongitude
             };
 
             var bookingId = await _mediator.Send(command);

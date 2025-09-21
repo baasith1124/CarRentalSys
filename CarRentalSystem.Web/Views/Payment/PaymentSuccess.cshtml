@@ -102,7 +102,7 @@
                                 <i class="bi bi-calendar-check"></i>
                                 View My Bookings
                             </a>
-                            <a asp-controller="Invoice" asp-action="Download" asp-route-paymentId="@ViewBag.PaymentId" class="btn btn-success me-3">
+                            <a asp-controller="Payment" asp-action="DownloadReceipt" asp-route-bookingId="@ViewBag.BookingId" class="btn btn-success me-3">
                                 <i class="bi bi-download"></i>
                                 Download Receipt
                             </a>

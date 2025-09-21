@@ -16,6 +16,7 @@ namespace CarRentalSystem.Application.Common.Interfaces
         Task<Payment?> GetPaymentByIdAsync(Guid paymentId, CancellationToken cancellationToken);
         Task<List<Payment>> GetPaymentsByBookingIdAsync(Guid bookingId, CancellationToken cancellationToken);
         Task<List<Payment>> GetAllPaymentsAsync(CancellationToken cancellationToken);
+        Task<List<Payment>> GetPaymentsByCustomerIdAsync(Guid customerId, CancellationToken cancellationToken);
 
         // Invoice
         Task<Invoice?> GetInvoiceByPaymentIdAsync(Guid paymentId, CancellationToken cancellationToken);

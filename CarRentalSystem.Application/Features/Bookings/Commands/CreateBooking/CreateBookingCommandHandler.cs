@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿using CarRentalSystem.Application.Common.Interfaces;
+﻿﻿using CarRentalSystem.Application.Common.Interfaces;
 using CarRentalSystem.Domain.Entities;
 using MediatR;
 using System;
@@ -38,7 +38,13 @@ namespace CarRentalSystem.Application.Features.Bookings.Commands.CreateBooking
                 TotalCost = request.TotalCost,
                 BookingStatusId = await _bookingRepository.GetBookingStatusIdByNameAsync("Pending", cancellationToken),
                 PaymentStatusId = await _bookingRepository.GetPaymentStatusIdByNameAsync("Unpaid", cancellationToken),
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                PickupLocation = request.PickupLocation,
+                DropLocation = request.DropLocation,
+                PickupLatitude = request.PickupLatitude,
+                PickupLongitude = request.PickupLongitude,
+                DropLatitude = request.DropLatitude,
+                DropLongitude = request.DropLongitude
             };
 
             return await _bookingRepository.CreateBookingAsync(booking, cancellationToken);

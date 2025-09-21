@@ -29,6 +29,16 @@ namespace CarRentalSystem.Domain.Entities
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+        // Location information
+        public string? PickupLocation { get; set; }
+        public string? DropLocation { get; set; }
+        
+        // Location coordinates
+        public double? PickupLatitude { get; set; }
+        public double? PickupLongitude { get; set; }
+        public double? DropLatitude { get; set; }
+        public double? DropLongitude { get; set; }
+
         public Payment? Payment { get; set; }
         public Invoice? Invoice { get; set; }
     }

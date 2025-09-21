@@ -23,7 +23,6 @@ namespace CarRentalSystem.Infrastructure.Persistence.Repositories
             return await _context.Customers
                 .Include(c => c.Bookings)
                 .Include(c => c.KYCUploads)
-                .Include(c => c.Notifications)
                 .FirstOrDefaultAsync(c => c.Id == customerId, cancellationToken);
         }
 
@@ -32,7 +31,6 @@ namespace CarRentalSystem.Infrastructure.Persistence.Repositories
             return await _context.Customers
                 .Include(c => c.Bookings)
                 .Include(c => c.KYCUploads)
-                .Include(c => c.Notifications)
                 .ToListAsync(cancellationToken);
         }
 

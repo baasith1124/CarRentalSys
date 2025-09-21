@@ -23,12 +23,18 @@ namespace CarRentalSystem.Infrastructure.DependencyInjection
             services.AddScoped<ICarApprovalStatusRepository, EfCarApprovalStatusRepository>();
             services.AddScoped<ICarDocumentRepository, EfCarDocumentRepository>();
 
-            services.AddHttpClient<ILocationService, GoogleLocationService>();
+        services.AddHttpClient<ILocationService, GoogleLocationService>();
+        services.AddHttpClient<IGoogleMapsService, GoogleMapsService>();
+        services.AddScoped<IPdfService, PdfService>();
+        services.AddScoped<IBookingTimeoutService, BookingTimeoutService>();
+        services.AddHostedService<BookingTimeoutService>();
 
             services.AddScoped<IContactMessageRepository, EfContactMessageRepository>();
             services.AddScoped<IEmailService, MailKitEmailService>();
             services.AddScoped<IIdentityService, EfIdentityService>();
             services.AddScoped<IExternalAuthService, ExternalAuthService>();
+            services.AddScoped<IOTPRepository, OTPRepository>();
+            services.AddScoped<IOTPService, CarRentalSystem.Application.Features.OTP.Services.OTPService>();
 
 
 

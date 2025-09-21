@@ -50,6 +50,15 @@ namespace CarRentalSystem.Infrastructure.Persistence.Repositories
                 .ToListAsync(cancellationToken);
         }
 
+        public async Task<List<Payment>> GetPaymentsByCustomerIdAsync(Guid customerId, CancellationToken cancellationToken)
+        {
+            return await _context.Payments
+                .Include(p => p.Booking)
+                .Include(p => p.Invoice)
+                .Where(p => p.Booking.CustomerId == customerId)
+                .ToListAsync(cancellationToken);
+        }
+
         public async Task<Invoice?> GetInvoiceByPaymentIdAsync(Guid paymentId, CancellationToken cancellationToken)
         {
             return await _context.Invoices

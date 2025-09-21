@@ -30,5 +30,6 @@ namespace CarRentalSystem.Application.Common.Interfaces
         Task<Booking?> GetBookingWithPaymentAsync(Guid bookingId, CancellationToken cancellationToken);
 
         Task<bool> IsCarAvailableAsync(Guid carId, DateTime pickupDate, DateTime returnDate, CancellationToken cancellationToken);
+        Task<List<Booking>> GetExpiredUnpaidBookingsAsync(DateTime cutoffTime, CancellationToken cancellationToken);
     }
 }

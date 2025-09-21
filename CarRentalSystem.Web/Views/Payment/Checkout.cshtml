@@ -7,6 +7,77 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/payment-checkout.css" asp-append-version="true" />
+    
+    <style>
+        .booking-timeout-card {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+            animation: pulse 2s infinite;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        .timeout-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+        
+        .timeout-timer {
+            font-size: 32px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .timeout-minutes, .timeout-seconds {
+            display: inline-block;
+            min-width: 40px;
+            text-align: center;
+        }
+        
+        .timeout-separator {
+            margin: 0 5px;
+            animation: blink 1s infinite;
+        }
+        
+        .timeout-message {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+        
+        @@keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        
+        @@keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+        
+        .timeout-warning {
+            background: linear-gradient(135deg, #ff4757, #ff6b7a) !important;
+            animation: pulse 1s infinite !important;
+        }
+        
+        .timeout-critical {
+            background: linear-gradient(135deg, #ff3838, #ff4757) !important;
+            animation: pulse 0.5s infinite !important;
+        }
+    </style>
 }
 
 <!-- 3D Interactive Payment Scene Container -->
@@ -43,6 +114,22 @@
                             <div class="payment-security-badge">
                                 <i class="bi bi-shield-check"></i>
                                 <span>256-bit SSL Encryption</span>
+                            </div>
+                            
+                            <!-- Booking Timeout Countdown -->
+                            <div class="booking-timeout-card mt-4" id="bookingTimeoutCard" style="display: none;">
+                                <div class="timeout-header">
+                                    <i class="bi bi-clock-history"></i>
+                                    <span>Booking Timeout</span>
+                                </div>
+                                <div class="timeout-timer" id="timeoutTimer">
+                                    <span class="timeout-minutes" id="timeoutMinutes">15</span>
+                                    <span class="timeout-separator">:</span>
+                                    <span class="timeout-seconds" id="timeoutSeconds">00</span>
+                                </div>
+                                <div class="timeout-message">
+                                    Complete your payment before time expires
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -484,4 +571,135 @@
         };
     </script>
     <script src="~/js/payment-checkout.js" asp-append-version="true"></script>
+    
+    <script>
+        // Booking Timeout Countdown Timer
+        let bookingTimeoutInterval;
+        let bookingStartTime;
+        let isBookingInProgress = false;
+        
+        // Check if there's an active booking session
+        function checkBookingSession() {
+            const bookingStartTimeStr = sessionStorage.getItem('bookingStartTime');
+            if (bookingStartTimeStr) {
+                bookingStartTime = new Date(bookingStartTimeStr);
+                const now = new Date();
+                const elapsed = (now - bookingStartTime) / 1000; // seconds
+                const remaining = (15 * 60) - elapsed; // 15 minutes in seconds
+                
+                if (remaining > 0) {
+                    startCountdown(remaining);
+                } else {
+                    // Timeout expired, clear session
+                    clearBookingSession();
+                }
+            }
+        }
+        
+        // Start the countdown timer
+        function startCountdown(totalSeconds) {
+            isBookingInProgress = true;
+            document.getElementById('bookingTimeoutCard').style.display = 'block';
+            
+            bookingTimeoutInterval = setInterval(() => {
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
+                
+                document.getElementById('timeoutMinutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('timeoutSeconds').textContent = seconds.toString().padStart(2, '0');
+                
+                // Change styling based on remaining time
+                const timeoutCard = document.getElementById('bookingTimeoutCard');
+                if (totalSeconds <= 60) {
+                    timeoutCard.className = 'booking-timeout-card mt-4 timeout-critical';
+                } else if (totalSeconds <= 300) { // 5 minutes
+                    timeoutCard.className = 'booking-timeout-card mt-4 timeout-warning';
+                }
+                
+                if (totalSeconds <= 0) {
+                    clearInterval(bookingTimeoutInterval);
+                    handleBookingTimeout();
+                }
+                
+                totalSeconds--;
+            }, 1000);
+        }
+        
+        // Handle booking timeout
+        function handleBookingTimeout() {
+            document.getElementById('bookingTimeoutCard').innerHTML = `
+                <div class="timeout-header">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <span>Booking Expired</span>
+                </div>
+                <div class="timeout-timer">
+                    <span style="font-size: 24px;">00:00</span>
+                </div>
+                <div class="timeout-message">
+                    Your booking session has expired. Please search again.
+                </div>
+            `;
+            
+            // Show notification
+            showNotification('Your booking session has expired. Please search again.', 'warning');
+            
+            // Redirect to search page after 3 seconds
+            setTimeout(() => {
+                clearBookingSession();
+                window.location.href = '/';
+            }, 3000);
+        }
+        
+        // Clear booking session
+        function clearBookingSession() {
+            sessionStorage.removeItem('bookingStartTime');
+            isBookingInProgress = false;
+            if (bookingTimeoutInterval) {
+                clearInterval(bookingTimeoutInterval);
+            }
+            document.getElementById('bookingTimeoutCard').style.display = 'none';
+        }
+        
+        // Show notification
+        function showNotification(message, type = 'info') {
+            // Create toast notification
+            const toast = document.createElement('div');
+            toast.className = `toast align-items-center text-white bg-${type === 'warning' ? 'warning' : 'info'} border-0`;
+            toast.setAttribute('role', 'alert');
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            `;
+            
+            // Add to page
+            let toastContainer = document.getElementById('toast-container');
+            if (!toastContainer) {
+                toastContainer = document.createElement('div');
+                toastContainer.id = 'toast-container';
+                toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
+                toastContainer.style.zIndex = '9999';
+                document.body.appendChild(toastContainer);
+            }
+            
+            toastContainer.appendChild(toast);
+            
+            // Show toast
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+            
+            // Remove from DOM after hiding
+            toast.addEventListener('hidden.bs.toast', () => {
+                toast.remove();
+            });
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkBookingSession();
+        });
+    </script>
 }

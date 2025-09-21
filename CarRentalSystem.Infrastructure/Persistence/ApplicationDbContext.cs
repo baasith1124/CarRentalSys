@@ -31,6 +31,7 @@ namespace CarRentalSystem.Infrastructure.Persistence
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<ContactMessage> ContactMessages { get; set; }
+        public DbSet<OTP> OTPs { get; set; }
 
 
 
@@ -71,7 +72,7 @@ namespace CarRentalSystem.Infrastructure.Persistence
                 .HasOne(b => b.Customer)
                 .WithMany(u => u.Bookings)
                 .HasForeignKey(b => b.CustomerId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Booking>()
                 .HasOne(b => b.BookingStatus)
@@ -126,6 +127,25 @@ namespace CarRentalSystem.Infrastructure.Persistence
                 .WithMany(u => u.Notifications)
                 .HasForeignKey(n => n.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<OTP>()
+                .HasIndex(o => new { o.Email, o.Purpose })
+                .HasDatabaseName("IX_OTP_Email_Purpose");
+
+            modelBuilder.Entity<OTP>()
+                .Property(o => o.Email)
+                .IsRequired()
+                .HasMaxLength(256);
+
+            modelBuilder.Entity<OTP>()
+                .Property(o => o.Code)
+                .IsRequired()
+                .HasMaxLength(10);
+
+            modelBuilder.Entity<OTP>()
+                .Property(o => o.Purpose)
+                .IsRequired()
+                .HasMaxLength(50);
         }
     }
 }

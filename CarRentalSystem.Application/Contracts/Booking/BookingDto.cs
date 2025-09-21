@@ -17,7 +17,14 @@ namespace CarRentalSystem.Application.Contracts.Booking
         public string BookingStatus { get; set; } = string.Empty;
         public string PaymentStatus { get; set; } = string.Empty;
         public string PickupLocation { get; set; } = string.Empty;
+        public string DropLocation { get; set; } = string.Empty;
         public string CustomerName { get; set; } = string.Empty;
+        
+        // Location coordinates
+        public double? PickupLatitude { get; set; }
+        public double? PickupLongitude { get; set; }
+        public double? DropLatitude { get; set; }
+        public double? DropLongitude { get; set; }
         
         // Additional properties for dashboard
         public CarInfo Car { get; set; } = new();

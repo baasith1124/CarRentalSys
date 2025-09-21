@@ -270,40 +270,64 @@
                     </div>
                 </div>
 
-                <!-- Quick Actions -->
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">
-                            <i class="bi bi-lightning text-primary"></i>
-                            Quick Actions
-                        </h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Route Simulation Modal -->
+<div class="modal fade" id="routeSimulationModal" tabindex="-1" aria-labelledby="routeSimulationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="routeSimulationModalLabel">
+                    <i class="bi bi-map me-2"></i>Route Simulation
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div id="routeMap" style="height: 500px; width: 100%;"></div>
                     </div>
-                    <div class="card-body">
-                        <div class="d-grid gap-2">
-                            @if (Model.PaymentStatus == "Paid")
-                            {
-                                <button type="button" class="btn btn-outline-success" onclick="downloadInvoice('@Model.BookingId')">
-                                    <i class="bi bi-download"></i> Download Invoice
-                                </button>
-                            }
-                            @if (Model.BookingStatus == "Confirmed" && Model.PickupDate > DateTime.Now.AddHours(24))
-                            {
-                                <button type="button" class="btn btn-outline-warning" onclick="modifyBooking('@Model.BookingId')">
-                                    <i class="bi bi-pencil"></i> Modify Booking
-                                </button>
-                                <button type="button" class="btn btn-outline-danger" onclick="cancelBooking('@Model.BookingId')">
-                                    <i class="bi bi-x-circle"></i> Cancel Booking
-                                </button>
-                            }
-                            <a asp-controller="Contact" asp-action="Index" class="btn btn-outline-info">
-                                <i class="bi bi-headset"></i> Contact Support
-                            </a>
-                            <a asp-controller="Cars" asp-action="Search" class="btn btn-outline-primary">
-                                <i class="bi bi-search"></i> Book Another Car
-                            </a>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <i class="bi bi-geo-alt-fill text-success me-2"></i>Pickup Location
+                                </h6>
+                                <p class="card-text">@Model.PickupLocation</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <i class="bi bi-geo-alt-fill text-danger me-2"></i>Drop Location
+                                </h6>
+                                <p class="card-text">@Model.DropLocation</p>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-center">
+                            <button type="button" class="btn btn-primary" id="startAnimation">
+                                <i class="bi bi-play-fill me-2"></i>Start Animation
+                            </button>
+                            <button type="button" class="btn btn-secondary ms-2" id="resetAnimation">
+                                <i class="bi bi-arrow-clockwise me-2"></i>Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -315,4 +339,29 @@
 
 @section Scripts {
     <script src="~/js/booking-details.js" asp-append-version="true"></script>
+    <script>
+        // Pass booking coordinates to JavaScript
+        window.bookingCoordinates = {
+            pickupLat: @(Model.PickupLatitude?.ToString("F6") ?? "null"),
+            pickupLng: @(Model.PickupLongitude?.ToString("F6") ?? "null"),
+            dropLat: @(Model.DropLatitude?.ToString("F6") ?? "null"),
+            dropLng: @(Model.DropLongitude?.ToString("F6") ?? "null")
+        };
+
+        function downloadInvoice(bookingId) {
+            // Create a temporary link to download the invoice
+            const link = document.createElement('a');
+            link.href = `/Dashboard/DownloadInvoice/${bookingId}`;
+            link.download = `Invoice_${bookingId.substring(0, 8)}_${new Date().toISOString().slice(0, 10)}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+    @if (Model.PickupLatitude.HasValue && Model.PickupLongitude.HasValue && 
+         Model.DropLatitude.HasValue && Model.DropLongitude.HasValue)
+    {
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=@ViewBag.GoogleMapsApiKey&callback=initUserMaps"></script>
+        <script src="~/js/route-simulation.js" asp-append-version="true"></script>
+    }
 }

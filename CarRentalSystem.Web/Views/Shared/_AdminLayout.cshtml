@@ -102,27 +102,11 @@
                         </a>
                     </li>
                     <li class="nav-item-3d">
-                        <a class="nav-link-3d @(ViewContext.RouteData.Values["Action"]?.ToString() == "CarOwners" ? "active" : "")" asp-controller="Admin" asp-action="CarOwners">
-                            <div class="nav-icon-3d">
-                                <i class="bi bi-person-badge"></i>
-                            </div>
-                            <span>Car Owners</span>
-                        </a>
-                    </li>
-                    <li class="nav-item-3d">
                         <a class="nav-link-3d @(ViewContext.RouteData.Values["Action"]?.ToString() == "KPI" ? "active" : "")" asp-controller="Admin" asp-action="KPI">
                             <div class="nav-icon-3d">
                                 <i class="bi bi-bar-chart-line"></i>
                             </div>
                             <span>KPI Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="nav-item-3d">
-                        <a class="nav-link-3d" href="#" data-bs-toggle="modal" data-bs-target="#reportsModal">
-                            <div class="nav-icon-3d">
-                                <i class="bi bi-graph-up"></i>
-                            </div>
-                            <span>Reports</span>
                         </a>
                     </li>
                 </ul>
@@ -163,7 +147,13 @@
                     </div>
                     
                     <div class="header-actions">
-                        <div class="dropdown">
+                        <!-- EchoAdmin Chat Toggle Button -->
+                        <div id="echoAdminToggle" class="echo-admin-toggle-header">
+                            <i class="bi bi-robot"></i>
+                            <span class="echo-admin-badge">EchoAdmin</span>
+                        </div>
+                        
+                        <div class="dropdown ms-3">
                             <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                 <i class="bi bi-bell"></i>
                                 <span class="badge bg-danger">3</span>
@@ -200,6 +190,49 @@
                     </div>
                 </div>
             </header>
+
+            <!-- EchoAdmin Chat Window -->
+            <div id="echoAdminWindow" class="echo-admin-window" style="display: none;">
+                <div class="echo-admin-header">
+                    <div class="echo-admin-title">
+                        <i class="bi bi-robot me-2"></i>
+                        <span>EchoAdmin</span>
+                        <span class="echo-admin-status">Online</span>
+                    </div>
+                    <button id="echoAdminClose" class="echo-admin-close">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </div>
+                
+                <div class="echo-admin-messages" id="echoAdminMessages">
+                    <div class="echo-admin-message">
+                        <div class="echo-admin-avatar">
+                            <i class="bi bi-robot"></i>
+                        </div>
+                        <div class="echo-admin-content">
+                            <div class="echo-admin-text">
+                                Hello! I'm EchoAdmin, your intelligent assistant. I can help you get information from the database. 
+                                <ul>
+                                    <li>Generate reports and analytics</li>
+                                    <li>Answer questions about customers, bookings, cars</li>
+                                    <li>Create charts and visualizations</li>
+                                    <li>Help with data analysis</li>
+                                </ul>
+                                <p>Try asking me something like: "Show me recent bookings" or "How many cars are available?"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="echo-admin-input-container">
+                    <div class="echo-admin-input-group">
+                        <input type="text" id="echoAdminInput" class="echo-admin-input" placeholder="Ask me anything about your data...">
+                        <button id="echoAdminSend" class="echo-admin-send">
+                            <i class="bi bi-send"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
 
             <!-- Enhanced 3D Page Content -->
             <main class="admin-content-3d">
@@ -247,57 +280,13 @@
         }
     </div>
 
-    <!-- Reports Modal -->
-    <div class="modal fade" id="reportsModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="bi bi-graph-up"></i> Reports & Analytics
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="report-card">
-                                <h6><i class="bi bi-calendar-check"></i> Booking Reports</h6>
-                                <p>View detailed booking analytics and trends</p>
-                                <button class="btn btn-outline-primary btn-sm">Generate Report</button>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="report-card">
-                                <h6><i class="bi bi-currency-dollar"></i> Revenue Reports</h6>
-                                <p>Financial reports and payment analytics</p>
-                                <button class="btn btn-outline-primary btn-sm">Generate Report</button>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="report-card">
-                                <h6><i class="bi bi-car-front"></i> Car Utilization</h6>
-                                <p>Car usage statistics and performance</p>
-                                <button class="btn btn-outline-primary btn-sm">Generate Report</button>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="report-card">
-                                <h6><i class="bi bi-people"></i> Customer Analytics</h6>
-                                <p>Customer behavior and demographics</p>
-                                <button class="btn btn-outline-primary btn-sm">Generate Report</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="~/js/admin.js" asp-append-version="true"></script>
     <script src="~/js/admin-enhanced.js" asp-append-version="true"></script>
+    <!-- Google Maps API will be loaded dynamically when needed -->
     
     <!-- Enhanced 3D Toast Notifications Script -->
     <script>
@@ -314,58 +303,6 @@
         });
     </script>
     
-    <!-- EchoAdmin Chat Bubble -->
-    <div id="echoAdminChat" class="echo-admin-chat">
-        <!-- Chat Toggle Button -->
-        <div id="echoAdminToggle" class="echo-admin-toggle">
-            <i class="bi bi-robot"></i>
-            <span class="echo-admin-badge">EchoAdmin</span>
-        </div>
-        
-        <!-- Chat Window -->
-        <div id="echoAdminWindow" class="echo-admin-window" style="display: none;">
-            <div class="echo-admin-header">
-                <div class="echo-admin-title">
-                    <i class="bi bi-robot me-2"></i>
-                    <span>EchoAdmin</span>
-                    <span class="echo-admin-status">Online</span>
-                </div>
-                <button id="echoAdminClose" class="echo-admin-close">
-                    <i class="bi bi-x"></i>
-                </button>
-            </div>
-            
-            <div class="echo-admin-messages" id="echoAdminMessages">
-                <div class="echo-admin-message">
-                    <div class="echo-admin-avatar">
-                        <i class="bi bi-robot"></i>
-                    </div>
-                    <div class="echo-admin-content">
-                        <div class="echo-admin-text">
-                            Hello! I'm EchoAdmin, your intelligent assistant. I can help you get information from the database. 
-                            I can only answer questions related to:
-                            <ul class="mt-2">
-                                <li>Customers (CustomerId, FullName, Email, Address, KYC Status)</li>
-                                <li>Bookings (BookingId, CustomerId, CarId, Dates, Status, Cost)</li>
-                                <li>Cars (CarId, Model, Type, Rate, Approval Status)</li>
-                                <li>Invoices (InvoiceId, PaymentId, Amount, Status)</li>
-                            </ul>
-                            <p class="mt-2">Try asking: "How many customers are KYC verified?" or "Export all bookings to Excel"</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="echo-admin-input-container">
-                <div class="echo-admin-input-group">
-                    <input type="text" id="echoAdminInput" class="echo-admin-input" placeholder="Ask me about the database..." />
-                    <button id="echoAdminSend" class="echo-admin-send">
-                        <i class="bi bi-send"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- EchoAdmin JavaScript -->
     <script>
@@ -525,6 +462,369 @@
             const loadingDiv = document.getElementById('echoAdminLoading');
             if (loadingDiv) {
                 loadingDiv.remove();
+            }
+        }
+    </script>
+
+    <!-- Route Simulation Modal for Admin -->
+    <div class="modal fade" id="adminRouteSimulationModal" tabindex="-1" aria-labelledby="adminRouteSimulationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="adminRouteSimulationModalLabel">
+                        <i class="bi bi-map me-2"></i>Route Simulation
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div id="adminRouteMap" style="height: 500px; width: 100%;"></div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="bi bi-geo-alt-fill text-success me-2"></i>Pickup Location
+                                    </h6>
+                                    <p class="card-text" id="adminPickupLocation"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="bi bi-geo-alt-fill text-danger me-2"></i>Drop Location
+                                    </h6>
+                                    <p class="card-text" id="adminDropLocation"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-center">
+                                <button type="button" class="btn btn-primary" id="adminStartAnimation">
+                                    <i class="bi bi-play-fill me-2"></i>Start Animation
+                                </button>
+                                <button type="button" class="btn btn-secondary ms-2" id="adminResetAnimation">
+                                    <i class="bi bi-arrow-clockwise me-2"></i>Reset
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Route Simulation Script -->
+    <script>
+        // Google Maps initialization callback
+        function initGoogleMaps() {
+            // This function is called when Google Maps API loads
+            console.log('Google Maps API loaded successfully');
+            
+            // If there's a pending route simulation, initialize it now
+            if (window.adminBookingCoordinates && document.getElementById('adminRouteSimulationModal').classList.contains('show')) {
+                initializeAdminMap();
+            }
+        }
+
+        // Admin route simulation variables
+        let adminMap;
+        let adminDirectionsService;
+        let adminDirectionsRenderer;
+        let adminCarMarker;
+        let adminAnimationPath = [];
+        let adminCurrentStep = 0;
+        let adminAnimationInterval;
+        let adminIsAnimating = false;
+
+        // Custom car icon for admin
+        const adminCarIcon = {
+            url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 12h16v8H8z" fill="#4285F4" stroke="#fff" stroke-width="2"/>
+                    <circle cx="10" cy="22" r="3" fill="#333"/>
+                    <circle cx="22" cy="22" r="3" fill="#333"/>
+                    <path d="M6 12l2-6h16l2 6" fill="#EA4335"/>
+                </svg>
+            `),
+            scaledSize: new google.maps.Size(32, 32),
+            anchor: new google.maps.Point(16, 16)
+        };
+
+        // Function to open route simulation from admin booking details
+        function openRouteSimulation(pickupLat, pickupLng, dropLat, dropLng, pickupLocation, dropLocation) {
+            // Set location text
+            document.getElementById('adminPickupLocation').textContent = pickupLocation;
+            document.getElementById('adminDropLocation').textContent = dropLocation;
+            
+            // Store coordinates globally
+            window.adminBookingCoordinates = {
+                pickupLat: pickupLat,
+                pickupLng: pickupLng,
+                dropLat: dropLat,
+                dropLng: dropLng
+            };
+            
+            // Load Google Maps API if not already loaded
+            if (typeof google === 'undefined') {
+                loadGoogleMapsAPI();
+            }
+            
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('adminRouteSimulationModal'));
+            modal.show();
+        }
+
+        // Function to load Google Maps API dynamically
+        function loadGoogleMapsAPI() {
+            if (typeof google !== 'undefined') {
+                return; // Already loaded
+            }
+            
+            const apiKey = '@ViewBag.GoogleMapsApiKey';
+            if (!apiKey || apiKey === '') {
+                console.error('Google Maps API key not configured');
+                alert('Google Maps API key not configured. Please contact administrator.');
+                return;
+            }
+            
+            const script = document.createElement('script');
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initGoogleMaps`;
+            script.async = true;
+            script.defer = true;
+            document.head.appendChild(script);
+        }
+
+        // Initialize admin map when modal is shown
+        document.addEventListener('DOMContentLoaded', function() {
+            const adminRouteModal = document.getElementById('adminRouteSimulationModal');
+            
+            if (adminRouteModal) {
+                adminRouteModal.addEventListener('shown.bs.modal', function() {
+                    // Wait for Google Maps to be available
+                    if (typeof google !== 'undefined') {
+                        initializeAdminMap();
+                    } else {
+                        // Wait a bit and try again
+                        setTimeout(function() {
+                            if (typeof google !== 'undefined') {
+                                initializeAdminMap();
+                            } else {
+                                console.error('Google Maps API failed to load');
+                            }
+                        }, 1000);
+                    }
+                });
+                
+                adminRouteModal.addEventListener('hidden.bs.modal', function() {
+                    resetAdminAnimation();
+                });
+            }
+            
+            // Event listeners for admin animation controls
+            const adminStartBtn = document.getElementById('adminStartAnimation');
+            const adminResetBtn = document.getElementById('adminResetAnimation');
+            
+            if (adminStartBtn) {
+                adminStartBtn.addEventListener('click', startAdminCarAnimation);
+            }
+            
+            if (adminResetBtn) {
+                adminResetBtn.addEventListener('click', resetAdminAnimation);
+            }
+        });
+
+        function initializeAdminMap() {
+            if (!window.adminBookingCoordinates) {
+                console.error('Admin booking coordinates not found');
+                return;
+            }
+            
+            if (typeof google === 'undefined') {
+                console.error('Google Maps API not loaded');
+                return;
+            }
+            
+            const { pickupLat, pickupLng, dropLat, dropLng } = window.adminBookingCoordinates;
+            
+            if (!pickupLat || !pickupLng || !dropLat || !dropLng) {
+                console.error('Invalid admin coordinates');
+                return;
+            }
+            
+            // Initialize admin map
+            const mapElement = document.getElementById('adminRouteMap');
+            if (!mapElement) return;
+            
+            adminMap = new google.maps.Map(mapElement, {
+                zoom: 12,
+                center: { lat: pickupLat, lng: pickupLng },
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+            
+            // Initialize directions service and renderer
+            adminDirectionsService = new google.maps.DirectionsService();
+            adminDirectionsRenderer = new google.maps.DirectionsRenderer({
+                draggable: false,
+                suppressMarkers: true
+            });
+            
+            adminDirectionsRenderer.setMap(adminMap);
+            
+            // Get directions and draw route
+            getAdminDirections(pickupLat, pickupLng, dropLat, dropLng);
+        }
+
+        function getAdminDirections(pickupLat, pickupLng, dropLat, dropLng) {
+            const request = {
+                origin: { lat: pickupLat, lng: pickupLng },
+                destination: { lat: dropLat, lng: dropLng },
+                travelMode: google.maps.TravelMode.DRIVING,
+                unitSystem: google.maps.UnitSystem.METRIC
+            };
+            
+            adminDirectionsService.route(request, function(result, status) {
+                if (status === 'OK') {
+                    adminDirectionsRenderer.setDirections(result);
+                    
+                    // Extract path for animation
+                    const route = result.routes[0];
+                    const path = route.overview_path;
+                    adminAnimationPath = path;
+                    
+                    // Add custom markers
+                    addAdminCustomMarkers(pickupLat, pickupLng, dropLat, dropLng);
+                    
+                    // Add car marker at pickup location
+                    addAdminCarMarker(pickupLat, pickupLng);
+                    
+                    // Fit map to show entire route
+                    const bounds = new google.maps.LatLngBounds();
+                    path.forEach(point => bounds.extend(point));
+                    adminMap.fitBounds(bounds);
+                    
+                } else {
+                    console.error('Admin directions request failed: ' + status);
+                    // Fallback: show markers without route
+                    addAdminCustomMarkers(pickupLat, pickupLng, dropLat, dropLng);
+                    addAdminCarMarker(pickupLat, pickupLng);
+                }
+            });
+        }
+
+        function addAdminCustomMarkers(pickupLat, pickupLng, dropLat, dropLng) {
+            // Pickup marker
+            new google.maps.Marker({
+                position: { lat: pickupLat, lng: pickupLng },
+                map: adminMap,
+                title: 'Pickup Location',
+                icon: {
+                    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                        <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="10" fill="#34A853" stroke="#fff" stroke-width="2"/>
+                            <path d="M12 6v6l4 2" stroke="#fff" stroke-width="2" fill="none"/>
+                        </svg>
+                    `),
+                    scaledSize: new google.maps.Size(24, 24),
+                    anchor: new google.maps.Point(12, 12)
+                }
+            });
+            
+            // Drop marker
+            new google.maps.Marker({
+                position: { lat: dropLat, lng: dropLng },
+                map: adminMap,
+                title: 'Drop Location',
+                icon: {
+                    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                        <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="10" fill="#EA4335" stroke="#fff" stroke-width="2"/>
+                            <path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2" fill="none"/>
+                        </svg>
+                    `),
+                    scaledSize: new google.maps.Size(24, 24),
+                    anchor: new google.maps.Point(12, 12)
+                }
+            });
+        }
+
+        function addAdminCarMarker(lat, lng) {
+            adminCarMarker = new google.maps.Marker({
+                position: { lat: lat, lng: lng },
+                map: adminMap,
+                title: 'Car',
+                icon: adminCarIcon
+            });
+        }
+
+        function startAdminCarAnimation() {
+            if (typeof google === 'undefined') {
+                console.error('Google Maps API not loaded');
+                return;
+            }
+            if (adminIsAnimating || adminAnimationPath.length === 0) return;
+            
+            adminIsAnimating = true;
+            adminCurrentStep = 0;
+            
+            const startBtn = document.getElementById('adminStartAnimation');
+            if (startBtn) {
+                startBtn.disabled = true;
+                startBtn.innerHTML = '<i class="bi bi-pause-fill me-2"></i>Animating...';
+            }
+            
+            // Calculate animation duration (15 seconds total)
+            const totalDuration = 15000; // 15 seconds
+            const stepDuration = totalDuration / adminAnimationPath.length;
+            
+            adminAnimationInterval = setInterval(() => {
+                if (adminCurrentStep < adminAnimationPath.length) {
+                    const position = adminAnimationPath[adminCurrentStep];
+                    adminCarMarker.setPosition(position);
+                    adminCurrentStep++;
+                } else {
+                    // Animation complete
+                    clearInterval(adminAnimationInterval);
+                    adminIsAnimating = false;
+                    
+                    const startBtn = document.getElementById('adminStartAnimation');
+                    if (startBtn) {
+                        startBtn.disabled = false;
+                        startBtn.innerHTML = '<i class="bi bi-play-fill me-2"></i>Start Animation';
+                    }
+                }
+            }, stepDuration);
+        }
+
+        function resetAdminAnimation() {
+            if (adminAnimationInterval) {
+                clearInterval(adminAnimationInterval);
+                adminAnimationInterval = null;
+            }
+            
+            adminIsAnimating = false;
+            adminCurrentStep = 0;
+            
+            const startBtn = document.getElementById('adminStartAnimation');
+            if (startBtn) {
+                startBtn.disabled = false;
+                startBtn.innerHTML = '<i class="bi bi-play-fill me-2"></i>Start Animation';
+            }
+            
+            // Reset car marker to pickup location (only if Google Maps is loaded)
+            if (typeof google !== 'undefined' && adminCarMarker && window.adminBookingCoordinates) {
+                const { pickupLat, pickupLng } = window.adminBookingCoordinates;
+                adminCarMarker.setPosition({ lat: pickupLat, lng: pickupLng });
             }
         }
     </script>

@@ -11,7 +11,9 @@ using CarRentalSystem.Web.Extensions;
 using CarRentalSystem.Application.Features.KYC.Command.UploadKYC;
 using CarRentalSystem.Application.Features.KYC.Queries.HasUploadedKYC;
 using CarRentalSystem.Application.Features.KYC.Queries.GetKYCByUserId;
+using CarRentalSystem.Application.Features.Payments.Queries.GetPaymentsByCustomerId;
 using CarRentalSystem.Infrastructure.Identity;
+using CarRentalSystem.Application.Common.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -27,47 +29,101 @@ namespace CarRentalSystem.Web.Controllers
         private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IGoogleMapsService _googleMapsService;
+        private readonly IPdfService _pdfService;
 
-        public DashboardController(IMediator mediator, IMapper mapper, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment)
+        public DashboardController(IMediator mediator, IMapper mapper, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment, IGoogleMapsService googleMapsService, IPdfService pdfService)
         {
             _mediator = mediator;
             _mapper = mapper;
             _userManager = userManager;
             _webHostEnvironment = webHostEnvironment;
+            _googleMapsService = googleMapsService;
+            _pdfService = pdfService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null) return Unauthorized();
-
-            // Check if user is admin - redirect to admin dashboard
-            if (User.IsInRole("Admin"))
+            try
             {
-                return RedirectToAction("Index", "Admin");
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (userId == null) return Unauthorized();
+
+                // Check if user is admin - redirect to admin dashboard
+                if (User.IsInRole("Admin"))
+                {
+                    return RedirectToAction("Index", "Admin");
+                }
+
+                // Check if user is a customer
+                if (!User.IsInRole("Customer"))
+                {
+                    return Forbid("Access denied. Customer role required.");
+                }
+
+                var customer = await _mediator.Send(new GetCustomerByIdQuery(Guid.Parse(userId)));
+                var bookings = await _mediator.Send(new GetBookingsByCustomerQuery(Guid.Parse(userId)));
+                var payments = await _mediator.Send(new GetPaymentsByCustomerIdQuery(Guid.Parse(userId)));
+
+                // Debug logging for payment data
+                Console.WriteLine($"=== PAYMENT DEBUG ===");
+                Console.WriteLine($"Customer ID: {userId}");
+                Console.WriteLine($"Total bookings found: {bookings.Count}");
+                Console.WriteLine($"Total payments found: {payments.Count}");
+                
+                // Check if there are any bookings with Paid status
+                var paidBookings = bookings.Where(b => b.PaymentStatus == "Paid").ToList();
+                Console.WriteLine($"Paid bookings count: {paidBookings.Count}");
+                
+                foreach (var booking in paidBookings)
+                {
+                    Console.WriteLine($"Paid Booking {booking.BookingId}: TotalCost={booking.TotalCost}, PaymentStatus={booking.PaymentStatus}");
+                }
+                
+                foreach (var payment in payments)
+                {
+                    Console.WriteLine($"Payment {payment.PaymentId}: Amount={payment.Amount}, Method={payment.Method}, PaidAt={payment.PaidAt}");
+                }
+
+                // Calculate total spent from actual payment amounts
+                var totalSpent = payments.Sum(p => p.Amount);
+                Console.WriteLine($"Total spent calculated from payments: {totalSpent}");
+                
+                // Fallback: if no payments found, use booking data
+                if (payments.Count == 0 && paidBookings.Count > 0)
+                {
+                    totalSpent = paidBookings.Sum(b => b.TotalCost);
+                    Console.WriteLine($"No payments found, using booking data: {totalSpent}");
+                }
+                
+                Console.WriteLine($"Final total spent: {totalSpent}");
+                Console.WriteLine($"=== END PAYMENT DEBUG ===");
+                
+                var dashboardData = new UserDashboardViewModel
+                {
+                    Customer = customer,
+                    RecentBookings = bookings.Take(5).ToList(),
+                    TotalBookings = bookings.Count,
+                    ActiveRentals = bookings.Count(b => b.BookingStatus == "Confirmed" || b.BookingStatus == "In Progress"),
+                    TotalSpent = totalSpent,
+                    Savings = 0 // Removed savings calculation
+                };
+
+                return View(dashboardData);
             }
-
-            // Check if user is a customer
-            if (!User.IsInRole("Customer"))
+            catch (KeyNotFoundException ex)
             {
-                return Forbid("Access denied. Customer role required.");
+                // Customer not found - redirect to profile setup
+                TempData["Error"] = "Customer profile not found. Please complete your profile setup.";
+                return RedirectToAction("Profile");
             }
-
-            var customer = await _mediator.Send(new GetCustomerByIdQuery(Guid.Parse(userId)));
-            var bookings = await _mediator.Send(new GetBookingsByCustomerQuery(Guid.Parse(userId)));
-
-            var dashboardData = new UserDashboardViewModel
+            catch (Exception ex)
             {
-                Customer = customer,
-                RecentBookings = bookings.Take(5).ToList(),
-                TotalBookings = bookings.Count,
-                ActiveRentals = bookings.Count(b => b.BookingStatus == "Confirmed" || b.BookingStatus == "In Progress"),
-                TotalSpent = bookings.Where(b => b.PaymentStatus == "Paid").Sum(b => b.TotalCost),
-                Savings = bookings.Where(b => b.PaymentStatus == "Paid").Sum(b => b.TotalCost) * 0.15m // 15% savings vs traditional rental
-            };
-
-            return View(dashboardData);
+                // Log the exception and show a generic error
+                TempData["Error"] = "An error occurred while loading your dashboard. Please try again.";
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpGet]
@@ -512,7 +568,47 @@ namespace CarRentalSystem.Web.Controllers
                 return RedirectToAction("Bookings");
             }
 
+            // Pass Google Maps API key to the view
+            ViewBag.GoogleMapsApiKey = await _googleMapsService.GetApiKeyAsync();
+
             return View(booking);
+        }
+
+        [HttpGet]
+        [Route("Dashboard/DownloadInvoice/{bookingId}")]
+        public async Task<IActionResult> DownloadInvoice(Guid bookingId)
+        {
+            try
+            {
+                // Get booking details
+                var booking = await _mediator.Send(new GetBookingByIdQuery { BookingId = bookingId });
+                
+                if (booking == null)
+                {
+                    TempData["Error"] = "Booking not found.";
+                    return RedirectToAction("Bookings", "Dashboard");
+                }
+
+                // Verify that the booking belongs to the current user
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (userId == null || booking.CustomerId != Guid.Parse(userId))
+                {
+                    TempData["Error"] = "You can only download invoices for your own bookings.";
+                    return RedirectToAction("Bookings", "Dashboard");
+                }
+
+                // Generate invoice PDF
+                var invoiceId = $"INV-{bookingId.ToString().Substring(0, 8)}";
+                var pdfBytes = await _pdfService.GenerateInvoicePdfAsync(booking, invoiceId);
+                
+                var fileName = $"Invoice_{bookingId.ToString().Substring(0, 8)}_{DateTime.Now:yyyyMMdd}.pdf";
+                return File(pdfBytes, "application/pdf", fileName);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error generating invoice.";
+                return RedirectToAction("Bookings", "Dashboard");
+            }
         }
     }
 }

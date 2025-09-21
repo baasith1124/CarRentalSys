@@ -13,11 +13,13 @@ namespace CarRentalSystem.Application.Features.Cars.Queries.SearchCars
     public class SearchCarsQueryHandler : IRequestHandler<SearchCarsQuery, List<CarDto>>
     {
         private readonly ICarRepository _carRepository;
+        private readonly IBookingRepository _bookingRepository;
         private readonly IMapper _mapper;
 
-        public SearchCarsQueryHandler(ICarRepository carRepository, IMapper mapper)
+        public SearchCarsQueryHandler(ICarRepository carRepository, IBookingRepository bookingRepository, IMapper mapper)
         {
             _carRepository = carRepository;
+            _bookingRepository = bookingRepository;
             _mapper = mapper;
         }
 
@@ -36,7 +38,18 @@ namespace CarRentalSystem.Application.Features.Cars.Queries.SearchCars
                     (!request.MaxYear.HasValue || car.Year <= request.MaxYear)
                 );
 
-            var carDtos = _mapper.Map<List<CarDto>>(filtered);
+            // Filter out cars that are not available for the requested time period
+            var availableCars = new List<Domain.Entities.Car>();
+            foreach (var car in filtered)
+            {
+                bool isAvailable = await _bookingRepository.IsCarAvailableAsync(car.CarId, request.PickupDate, request.DropDate, cancellationToken);
+                if (isAvailable)
+                {
+                    availableCars.Add(car);
+                }
+            }
+
+            var carDtos = _mapper.Map<List<CarDto>>(availableCars);
 
             // Calculate total rental days
             int totalDays = (int)(request.DropDate - request.PickupDate).TotalDays;

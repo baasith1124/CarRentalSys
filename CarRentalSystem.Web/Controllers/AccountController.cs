@@ -1,7 +1,11 @@
 ﻿using AutoMapper;
 using CarRentalSystem.Application.Contracts.Account;
+using CarRentalSystem.Application.Contracts.OTP;
 using CarRentalSystem.Application.Features.Account.Commands.ExternalLogin;
 using CarRentalSystem.Application.Features.Account.Commands.RegisterCustomer;
+using CarRentalSystem.Application.Features.Account.Commands.RegisterCustomerWithOTP;
+using CarRentalSystem.Application.Features.OTP.Commands.SendRegistrationOTP;
+using CarRentalSystem.Application.Features.OTP.Commands.VerifyRegistrationOTP;
 using CarRentalSystem.Infrastructure.Identity;
 using CarRentalSystem.Web.ViewModels.Account;
 using MediatR;
@@ -144,7 +148,7 @@ namespace CarRentalSystem.Web.Controllers
                 }
                 else
                 {
-                    return LocalRedirect(returnUrl ?? Url.Action("Index", "Home"));
+                    return LocalRedirect(returnUrl ?? Url.Action("Index", "Dashboard"));
                 }
             }
 
@@ -199,6 +203,154 @@ namespace CarRentalSystem.Web.Controllers
 
             ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             return View(model);
+        }
+
+        [HttpPost("SendRegistrationOTP")]
+        public async Task<IActionResult> SendRegistrationOTP([FromBody] OTPRequest request)
+        {
+            try
+            {
+                // Log the incoming request for debugging
+                Console.WriteLine($"OTP Request received - Email: {request?.Email}, Purpose: {request?.Purpose}");
+
+                if (request == null)
+                {
+                    Console.WriteLine("Request is null");
+                    return BadRequest(new { success = false, message = "Request body is null" });
+                }
+
+                if (string.IsNullOrEmpty(request.Email))
+                {
+                    Console.WriteLine("Email is null or empty");
+                    return BadRequest(new { success = false, message = "Email is required" });
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                    Console.WriteLine($"Model validation errors: {string.Join(", ", errors)}");
+                    return BadRequest(new { success = false, message = "Invalid request", errors = errors });
+                }
+
+                var command = new SendRegistrationOTPCommand
+                {
+                    Email = request.Email
+                };
+
+                Console.WriteLine($"Sending OTP command for email: {request.Email}");
+                var result = await _mediator.Send(command);
+                Console.WriteLine($"OTP result: Success={result.Success}, Message={result.Message}");
+                
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception in SendRegistrationOTP: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                return BadRequest(new { success = false, message = "Internal server error", error = ex.Message });
+            }
+        }
+
+        [HttpPost("VerifyRegistrationOTP")]
+        public async Task<IActionResult> VerifyRegistrationOTP([FromBody] OTPVerificationRequest request)
+        {
+            try
+            {
+                Console.WriteLine($"OTP Verification Request received - Email: {request?.Email}, Code: {request?.Code}, Purpose: {request?.Purpose}");
+
+                if (request == null)
+                {
+                    Console.WriteLine("Verification request is null");
+                    return BadRequest(new { success = false, message = "Request body is null" });
+                }
+
+                if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Code))
+                {
+                    Console.WriteLine("Email or Code is null or empty");
+                    return BadRequest(new { success = false, message = "Email and Code are required" });
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                    Console.WriteLine($"Model validation errors: {string.Join(", ", errors)}");
+                    return BadRequest(new { success = false, message = "Invalid request", errors = errors });
+                }
+
+                var command = new VerifyRegistrationOTPCommand
+                {
+                    Email = request.Email,
+                    Code = request.Code,
+                    Purpose = request.Purpose ?? "Registration"
+                };
+
+                Console.WriteLine($"Sending OTP verification command for email: {request.Email}");
+                var result = await _mediator.Send(command);
+                Console.WriteLine($"OTP verification result: {result}");
+                
+                return Ok(new { success = result, message = result ? "OTP verified successfully" : "Invalid OTP" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception in VerifyRegistrationOTP: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                return BadRequest(new { success = false, message = "Internal server error", error = ex.Message });
+            }
+        }
+
+        [HttpPost("RegisterCustomerWithOTPAjax")]
+        public async Task<IActionResult> RegisterCustomerWithOTPAjax([FromForm] RegisterCustomerWithOTPViewModel model)
+        {
+            try
+            {
+                Console.WriteLine($"Registration Request received - Email: {model?.Email}, FullName: {model?.FullName}");
+
+                if (model == null)
+                {
+                    Console.WriteLine("Registration model is null");
+                    return BadRequest(new { success = false, errors = new[] { "Registration data is required" } });
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .ToList();
+
+                    Console.WriteLine($"Model validation errors: {string.Join(", ", errors)}");
+                    return BadRequest(new { success = false, errors });
+                }
+
+                Console.WriteLine($"Mapping registration command for email: {model.Email}");
+                var command = _mapper.Map<RegisterCustomerWithOTPCommand>(model);
+
+                Console.WriteLine($"Sending registration command for email: {model.Email}");
+                var result = await _mediator.Send(command);
+                Console.WriteLine($"Registration result: {result}");
+
+                if (result)
+                {
+                    Console.WriteLine($"Registration successful for email: {model.Email}");
+                    var createdUser = await _signInManager.UserManager.FindByEmailAsync(model.Email);
+                    if (createdUser != null)
+                    {
+                        Console.WriteLine($"Signing in user: {model.Email}");
+                        await _signInManager.SignInAsync(createdUser, isPersistent: false);
+                    }
+
+                    return Ok(new { success = true });
+                }
+
+                Console.WriteLine($"Registration failed for email: {model.Email}");
+                return BadRequest(new { success = false, errors = new[] { "Registration failed. Please check your OTP code and try again." } });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception in RegisterCustomerWithOTPAjax: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                return BadRequest(new { success = false, errors = new[] { $"Registration failed: {ex.Message}" } });
+            }
         }
 
     }
