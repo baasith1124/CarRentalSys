@@ -1,6 +1,6 @@
 # Car Rental System
 
-A comprehensive web application built with ASP.NET Core MVC that facilitates car rental services between car owners and customers. The system provides a platform where car owners can list their vehicles for rent, and customers can search, book, and pay for rental services.
+A comprehensive web application built with ASP.NET Core MVC that facilitates car rental services directly between the system and customers.  the platform itself manages the fleet of vehicles. Customers can search available cars, place rental requests, and make payments
 
 ## 🚀 Features
 
@@ -10,7 +10,6 @@ A comprehensive web application built with ASP.NET Core MVC that facilitates car
 - **Payment Processing**: Secure Stripe integration for credit/debit card payments
 - **KYC Verification**: Document upload and admin approval workflow for identity verification
 - **Notification System**: Real-time notifications and email updates
-- **Multi-language Support**: English, Sinhala, and Tamil language support
 - **Intelligent Admin Assistant**: AI-powered database queries and report generation
 
 ### Advanced Features
