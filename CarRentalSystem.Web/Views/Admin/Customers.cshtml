@@ -396,31 +396,104 @@
 
 
 <!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteCustomerModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="bi bi-exclamation-triangle text-danger"></i> Confirm Delete
+<div class="modal fade" id="deleteCustomerModal" tabindex="-1" aria-labelledby="deleteCustomerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-danger text-white border-0">
+                <h5 class="modal-title" id="deleteCustomerModalLabel">
+                    <i class="bi bi-exclamation-triangle me-2"></i> Delete Customer
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete customer <strong id="deleteCustomerName"></strong>?</p>
-                <p class="text-danger"><small>This action cannot be undone.</small></p>
+            <div class="modal-body p-4">
+                <div class="text-center mb-3">
+                    <div class="bg-danger bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+                        <i class="bi bi-trash text-danger" style="font-size: 24px;"></i>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <h6 class="mb-3">Are you sure you want to delete this customer?</h6>
+                    <div class="bg-light rounded p-3 mb-3">
+                        <strong id="deleteCustomerName" class="text-primary"></strong>
+                    </div>
+                    <p class="text-muted small mb-0">
+                        <i class="bi bi-info-circle me-1"></i>
+                        This action will permanently delete the customer and all associated data including bookings and KYC documents.
+                    </p>
+                    <p class="text-danger small mt-2 mb-0">
+                        <i class="bi bi-exclamation-triangle me-1"></i>
+                        This action cannot be undone.
+                    </p>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <div class="modal-footer border-0 p-4">
+                <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i> Cancel
+                </button>
                 <form id="deleteCustomerForm" method="post" style="display: inline;">
                     @Html.AntiForgeryToken()
-                    <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash"></i> Delete Customer
+                    <button type="submit" class="btn btn-danger" id="confirmDeleteBtn">
+                        <i class="bi bi-trash me-1"></i> Delete Customer
                     </button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+@section Styles {
+    <style>
+        .btn-loading {
+            position: relative;
+            pointer-events: none;
+        }
+        
+        .btn-loading::after {
+            content: "";
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            margin-left: -8px;
+            margin-top: -8px;
+            border: 2px solid transparent;
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @@keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .modal-content {
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .modal-header {
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .modal-footer {
+            border-radius: 0 0 15px 15px;
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+            transition: all 0.2s ease;
+        }
+        
+        .btn-outline-secondary:hover {
+            transform: translateY(-1px);
+            transition: all 0.2s ease;
+        }
+    </style>
+}
 
 @section Scripts {
     <script>
@@ -543,29 +616,61 @@
         function deleteCustomer(customerId, customerName) {
             console.log('deleteCustomer called with:', customerId, customerName);
             
+            // Set customer name in modal
             document.getElementById('deleteCustomerName').textContent = customerName;
-            document.getElementById('deleteCustomerForm').action = '/Admin/Customers/Delete/' + customerId;
             
-            console.log('Form action set to:', document.getElementById('deleteCustomerForm').action);
+            // Set form action
+            const form = document.getElementById('deleteCustomerForm');
+            form.action = '/Admin/Customers/Delete/' + customerId;
             
+            console.log('Form action set to:', form.action);
+            
+            // Remove any existing event listeners to prevent duplicates
+            const newForm = form.cloneNode(true);
+            form.parentNode.replaceChild(newForm, form);
+            
+            // Add form submit event listener
+            const updatedForm = document.getElementById('deleteCustomerForm');
+            const confirmBtn = document.getElementById('confirmDeleteBtn');
+            
+            updatedForm.addEventListener('submit', function(e) {
+                if (isSubmitting) {
+                    e.preventDefault();
+                    return false;
+                }
+                
+                isSubmitting = true;
+                console.log('Form submitted to:', updatedForm.action);
+                
+                // Show loading state
+                confirmBtn.disabled = true;
+                confirmBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i> Deleting...';
+                
+                // Add loading animation
+                confirmBtn.classList.add('btn-loading');
+                
+                // Show notification
+                showNotification('Deleting customer...', 'info', 3000);
+                
+                console.log('Submitting form using traditional ASP.NET MVC method');
+            });
+            
+            // Show the modal
             const modal = new bootstrap.Modal(document.getElementById('deleteCustomerModal'));
             modal.show();
             
-            // Add form submit event listener for traditional ASP.NET MVC submission
-            const form = document.getElementById('deleteCustomerForm');
-            form.addEventListener('submit', function(e) {
-                console.log('Form submitted to:', form.action);
-                console.log('Form method:', form.method);
-                
-                // Show loading state
-                const submitBtn = form.querySelector('button[type="submit"]');
-                const originalText = submitBtn.textContent;
-                submitBtn.disabled = true;
-                submitBtn.textContent = 'Deleting...';
-                
-                // Let the form submit naturally - ASP.NET MVC will handle it
-                // The server will redirect back to the customers page after deletion
-                console.log('Submitting form using traditional ASP.NET MVC method');
+            // Reset button state when modal is hidden
+            const modalElement = document.getElementById('deleteCustomerModal');
+            modalElement.addEventListener('hidden.bs.modal', function () {
+                confirmBtn.disabled = false;
+                confirmBtn.innerHTML = '<i class="bi bi-trash me-1"></i> Delete Customer';
+                confirmBtn.classList.remove('btn-loading');
+            });
+            
+            // Prevent multiple submissions
+            let isSubmitting = false;
+            modalElement.addEventListener('show.bs.modal', function () {
+                isSubmitting = false;
             });
         }
         

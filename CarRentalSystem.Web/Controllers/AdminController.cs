@@ -246,6 +246,39 @@ namespace CarRentalSystem.Web.Controllers
         }
 
         [HttpGet]
+        [Route("Admin/KYC/Details/{kycId}")]
+        public async Task<IActionResult> GetKYCDetails(Guid kycId)
+        {
+            try
+            {
+                var kyc = await _mediator.Send(new GetKYCByIdQuery(kycId));
+                if (kyc == null)
+                {
+                    return Json(new { success = false, error = "KYC document not found." });
+                }
+
+                return Json(new { 
+                    success = true, 
+                    data = new {
+                        id = kyc.Id,
+                        userName = kyc.UserName,
+                        userEmail = kyc.UserEmail,
+                        documentType = kyc.DocumentType,
+                        filePath = kyc.FilePath,
+                        status = kyc.Status,
+                        uploadedAt = kyc.UploadedAt,
+                        fileSize = "N/A" // You can add file size calculation if needed
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting KYC details: {ex.Message}");
+                return Json(new { success = false, error = "Error retrieving KYC details." });
+            }
+        }
+
+        [HttpGet]
         [Route("Admin/KYC/View/{kycId}")]
         public async Task<IActionResult> ViewKYCDocument(Guid kycId)
         {
@@ -563,9 +596,16 @@ namespace CarRentalSystem.Web.Controllers
                 
                 // First, get the customer details to handle profile image deletion
                 var customer = await _mediator.Send(new GetCustomerByIdQuery(customerId));
-                if (customer != null && !string.IsNullOrEmpty(customer.ProfileImagePath))
+                if (customer == null)
                 {
-                    // Delete the profile image file
+                    Console.WriteLine($"DeleteCustomer: Customer {customerId} not found");
+                    TempData["Error"] = "Customer not found.";
+                    return RedirectToAction("Customers");
+                }
+                
+                // Delete the profile image file if it exists
+                if (!string.IsNullOrEmpty(customer.ProfileImagePath))
+                {
                     try
                     {
                         var imagePath = Path.Combine(_env.WebRootPath, "uploads", "profile-pictures", customer.ProfileImagePath);
@@ -582,13 +622,26 @@ namespace CarRentalSystem.Web.Controllers
                     }
                 }
                 
-                // Try to find and delete the Identity user
+                // Delete the customer record from the database first
+                // This will handle cascade deletion of related records (bookings, KYC uploads)
+                var command = new DeleteCustomerCommand { CustomerId = customerId };
+                var result = await _mediator.Send(command);
+                
+                if (!result)
+                {
+                    Console.WriteLine($"DeleteCustomer: Failed to delete customer record {customerId}");
+                    TempData["Error"] = "Failed to delete customer record. The customer may have active bookings or other related data.";
+                    return RedirectToAction("Customers");
+                }
+                
+                Console.WriteLine($"DeleteCustomer: Successfully deleted customer record {customerId}");
+                
+                // Now try to delete the Identity user
                 var user = await _userManager.FindByIdAsync(customerId.ToString());
                 if (user != null)
                 {
-                    Console.WriteLine($"DeleteCustomer: Found Identity user {user.Email}");
+                    Console.WriteLine($"DeleteCustomer: Found Identity user {user.Email}, attempting deletion");
                     
-                    // Delete the Identity user (this will also handle related data)
                     var identityResult = await _userManager.DeleteAsync(user);
                     if (identityResult.Succeeded)
                     {
@@ -597,7 +650,7 @@ namespace CarRentalSystem.Web.Controllers
                     else
                     {
                         Console.WriteLine($"DeleteCustomer: Failed to delete Identity user: {string.Join(", ", identityResult.Errors.Select(e => e.Description))}");
-                        // Continue with customer deletion even if Identity deletion fails
+                        // Customer record is already deleted, so we can still show success
                     }
                 }
                 else
@@ -605,20 +658,7 @@ namespace CarRentalSystem.Web.Controllers
                     Console.WriteLine($"DeleteCustomer: No Identity user found for {customerId}");
                 }
                 
-                // Delete the customer record from the database
-                var command = new DeleteCustomerCommand { CustomerId = customerId };
-                var result = await _mediator.Send(command);
-                
-                if (result)
-                {
-                    Console.WriteLine($"DeleteCustomer: Successfully deleted customer record {customerId}");
-                    TempData["Success"] = "Customer deleted successfully!";
-                }
-                else
-                {
-                    Console.WriteLine($"DeleteCustomer: Failed to delete customer record {customerId}");
-                    TempData["Error"] = "Failed to delete customer record.";
-                }
+                TempData["Success"] = "Customer deleted successfully!";
             }
             catch (Exception ex)
             {

@@ -53,14 +53,21 @@ namespace CarRentalSystem.Infrastructure.Persistence.Repositories
             {
                 Console.WriteLine($"EfCustomerRepository: Attempting to delete customer {customerId}");
                 
-                var customer = await _context.Customers.FindAsync(new object[] { customerId }, cancellationToken);
+                // Load customer with related data to ensure proper cascade deletion
+                var customer = await _context.Customers
+                    .Include(c => c.Bookings)
+                    .Include(c => c.KYCUploads)
+                    .FirstOrDefaultAsync(c => c.Id == customerId, cancellationToken);
+                
                 if (customer == null)
                 {
                     Console.WriteLine($"EfCustomerRepository: Customer {customerId} not found in database");
                     return false;
                 }
 
-                Console.WriteLine($"EfCustomerRepository: Found customer {customerId}, removing from context");
+                Console.WriteLine($"EfCustomerRepository: Found customer {customerId} with {customer.Bookings?.Count ?? 0} bookings and {customer.KYCUploads?.Count ?? 0} KYC uploads");
+                
+                // Remove the customer - EF Core will handle cascade deletes based on the model configuration
                 _context.Customers.Remove(customer);
                 
                 var result = await _context.SaveChangesAsync(cancellationToken);
